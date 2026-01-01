@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+#Claude
+claude.md
+
+# VLML Data
+# Database files are distributed via GitHub Releases/Artifacts
+data/
+*.duckdb
+*.duckdb.wal
