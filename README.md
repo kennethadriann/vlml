@@ -42,16 +42,16 @@ Database tools:
 - `query_sql`
 - `get_database_info`
 
-See `docs/tools.md` for input/output details.
+See [docs/tools.md](docs/tools.md) for input/output details.
 
 ## Documentation
 
-- Setup: `docs/setup.md`
-- Tools: `docs/tools.md`
-- Architecture: `docs/architecture.md`
-- Database pipeline: `database/README.md`
-- Data model: `database/DATA_MODEL.md`
-- Report standard: `insights_reference.md`
+- Setup: [docs/setup.md](docs/setup.md)
+- Tools: [docs/tools.md](docs/tools.md)
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Database pipeline: [database/README.md](database/README.md)
+- Data model: [database/DATA_MODEL.md](database/DATA_MODEL.md)
+- Report standard: [insights_reference.md](insights_reference.md)
 
 ## Notes
 
