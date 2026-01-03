@@ -48,7 +48,9 @@ Run the pipeline (schema + load + transforms + validate):
 python database/scripts/orchestration/run_pipeline.py --year 2025
 ```
 
-## 3) Run the MCP Server
+This creates `data/vlml_events.duckdb`, which the MCP server reads.
+
+## 3) Run the MCP Server (Local)
 
 ```bash
 vlml
@@ -60,9 +62,39 @@ Or:
 .venv/bin/python -m vlml.server
 ```
 
-## 4) Optional: Run Tests
+## 4) Claude Desktop Setup
+
+Claude Desktop reads MCP configs from:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\\Claude\\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+Example configuration:
+
+```json
+{
+  "mcpServers": {
+    "vlml": {
+      "command": "/bin/zsh",
+      "args": [
+        "-lc",
+        "cd /Users/yourname/proj/vlml && .venv/bin/python -m vlml.server"
+      ],
+      "env": {
+        "GRID_API_KEY": "your-key",
+        "GRID_API_URL": "https://api-op.grid.gg/central-data/graphql",
+        "VALORANT_GAME_ID": "valorant"
+      }
+    }
+  }
+}
+```
+
+Replace the path and environment variables with your own. Ensure the database exists before launching Claude. Quit and relaunch Claude Desktop after saving.
+
+## 5) Optional: Run Tests
 
 ```bash
 .venv/bin/python -m pytest tests/test_insights_tools.py
 ```
-
