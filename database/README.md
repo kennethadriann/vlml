@@ -57,23 +57,30 @@ database/
 │   ├── init_schema.yaml         # Schema initialization config
 │   └── transformations.yaml     # Transformation pipeline config
 ├── scripts/             # Python pipeline scripts
-│   ├── run_pipeline.py          # 🎯 MASTER SCRIPT - Run complete pipeline
-│   ├── init_schema.py           # Initialize database from YAML
-│   ├── load_data.py             # Load JSONL → atomic tables
-│   ├── run_transformations.py   # Run transformations from YAML
-│   ├── download_raw_events.py   # Download from GRID API
-│   ├── seed_map_zones.py        # Seed map zone bounding boxes
-│   ├── reset_schema.py          # Drop tables (full reset)
-│   ├── manager.py               # Database connection manager
-│   ├── validate_data.py         # Run validation checks
-│   ├── validate_data.sql        # SQL validation queries
-│   └── maintenance/             # Ad-hoc ops scripts
-│       ├── check_data_availability.py
-│       ├── check_recent_series_dates.py
-│       ├── find_2025_data.py
-│       ├── fix_tournament_names.py
-│       ├── query_2025_tournaments.py
-│       └── search_2025_series.py
+│   ├── ingestion/
+│   │   ├── download_raw_events.py   # Download from GRID API
+│   │   ├── load_data.py             # Load JSONL → atomic tables
+│   │   ├── parsers.py               # JSONL parsing helpers
+│   │   ├── classifiers.py           # Ability/tournament classifiers
+│   │   ├── db_loader.py             # DuckDB bulk loader
+│   │   └── file_download_client.py  # File Download API client
+│   ├── orchestration/
+│   │   ├── run_pipeline.py          # 🎯 MASTER SCRIPT - Run complete pipeline
+│   │   ├── init_schema.py           # Initialize database from YAML
+│   │   └── run_transformations.py   # Run transformations from YAML
+│   ├── maintenance/
+│   │   ├── reset_schema.py          # Drop tables (full reset)
+│   │   ├── seed_map_zones.py        # Seed map zone bounding boxes
+│   │   ├── validate_data.py         # Run validation checks
+│   │   ├── validate_data.sql        # SQL validation queries
+│   │   ├── remove_unnecessary_indexes.sh
+│   │   ├── check_data_availability.py
+│   │   ├── check_recent_series_dates.py
+│   │   ├── find_2025_data.py
+│   │   ├── fix_tournament_names.py
+│   │   ├── query_2025_tournaments.py
+│   │   └── search_2025_series.py
+│   └── manager.py               # Database connection manager
 └── README.md            # This file
 ```
 
@@ -86,10 +93,10 @@ The project uses two approaches for database operations:
 **manager.py (EventDatabase class)**
 - **Purpose**: Abstraction layer for MCP server and query helpers
 - **Use cases**: Interactive queries, database stats, connection management
-- **When to use**: Read operations, single-record inserts, exploration
+- **When to use**: Read operations and exploration (query-focused)
 - **Performance**: Optimized for convenience, not bulk operations
 
-**Direct DuckDB Operations (in load_data.py)**
+**Direct DuckDB Operations (in ingestion/load_data.py)**
 - **Purpose**: High-performance bulk loading of 500K+ events
 - **Use cases**: Data ingestion from JSONL files
 - **When to use**: Loading raw data, bulk inserts, transformations
@@ -209,10 +216,17 @@ Column definitions live in `database/metadata/column_definitions.yaml`.
 # VALORANT_GAME_ID=valorant
 
 # 0. Download raw events from GRID (writes to data/raw_events/)
-python database/scripts/download_raw_events.py --year 2025
+python database/scripts/ingestion/download_raw_events.py --year 2025
+
+# Optional: download only Masters or Champions
+python database/scripts/ingestion/download_raw_events.py --year 2025 --preset masters
+python database/scripts/ingestion/download_raw_events.py --year 2025 --preset champions
+
+# Optional: keyword filter
+python database/scripts/ingestion/download_raw_events.py --year 2025 --tournament-keywords "Masters,Champions"
 
 # 1. Run everything for 2025 data (init + load + transform + validate)
-python database/scripts/run_pipeline.py --year 2025
+python database/scripts/orchestration/run_pipeline.py --year 2025
 
 ```
 
@@ -229,43 +243,52 @@ That's it! One command runs the entire pipeline:
 
 ```bash
 # Only transformations (data already loaded)
-python database/scripts/run_pipeline.py --skip-schema --skip-load
+python database/scripts/orchestration/run_pipeline.py --skip-schema --skip-load
 
 # Initialize and load, skip transforms
-python database/scripts/run_pipeline.py --year 2025 --skip-transforms
+python database/scripts/orchestration/run_pipeline.py --year 2025 --skip-transforms
 ```
 
 **Individual steps (if needed):**
 
 ```bash
 # 0. Download raw events only
-python database/scripts/download_raw_events.py --year 2025
+python database/scripts/ingestion/download_raw_events.py --year 2025
 
 # 1. Initialize schema only
-python database/scripts/init_schema.py
+python database/scripts/orchestration/init_schema.py
 
 # 2. Load raw data only
-python database/scripts/load_data.py --year 2025
+python database/scripts/ingestion/load_data.py --year 2025
 
 # 3. Run transformations only
-python database/scripts/run_transformations.py
+python database/scripts/orchestration/run_transformations.py
 
 # 4. Run specific transformation models
-python database/scripts/run_transformations.py --models agg_player_round_stats
+python database/scripts/orchestration/run_transformations.py --models agg_player_round_stats
+
+# 5. Full refresh (rebuild all target tables)
+python database/scripts/orchestration/run_transformations.py --full-refresh
 ```
 
 **Reset schema (drop all tables):**
 
 ```bash
-python database/scripts/reset_schema.py --db data/vlml_events.duckdb --all
+python database/scripts/maintenance/reset_schema.py --db data/vlml_events.duckdb --all
 ```
 
 ### 4. Validate Data
 
-Check for duplicate primary keys:
+Run validation checks:
 
 ```bash
-duckdb data/vlml_events.duckdb < database/scripts/validate_data.sql
+python database/scripts/maintenance/validate_data.py --samples
+```
+
+Or run the raw SQL checks:
+
+```bash
+duckdb data/vlml_events.duckdb < database/scripts/maintenance/validate_data.sql
 ```
 
 Expected output: All tables should show `duplicates = 0` and status `✓ PASS`.

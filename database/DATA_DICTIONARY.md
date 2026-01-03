@@ -133,6 +133,11 @@ Notes:
 - `defuses`: Total spike defuses in the round.
 - `abilities_used`: Metric for abilities used.
 - `damage_dealt`: Total damage dealt in the round.
+- `ability_damage_dealt`: Damage dealt by abilities in the tournament.
+- `ability_damage_dealt`: Damage dealt by abilities in the day.
+- `ability_damage_dealt`: Damage dealt by abilities in the series.
+- `ability_damage_dealt`: Damage dealt by abilities in the game.
+- `ability_damage_dealt`: Damage dealt by abilities in the round.
 - `damage_received`: Total damage received in the round.
 - `survived`: Flag indicating the player survived the round.
 - `time_first_blood`: Metric for time first blood.
@@ -172,10 +177,10 @@ Notes:
 - `clutch_time_remaining`: Metric for clutch time remaining.
 - `clutch_difficulty_score`: Metric for clutch difficulty score.
 - `loadout_value`: Metric for loadout value.
-- `is_eco_round`: Flag indicating eco round.
-- `is_force_buy`: Flag indicating force buy.
-- `is_full_buy`: Flag indicating full buy.
-- `is_thrifty`: Flag indicating thrifty.
+- `is_eco_round`: Flag indicating eco round (team has 0 primary weapons from first seen weapon per player).
+- `is_force_buy`: Flag indicating force buy (team has 1-2 primary weapons from first seen weapon per player).
+- `is_full_buy`: Flag indicating full buy (team has 3+ primary weapons from first seen weapon per player).
+- `is_thrifty`: Flag indicating thrifty (won with <=2 primary weapons vs opponent with 3+).
 - `flash_assists`: Metric for flash assists.
 - `util_damage`: Metric for util damage.
 - `early_util`: Metric for early util.
@@ -199,28 +204,28 @@ Notes:
 - `flash_assist_kills_denom`: Denominator for flash assist kills.
 - `self_flash_kills_total`: Total count of self flash kills.
 - `self_flash_kills_denom`: Denominator for self flash kills.
-- `duel_initiated_total`: Total count of duel initiated.
-- `duel_initiated_wins_total`: Total count of duel initiated wins.
-- `duel_initiated_denom`: Denominator for duel initiated.
-- `duel_held_wins_total`: Total count of duel held wins.
-- `duel_held_denom`: Denominator for duel held.
-- `duel_resolution_time_sum_s`: Sum of seconds for duel resolution time.
-- `duel_resolution_time_denom`: Denominator for duel resolution time.
-- `duel_wins_rifle_total`: Total count of duel wins rifle.
-- `duel_losses_rifle_total`: Total count of duel losses rifle.
-- `duel_rifle_denom`: Denominator for duel rifle.
-- `duel_wins_smg_total`: Total count of duel wins smg.
-- `duel_losses_smg_total`: Total count of duel losses smg.
-- `duel_smg_denom`: Denominator for duel smg.
-- `duel_wins_pistol_total`: Total count of duel wins pistol.
-- `duel_losses_pistol_total`: Total count of duel losses pistol.
-- `duel_pistol_denom`: Denominator for duel pistol.
-- `duel_wins_sniper_total`: Total count of duel wins sniper.
-- `duel_losses_sniper_total`: Total count of duel losses sniper.
-- `duel_sniper_denom`: Denominator for duel sniper.
-- `duel_wins_shotgun_total`: Total count of duel wins shotgun.
-- `duel_losses_shotgun_total`: Total count of duel losses shotgun.
-- `duel_shotgun_denom`: Denominator for duel shotgun.
+- `duel_initiated_total`: Duels where player dealt first damage within 3s of kill (participant count).
+- `duel_initiated_wins_total`: Initiated duels won (player is killer and dealt first damage).
+- `duel_initiated_denom`: Initiated duel count (same as initiated_total).
+- `duel_held_wins_total`: Duels won where opponent dealt first damage.
+- `duel_held_denom`: Duels where opponent dealt first damage (participant count).
+- `duel_resolution_time_sum_s`: Sum of seconds from first damage to kill (3s window).
+- `duel_resolution_time_denom`: Count of duels with first damage in window.
+- `duel_wins_rifle_total`: Duel wins where kill weapon type is rifle.
+- `duel_losses_rifle_total`: Duel losses to rifle (opponent kill weapon).
+- `duel_rifle_denom`: Duels with kill weapon type rifle.
+- `duel_wins_smg_total`: Duel wins where kill weapon type is smg.
+- `duel_losses_smg_total`: Duel losses to smg (opponent kill weapon).
+- `duel_smg_denom`: Duels with kill weapon type smg.
+- `duel_wins_pistol_total`: Duel wins where kill weapon type is pistol.
+- `duel_losses_pistol_total`: Duel losses to pistol (opponent kill weapon).
+- `duel_pistol_denom`: Duels with kill weapon type pistol.
+- `duel_wins_sniper_total`: Duel wins where kill weapon type is sniper.
+- `duel_losses_sniper_total`: Duel losses to sniper (opponent kill weapon).
+- `duel_sniper_denom`: Duels with kill weapon type sniper.
+- `duel_wins_shotgun_total`: Duel wins where kill weapon type is shotgun.
+- `duel_losses_shotgun_total`: Duel losses to shotgun (opponent kill weapon).
+- `duel_shotgun_denom`: Duels with kill weapon type shotgun.
 - `repeek_deaths_total`: Total count of repeek deaths.
 - `repeek_deaths_denom`: Denominator for repeek deaths.
 - `iso_deaths_total`: Total count of iso deaths.

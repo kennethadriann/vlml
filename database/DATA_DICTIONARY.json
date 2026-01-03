@@ -1,2546 +1,2566 @@
 [
   {
-    "table": "agent_roles",
+    "columns": {
+      "agent_name": {
+        "desc": "Agent name (primary key).",
+        "type": "VARCHAR"
+      },
+      "agent_role": {
+        "desc": "Role category (duelist/initiator/controller/sentinel).",
+        "type": "VARCHAR"
+      },
+      "is_controller": {
+        "desc": "Role flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_duelist": {
+        "desc": "Role flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_initiator": {
+        "desc": "Role flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_sentinel": {
+        "desc": "Role flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      }
+    },
     "grain": null,
+    "metrics": {},
     "pk": [
       "agent_name"
     ],
-    "columns": {
-      "agent_name": {
-        "type": "VARCHAR",
-        "desc": "Agent name (primary key)."
-      },
-      "agent_role": {
-        "type": "VARCHAR",
-        "desc": "Role category (duelist/initiator/controller/sentinel)."
-      },
-      "is_duelist": {
-        "type": "BOOLEAN",
-        "desc": "Role flag.",
-        "flag": true
-      },
-      "is_initiator": {
-        "type": "BOOLEAN",
-        "desc": "Role flag.",
-        "flag": true
-      },
-      "is_controller": {
-        "type": "BOOLEAN",
-        "desc": "Role flag.",
-        "flag": true
-      },
-      "is_sentinel": {
-        "type": "BOOLEAN",
-        "desc": "Role flag.",
-        "flag": true
-      }
-    },
-    "metrics": {}
+    "table": "agent_roles"
   },
   {
-    "table": "weapon_types",
+    "columns": {
+      "cost": {
+        "desc": "Metric for cost.",
+        "type": "INTEGER"
+      },
+      "is_heavy": {
+        "desc": "Flag indicating heavy.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_melee": {
+        "desc": "Flag indicating melee.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_pistol": {
+        "desc": "Flag indicating pistol.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_rifle": {
+        "desc": "Flag indicating rifle.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_shotgun": {
+        "desc": "Flag indicating shotgun.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_smg": {
+        "desc": "Flag indicating smg.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_sniper": {
+        "desc": "Flag indicating sniper.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "weapon_class": {
+        "desc": "Metric for weapon class.",
+        "type": "VARCHAR"
+      },
+      "weapon_name": {
+        "desc": "Weapon display name (primary key).",
+        "type": "VARCHAR"
+      },
+      "weapon_type": {
+        "desc": "Type classification (rifle/smg/pistol/sniper/shotgun/heavy/melee/ability).",
+        "type": "VARCHAR"
+      }
+    },
     "grain": null,
+    "metrics": {},
     "pk": [
       "weapon_name"
     ],
-    "columns": {
-      "weapon_name": {
-        "type": "VARCHAR",
-        "desc": "Weapon display name (primary key)."
-      },
-      "weapon_type": {
-        "type": "VARCHAR",
-        "desc": "Type classification (rifle/smg/pistol/sniper/shotgun/heavy/melee/ability)."
-      },
-      "weapon_class": {
-        "type": "VARCHAR",
-        "desc": "Metric for weapon class."
-      },
-      "cost": {
-        "type": "INTEGER",
-        "desc": "Metric for cost."
-      },
-      "is_rifle": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating rifle.",
-        "flag": true
-      },
-      "is_smg": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating smg.",
-        "flag": true
-      },
-      "is_pistol": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating pistol.",
-        "flag": true
-      },
-      "is_sniper": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating sniper.",
-        "flag": true
-      },
-      "is_shotgun": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating shotgun.",
-        "flag": true
-      },
-      "is_heavy": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating heavy.",
-        "flag": true
-      },
-      "is_melee": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating melee.",
-        "flag": true
-      }
-    },
-    "metrics": {}
+    "table": "weapon_types"
   },
   {
-    "table": "series",
+    "columns": {
+      "ingested_at": {
+        "desc": "Ingestion timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "series_id": {
+        "desc": "Series identifier (primary key).",
+        "type": "VARCHAR"
+      },
+      "start_time": {
+        "desc": "Series start timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "team1_name": {
+        "desc": "Team 1 name.",
+        "type": "VARCHAR"
+      },
+      "team2_name": {
+        "desc": "Team 2 name.",
+        "type": "VARCHAR"
+      },
+      "tournament_id": {
+        "desc": "Tournament identifier.",
+        "type": "VARCHAR"
+      },
+      "tournament_name": {
+        "desc": "Tournament display name.",
+        "type": "VARCHAR"
+      },
+      "tournament_region": {
+        "desc": "Region bucket (americas/emea/pacific/china).",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "winning_team_name": {
+        "desc": "Winning team name.",
+        "type": "VARCHAR"
+      }
+    },
     "grain": null,
+    "metrics": {},
     "pk": [
       "series_id"
     ],
-    "columns": {
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Series identifier (primary key)."
-      },
-      "tournament_id": {
-        "type": "VARCHAR",
-        "desc": "Tournament identifier."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament display name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "tournament_region": {
-        "type": "VARCHAR",
-        "desc": "Region bucket (americas/emea/pacific/china)."
-      },
-      "team1_name": {
-        "type": "VARCHAR",
-        "desc": "Team 1 name."
-      },
-      "team2_name": {
-        "type": "VARCHAR",
-        "desc": "Team 2 name."
-      },
-      "winning_team_name": {
-        "type": "VARCHAR",
-        "desc": "Winning team name."
-      },
-      "start_time": {
-        "type": "TIMESTAMP",
-        "desc": "Series start timestamp."
-      },
-      "ingested_at": {
-        "type": "TIMESTAMP",
-        "desc": "Ingestion timestamp."
-      }
-    },
-    "metrics": {}
+    "table": "series"
   },
   {
-    "table": "games",
+    "columns": {
+      "game_duration_seconds": {
+        "desc": "Game duration in seconds.",
+        "type": "INTEGER"
+      },
+      "game_id": {
+        "desc": "Game identifier (primary key).",
+        "type": "VARCHAR"
+      },
+      "game_number": {
+        "desc": "Game number within series.",
+        "type": "INTEGER"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "series_id": {
+        "desc": "Parent series identifier.",
+        "type": "VARCHAR"
+      },
+      "team1_name": {
+        "desc": "Team 1 name.",
+        "type": "VARCHAR"
+      },
+      "team2_name": {
+        "desc": "Team 2 name.",
+        "type": "VARCHAR"
+      },
+      "total_rounds": {
+        "desc": "Total rounds played.",
+        "type": "INTEGER"
+      },
+      "winning_team_name": {
+        "desc": "Winning team name.",
+        "type": "VARCHAR"
+      }
+    },
     "grain": null,
+    "metrics": {},
     "pk": [
       "game_id"
     ],
-    "columns": {
-      "game_id": {
-        "type": "VARCHAR",
-        "desc": "Game identifier (primary key)."
-      },
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Parent series identifier."
-      },
-      "game_number": {
-        "type": "INTEGER",
-        "desc": "Game number within series."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "team1_name": {
-        "type": "VARCHAR",
-        "desc": "Team 1 name."
-      },
-      "team2_name": {
-        "type": "VARCHAR",
-        "desc": "Team 2 name."
-      },
-      "winning_team_name": {
-        "type": "VARCHAR",
-        "desc": "Winning team name."
-      },
-      "game_duration_seconds": {
-        "type": "INTEGER",
-        "desc": "Game duration in seconds."
-      },
-      "total_rounds": {
-        "type": "INTEGER",
-        "desc": "Total rounds played."
-      }
-    },
-    "metrics": {}
+    "table": "games"
   },
   {
-    "table": "rounds",
+    "columns": {
+      "duration_seconds": {
+        "desc": "Round duration in seconds.",
+        "type": "INTEGER"
+      },
+      "end_reason": {
+        "desc": "Round end reason (detonated/defused/eliminated/time).",
+        "type": "VARCHAR"
+      },
+      "ended_at": {
+        "desc": "Round end timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "game_id": {
+        "desc": "Parent game identifier.",
+        "type": "VARCHAR"
+      },
+      "ingested_at": {
+        "desc": "Ingestion timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "losing_team_name": {
+        "desc": "Losing team name.",
+        "type": "VARCHAR"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "round_id": {
+        "desc": "Round identifier (primary key).",
+        "type": "VARCHAR"
+      },
+      "round_number": {
+        "desc": "Round number within the game.",
+        "type": "INTEGER"
+      },
+      "series_id": {
+        "desc": "Parent series identifier.",
+        "type": "VARCHAR"
+      },
+      "started_at": {
+        "desc": "Round start timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "tournament_name": {
+        "desc": "Tournament display name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "winning_team_name": {
+        "desc": "Winning team name.",
+        "type": "VARCHAR"
+      }
+    },
     "grain": "One row per round",
+    "metrics": {},
     "pk": [
       "round_id"
     ],
-    "columns": {
-      "round_id": {
-        "type": "VARCHAR",
-        "desc": "Round identifier (primary key)."
-      },
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Parent series identifier."
-      },
-      "game_id": {
-        "type": "VARCHAR",
-        "desc": "Parent game identifier."
-      },
-      "round_number": {
-        "type": "INTEGER",
-        "desc": "Round number within the game."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Round start timestamp."
-      },
-      "ended_at": {
-        "type": "TIMESTAMP",
-        "desc": "Round end timestamp."
-      },
-      "duration_seconds": {
-        "type": "INTEGER",
-        "desc": "Round duration in seconds."
-      },
-      "winning_team_name": {
-        "type": "VARCHAR",
-        "desc": "Winning team name."
-      },
-      "losing_team_name": {
-        "type": "VARCHAR",
-        "desc": "Losing team name."
-      },
-      "end_reason": {
-        "type": "VARCHAR",
-        "desc": "Round end reason (detonated/defused/eliminated/time)."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament display name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "ingested_at": {
-        "type": "TIMESTAMP",
-        "desc": "Ingestion timestamp."
-      }
-    },
-    "metrics": {}
+    "table": "rounds"
   },
   {
-    "table": "base_events",
+    "columns": {
+      "ability_id": {
+        "desc": "Ability identifier (when event is ability usage).",
+        "type": "VARCHAR"
+      },
+      "ability_name": {
+        "desc": "Ability name (when event is ability usage).",
+        "type": "VARCHAR"
+      },
+      "ability_type": {
+        "desc": "Ability category (flash/smoke/molly/recon/other).",
+        "type": "VARCHAR"
+      },
+      "action": {
+        "desc": "Action verb from feed.",
+        "type": "VARCHAR"
+      },
+      "actor_agent_name": {
+        "desc": "Acting agent name.",
+        "type": "VARCHAR"
+      },
+      "actor_loadout_value": {
+        "desc": "Acting player loadout value (when available).",
+        "type": "INTEGER"
+      },
+      "actor_net_worth": {
+        "desc": "Acting player net worth (when available).",
+        "type": "INTEGER"
+      },
+      "actor_player_id": {
+        "desc": "Acting player ID.",
+        "type": "VARCHAR"
+      },
+      "actor_player_name": {
+        "desc": "Acting player name.",
+        "type": "VARCHAR"
+      },
+      "actor_pos_x": {
+        "desc": "Acting player X coordinate (when available).",
+        "type": "FLOAT"
+      },
+      "actor_pos_y": {
+        "desc": "Acting player Y coordinate (when available).",
+        "type": "FLOAT"
+      },
+      "actor_side": {
+        "desc": "Acting player side (attacker/defender).",
+        "type": "VARCHAR"
+      },
+      "actor_team_name": {
+        "desc": "Acting team name.",
+        "type": "VARCHAR"
+      },
+      "damage_dealt": {
+        "desc": "Damage dealt for damage events.",
+        "type": "FLOAT"
+      },
+      "event_id": {
+        "desc": "Event identifier (primary key).",
+        "type": "VARCHAR"
+      },
+      "event_type": {
+        "desc": "Event type (e.g., player-killed-player).",
+        "type": "VARCHAR"
+      },
+      "game_id": {
+        "desc": "Game identifier.",
+        "type": "VARCHAR"
+      },
+      "hit_location": {
+        "desc": "Hit location (head/body/leg/general).",
+        "type": "VARCHAR"
+      },
+      "is_ability_use": {
+        "desc": "Ability usage flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_assist": {
+        "desc": "Assist event flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_begin_defuse": {
+        "desc": "Defuse start flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_bomb_exploded": {
+        "desc": "Bomb explosion flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_death": {
+        "desc": "Death event flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_defuse": {
+        "desc": "Spike defuse flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_defuse_complete": {
+        "desc": "Defuse completion flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_first_blood": {
+        "desc": "First blood flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_half_defuse": {
+        "desc": "Half defuse checkpoint flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_headshot": {
+        "desc": "Headshot flag (when available).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_kill": {
+        "desc": "Kill event flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_plant": {
+        "desc": "Spike plant flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_stop_defuse": {
+        "desc": "Defuse stop flag.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_wallbang": {
+        "desc": "Wallbang flag (when available).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "metadata": {
+        "desc": "Raw event metadata (JSON).",
+        "type": "JSON"
+      },
+      "occurred_at": {
+        "desc": "Event timestamp.",
+        "type": "TIMESTAMP"
+      },
+      "round_id": {
+        "desc": "Round identifier.",
+        "type": "VARCHAR"
+      },
+      "series_id": {
+        "desc": "Series identifier.",
+        "type": "VARCHAR"
+      },
+      "target_agent_name": {
+        "desc": "Target agent name.",
+        "type": "VARCHAR"
+      },
+      "target_player_id": {
+        "desc": "Target player ID.",
+        "type": "VARCHAR"
+      },
+      "target_player_name": {
+        "desc": "Target player name.",
+        "type": "VARCHAR"
+      },
+      "target_pos_x": {
+        "desc": "Target player X coordinate (when available).",
+        "type": "FLOAT"
+      },
+      "target_pos_y": {
+        "desc": "Target player Y coordinate (when available).",
+        "type": "FLOAT"
+      },
+      "target_side": {
+        "desc": "Target player side (attacker/defender).",
+        "type": "VARCHAR"
+      },
+      "target_team_name": {
+        "desc": "Target team name.",
+        "type": "VARCHAR"
+      },
+      "team_loadout_value": {
+        "desc": "Team loadout value snapshot (team events).",
+        "type": "INTEGER"
+      },
+      "team_net_worth": {
+        "desc": "Team net worth snapshot (team events).",
+        "type": "INTEGER"
+      },
+      "tournament_name": {
+        "desc": "Tournament display name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "weapon_name": {
+        "desc": "Weapon or ability name.",
+        "type": "VARCHAR"
+      },
+      "weapon_type": {
+        "desc": "Weapon category (if known).",
+        "type": "VARCHAR"
+      }
+    },
     "grain": null,
+    "metrics": {},
     "pk": [
       "event_id"
     ],
-    "columns": {
-      "event_id": {
-        "type": "VARCHAR",
-        "desc": "Event identifier (primary key)."
-      },
-      "occurred_at": {
-        "type": "TIMESTAMP",
-        "desc": "Event timestamp."
-      },
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Series identifier."
-      },
-      "game_id": {
-        "type": "VARCHAR",
-        "desc": "Game identifier."
-      },
-      "round_id": {
-        "type": "VARCHAR",
-        "desc": "Round identifier."
-      },
-      "event_type": {
-        "type": "VARCHAR",
-        "desc": "Event type (e.g., player-killed-player)."
-      },
-      "actor_player_id": {
-        "type": "VARCHAR",
-        "desc": "Acting player ID."
-      },
-      "actor_player_name": {
-        "type": "VARCHAR",
-        "desc": "Acting player name."
-      },
-      "actor_team_name": {
-        "type": "VARCHAR",
-        "desc": "Acting team name."
-      },
-      "actor_agent_name": {
-        "type": "VARCHAR",
-        "desc": "Acting agent name."
-      },
-      "target_player_id": {
-        "type": "VARCHAR",
-        "desc": "Target player ID."
-      },
-      "target_player_name": {
-        "type": "VARCHAR",
-        "desc": "Target player name."
-      },
-      "target_team_name": {
-        "type": "VARCHAR",
-        "desc": "Target team name."
-      },
-      "target_agent_name": {
-        "type": "VARCHAR",
-        "desc": "Target agent name."
-      },
-      "target_side": {
-        "type": "VARCHAR",
-        "desc": "Target player side (attacker/defender)."
-      },
-      "actor_side": {
-        "type": "VARCHAR",
-        "desc": "Acting player side (attacker/defender)."
-      },
-      "actor_pos_x": {
-        "type": "FLOAT",
-        "desc": "Acting player X coordinate (when available)."
-      },
-      "actor_pos_y": {
-        "type": "FLOAT",
-        "desc": "Acting player Y coordinate (when available)."
-      },
-      "target_pos_x": {
-        "type": "FLOAT",
-        "desc": "Target player X coordinate (when available)."
-      },
-      "target_pos_y": {
-        "type": "FLOAT",
-        "desc": "Target player Y coordinate (when available)."
-      },
-      "action": {
-        "type": "VARCHAR",
-        "desc": "Action verb from feed."
-      },
-      "ability_id": {
-        "type": "VARCHAR",
-        "desc": "Ability identifier (when event is ability usage)."
-      },
-      "ability_name": {
-        "type": "VARCHAR",
-        "desc": "Ability name (when event is ability usage)."
-      },
-      "ability_type": {
-        "type": "VARCHAR",
-        "desc": "Ability category (flash/smoke/molly/recon/other)."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament display name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "is_kill": {
-        "type": "BOOLEAN",
-        "desc": "Kill event flag.",
-        "flag": true
-      },
-      "is_death": {
-        "type": "BOOLEAN",
-        "desc": "Death event flag.",
-        "flag": true
-      },
-      "is_assist": {
-        "type": "BOOLEAN",
-        "desc": "Assist event flag.",
-        "flag": true
-      },
-      "is_first_blood": {
-        "type": "BOOLEAN",
-        "desc": "First blood flag.",
-        "flag": true
-      },
-      "is_plant": {
-        "type": "BOOLEAN",
-        "desc": "Spike plant flag.",
-        "flag": true
-      },
-      "is_defuse": {
-        "type": "BOOLEAN",
-        "desc": "Spike defuse flag.",
-        "flag": true
-      },
-      "is_begin_defuse": {
-        "type": "BOOLEAN",
-        "desc": "Defuse start flag.",
-        "flag": true
-      },
-      "is_stop_defuse": {
-        "type": "BOOLEAN",
-        "desc": "Defuse stop flag.",
-        "flag": true
-      },
-      "is_half_defuse": {
-        "type": "BOOLEAN",
-        "desc": "Half defuse checkpoint flag.",
-        "flag": true
-      },
-      "is_defuse_complete": {
-        "type": "BOOLEAN",
-        "desc": "Defuse completion flag.",
-        "flag": true
-      },
-      "is_bomb_exploded": {
-        "type": "BOOLEAN",
-        "desc": "Bomb explosion flag.",
-        "flag": true
-      },
-      "is_ability_use": {
-        "type": "BOOLEAN",
-        "desc": "Ability usage flag.",
-        "flag": true
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Damage dealt for damage events."
-      },
-      "actor_loadout_value": {
-        "type": "INTEGER",
-        "desc": "Acting player loadout value (when available)."
-      },
-      "actor_net_worth": {
-        "type": "INTEGER",
-        "desc": "Acting player net worth (when available)."
-      },
-      "team_loadout_value": {
-        "type": "INTEGER",
-        "desc": "Team loadout value snapshot (team events)."
-      },
-      "team_net_worth": {
-        "type": "INTEGER",
-        "desc": "Team net worth snapshot (team events)."
-      },
-      "weapon_name": {
-        "type": "VARCHAR",
-        "desc": "Weapon or ability name."
-      },
-      "weapon_type": {
-        "type": "VARCHAR",
-        "desc": "Weapon category (if known)."
-      },
-      "is_headshot": {
-        "type": "BOOLEAN",
-        "desc": "Headshot flag (when available).",
-        "flag": true
-      },
-      "is_wallbang": {
-        "type": "BOOLEAN",
-        "desc": "Wallbang flag (when available).",
-        "flag": true
-      },
-      "hit_location": {
-        "type": "VARCHAR",
-        "desc": "Hit location (head/body/leg/general)."
-      },
-      "metadata": {
-        "type": "JSON",
-        "desc": "Raw event metadata (JSON)."
-      }
-    },
-    "metrics": {}
+    "table": "base_events"
   },
   {
-    "table": "agg_player_round_stats",
+    "columns": {
+      "abilities_used": {
+        "desc": "Metric for abilities used.",
+        "type": "INTEGER"
+      },
+      "ability_damage_dealt": {
+        "desc": "Damage dealt by abilities in the round.",
+        "type": "FLOAT"
+      },
+      "agent_name": {
+        "desc": "Agent name.",
+        "type": "VARCHAR"
+      },
+      "agent_role": {
+        "desc": "Metric for agent role.",
+        "type": "VARCHAR"
+      },
+      "assists": {
+        "desc": "Metric for assists.",
+        "type": "INTEGER"
+      },
+      "bodyshot_kills": {
+        "desc": "Metric for bodyshot kills.",
+        "type": "INTEGER"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "clutch_difficulty_score": {
+        "desc": "Metric for clutch difficulty score.",
+        "type": "FLOAT"
+      },
+      "clutch_lost": {
+        "desc": "Metric for clutch lost.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "clutch_opponents": {
+        "desc": "Metric for clutch opponents.",
+        "type": "INTEGER"
+      },
+      "clutch_time_remaining": {
+        "desc": "Metric for clutch time remaining.",
+        "type": "FLOAT"
+      },
+      "clutch_won": {
+        "desc": "Metric for clutch won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "crossfire_kills_denom": {
+        "desc": "Denominator for crossfire kills.",
+        "type": "INTEGER"
+      },
+      "crossfire_kills_total": {
+        "desc": "Total count of crossfire kills.",
+        "type": "INTEGER"
+      },
+      "damage_dealt": {
+        "desc": "Metric for damage dealt.",
+        "type": "FLOAT"
+      },
+      "damage_per_kill": {
+        "desc": "Metric for damage per kill.",
+        "type": "FLOAT"
+      },
+      "damage_received": {
+        "desc": "Metric for damage received.",
+        "type": "FLOAT"
+      },
+      "deaths": {
+        "desc": "Metric for deaths.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "duel_held_denom": {
+        "desc": "Duels where opponent dealt first damage (participant count).",
+        "type": "INTEGER"
+      },
+      "duel_held_wins_total": {
+        "desc": "Duels won where opponent dealt first damage.",
+        "type": "INTEGER"
+      },
+      "duel_initiated_denom": {
+        "desc": "Initiated duel count (same as initiated_total).",
+        "type": "INTEGER"
+      },
+      "duel_initiated_total": {
+        "desc": "Duels where player dealt first damage within 3s of kill (participant count).",
+        "type": "INTEGER"
+      },
+      "duel_initiated_wins_total": {
+        "desc": "Initiated duels won (player is killer and dealt first damage).",
+        "type": "INTEGER"
+      },
+      "duel_losses_pistol_total": {
+        "desc": "Duel losses to pistol (opponent kill weapon).",
+        "type": "INTEGER"
+      },
+      "duel_losses_rifle_total": {
+        "desc": "Duel losses to rifle (opponent kill weapon).",
+        "type": "INTEGER"
+      },
+      "duel_losses_shotgun_total": {
+        "desc": "Duel losses to shotgun (opponent kill weapon).",
+        "type": "INTEGER"
+      },
+      "duel_losses_smg_total": {
+        "desc": "Duel losses to smg (opponent kill weapon).",
+        "type": "INTEGER"
+      },
+      "duel_losses_sniper_total": {
+        "desc": "Duel losses to sniper (opponent kill weapon).",
+        "type": "INTEGER"
+      },
+      "duel_pistol_denom": {
+        "desc": "Duels with kill weapon type pistol.",
+        "type": "INTEGER"
+      },
+      "duel_resolution_time_denom": {
+        "desc": "Count of duels with first damage in window.",
+        "type": "INTEGER"
+      },
+      "duel_resolution_time_sum_s": {
+        "desc": "Sum of seconds from first damage to kill (3s window).",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "duel_rifle_denom": {
+        "desc": "Duels with kill weapon type rifle.",
+        "type": "INTEGER"
+      },
+      "duel_shotgun_denom": {
+        "desc": "Duels with kill weapon type shotgun.",
+        "type": "INTEGER"
+      },
+      "duel_smg_denom": {
+        "desc": "Duels with kill weapon type smg.",
+        "type": "INTEGER"
+      },
+      "duel_sniper_denom": {
+        "desc": "Duels with kill weapon type sniper.",
+        "type": "INTEGER"
+      },
+      "duel_wins_pistol_total": {
+        "desc": "Duel wins where kill weapon type is pistol.",
+        "type": "INTEGER"
+      },
+      "duel_wins_rifle_total": {
+        "desc": "Duel wins where kill weapon type is rifle.",
+        "type": "INTEGER"
+      },
+      "duel_wins_shotgun_total": {
+        "desc": "Duel wins where kill weapon type is shotgun.",
+        "type": "INTEGER"
+      },
+      "duel_wins_smg_total": {
+        "desc": "Duel wins where kill weapon type is smg.",
+        "type": "INTEGER"
+      },
+      "duel_wins_sniper_total": {
+        "desc": "Duel wins where kill weapon type is sniper.",
+        "type": "INTEGER"
+      },
+      "early_util": {
+        "desc": "Metric for early util.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "ended_at": {
+        "desc": "Timestamp for ended.",
+        "type": "TIMESTAMP"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "flash_assist_kills_denom": {
+        "desc": "Denominator for flash assist kills.",
+        "type": "INTEGER"
+      },
+      "flash_assist_kills_total": {
+        "desc": "Total count of flash assist kills.",
+        "type": "INTEGER"
+      },
+      "flash_assists": {
+        "desc": "Metric for flash assists.",
+        "type": "INTEGER"
+      },
+      "flash_used_total": {
+        "desc": "Total count of flash used.",
+        "type": "INTEGER"
+      },
+      "headshot_hits_total": {
+        "desc": "Total count of headshot hits.",
+        "type": "INTEGER"
+      },
+      "headshot_kills_denom": {
+        "desc": "Denominator for headshot kills.",
+        "type": "INTEGER"
+      },
+      "hits_total": {
+        "desc": "Total count of hits.",
+        "type": "INTEGER"
+      },
+      "is_1v1": {
+        "desc": "Flag indicating 1v1.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_1v2": {
+        "desc": "Flag indicating 1v2.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_1v3": {
+        "desc": "Flag indicating 1v3.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_1v4": {
+        "desc": "Flag indicating 1v4.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_1v5": {
+        "desc": "Flag indicating 1v5.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_ace": {
+        "desc": "Flag indicating ace.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_clutch": {
+        "desc": "Flag indicating clutch.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_controller": {
+        "desc": "Flag indicating controller.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_double_kill": {
+        "desc": "Flag indicating double kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_duelist": {
+        "desc": "Flag indicating duelist.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_eco_round": {
+        "desc": "Flag indicating eco round (team has 0 primary weapons from first seen weapon per player).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_entry_denied": {
+        "desc": "Flag indicating entry denied.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_entry_fragger": {
+        "desc": "Flag indicating entry fragger.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_force_buy": {
+        "desc": "Flag indicating force buy (team has 1-2 primary weapons from first seen weapon per player).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_full_buy": {
+        "desc": "Flag indicating full buy (team has 3+ primary weapons from first seen weapon per player).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_initiator": {
+        "desc": "Flag indicating initiator.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_opening_death": {
+        "desc": "Flag indicating opening death.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_opening_kill": {
+        "desc": "Flag indicating opening kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_quad_kill": {
+        "desc": "Flag indicating quad kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_sentinel": {
+        "desc": "Flag indicating sentinel.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_thrifty": {
+        "desc": "Flag indicating thrifty (won with <=2 primary weapons vs opponent with 3+).",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_trade_kill": {
+        "desc": "Flag indicating trade kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_traded": {
+        "desc": "Flag indicating traded.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_triple_kill": {
+        "desc": "Flag indicating triple kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_untraded_death": {
+        "desc": "Flag indicating untraded death.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "iso_deaths_denom": {
+        "desc": "Denominator for iso deaths.",
+        "type": "INTEGER"
+      },
+      "iso_deaths_total": {
+        "desc": "Total count of iso deaths.",
+        "type": "INTEGER"
+      },
+      "kast": {
+        "desc": "Metric for kast.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "kill_distance_denom": {
+        "desc": "Denominator for kill distance.",
+        "type": "INTEGER"
+      },
+      "kill_distance_sum": {
+        "desc": "Metric for kill distance sum.",
+        "type": "FLOAT"
+      },
+      "kills": {
+        "desc": "Metric for kills.",
+        "type": "INTEGER"
+      },
+      "loadout_value": {
+        "desc": "Metric for loadout value.",
+        "type": "INTEGER"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "multi_kill_count": {
+        "desc": "Metric for multi kill count.",
+        "type": "INTEGER"
+      },
+      "off_angle_kills_denom": {
+        "desc": "Denominator for off angle kills.",
+        "type": "INTEGER"
+      },
+      "off_angle_kills_total": {
+        "desc": "Total count of off angle kills.",
+        "type": "INTEGER"
+      },
+      "opponent_team_name": {
+        "desc": "Opponent Team name.",
+        "type": "VARCHAR"
+      },
+      "overkill_damage": {
+        "desc": "Metric for overkill damage.",
+        "type": "FLOAT"
+      },
+      "pistol_kills": {
+        "desc": "Metric for pistol kills.",
+        "type": "INTEGER"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "player_id": {
+        "desc": "Player identifier.",
+        "type": "VARCHAR"
+      },
+      "player_name": {
+        "desc": "Player name.",
+        "type": "VARCHAR"
+      },
+      "repeek_deaths_denom": {
+        "desc": "Denominator for repeek deaths.",
+        "type": "INTEGER"
+      },
+      "repeek_deaths_total": {
+        "desc": "Total count of repeek deaths.",
+        "type": "INTEGER"
+      },
+      "rifle_kills": {
+        "desc": "Metric for rifle kills.",
+        "type": "INTEGER"
+      },
+      "rotate_deaths_denom": {
+        "desc": "Denominator for rotate deaths.",
+        "type": "INTEGER"
+      },
+      "rotate_deaths_total": {
+        "desc": "Total count of rotate deaths.",
+        "type": "INTEGER"
+      },
+      "round_id": {
+        "desc": "Round identifier.",
+        "type": "VARCHAR"
+      },
+      "round_number": {
+        "desc": "Round number.",
+        "type": "INTEGER"
+      },
+      "round_won": {
+        "desc": "Metric for round won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "self_flash_kills_denom": {
+        "desc": "Denominator for self flash kills.",
+        "type": "INTEGER"
+      },
+      "self_flash_kills_total": {
+        "desc": "Total count of self flash kills.",
+        "type": "INTEGER"
+      },
+      "shotgun_kills": {
+        "desc": "Metric for shotgun kills.",
+        "type": "INTEGER"
+      },
+      "side": {
+        "desc": "Metric for side.",
+        "type": "VARCHAR"
+      },
+      "smg_kills": {
+        "desc": "Metric for smg kills.",
+        "type": "INTEGER"
+      },
+      "sniper_kills": {
+        "desc": "Metric for sniper kills.",
+        "type": "INTEGER"
+      },
+      "stack_deaths_denom": {
+        "desc": "Denominator for stack deaths.",
+        "type": "INTEGER"
+      },
+      "stack_deaths_total": {
+        "desc": "Total count of stack deaths.",
+        "type": "INTEGER"
+      },
+      "started_at": {
+        "desc": "Timestamp for started.",
+        "type": "TIMESTAMP"
+      },
+      "survival_time_denom": {
+        "desc": "Denominator for survival time.",
+        "type": "INTEGER"
+      },
+      "survival_time_sum_s": {
+        "desc": "Sum of seconds for survival time.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "survived": {
+        "desc": "Metric for survived.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "time_alive": {
+        "desc": "Metric for time alive.",
+        "type": "FLOAT"
+      },
+      "time_first_blood": {
+        "desc": "Metric for time first blood.",
+        "type": "TIMESTAMP"
+      },
+      "time_first_death": {
+        "desc": "Metric for time first death.",
+        "type": "TIMESTAMP"
+      },
+      "time_to_first_kill": {
+        "desc": "Metric for time to first kill.",
+        "type": "FLOAT"
+      },
+      "total_headshot_kills": {
+        "desc": "Metric for total headshot kills.",
+        "type": "INTEGER"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "trade_kill_distance_denom": {
+        "desc": "Denominator for trade kill distance.",
+        "type": "INTEGER"
+      },
+      "trade_kill_distance_sum": {
+        "desc": "Metric for trade kill distance sum.",
+        "type": "FLOAT"
+      },
+      "trade_kill_time": {
+        "desc": "Metric for trade kill time.",
+        "type": "FLOAT"
+      },
+      "util_damage": {
+        "desc": "Metric for util damage.",
+        "type": "FLOAT"
+      },
+      "util_effect_kills_denom": {
+        "desc": "Denominator for util effect kills.",
+        "type": "INTEGER"
+      },
+      "util_effect_kills_total": {
+        "desc": "Total count of util effect kills.",
+        "type": "INTEGER"
+      },
+      "util_used_total": {
+        "desc": "Total count of util used.",
+        "type": "INTEGER"
+      },
+      "weapon_name": {
+        "desc": "Weapon name.",
+        "type": "VARCHAR"
+      },
+      "weapon_type": {
+        "desc": "Metric for weapon type.",
+        "type": "VARCHAR"
+      }
+    },
     "grain": null,
+    "metrics": {
+      "avg_duel_resolution_time": "duel_resolution_time_sum_s / duel_resolution_time_denom",
+      "avg_survival_time": "survival_time_sum_s / survival_time_denom",
+      "crossfire_kills": "crossfire_kills_total / crossfire_kills_denom",
+      "duel_initiated": "duel_initiated_total / duel_initiated_denom",
+      "flash_assist_kills": "flash_assist_kills_total / flash_assist_kills_denom",
+      "iso_deaths": "iso_deaths_total / iso_deaths_denom",
+      "off_angle_kills": "off_angle_kills_total / off_angle_kills_denom",
+      "repeek_deaths": "repeek_deaths_total / repeek_deaths_denom",
+      "rotate_deaths": "rotate_deaths_total / rotate_deaths_denom",
+      "self_flash_kills": "self_flash_kills_total / self_flash_kills_denom",
+      "stack_deaths": "stack_deaths_total / stack_deaths_denom",
+      "util_effect_kills": "util_effect_kills_total / util_effect_kills_denom"
+    },
     "pk": [
       "round_id",
       "player_id"
     ],
-    "columns": {
-      "round_id": {
-        "type": "VARCHAR",
-        "desc": "Round identifier."
-      },
-      "player_id": {
-        "type": "VARCHAR",
-        "desc": "Player identifier."
-      },
-      "player_name": {
-        "type": "VARCHAR",
-        "desc": "Player name."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "opponent_team_name": {
-        "type": "VARCHAR",
-        "desc": "Opponent Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "agent_name": {
-        "type": "VARCHAR",
-        "desc": "Agent name."
-      },
-      "round_number": {
-        "type": "INTEGER",
-        "desc": "Round number."
-      },
-      "started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for started."
-      },
-      "ended_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for ended."
-      },
-      "round_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for round won.",
-        "flag": true
-      },
-      "side": {
-        "type": "VARCHAR",
-        "desc": "Metric for side."
-      },
-      "kills": {
-        "type": "INTEGER",
-        "desc": "Metric for kills."
-      },
-      "deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for deaths."
-      },
-      "assists": {
-        "type": "INTEGER",
-        "desc": "Metric for assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "abilities_used": {
-        "type": "INTEGER",
-        "desc": "Metric for abilities used."
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for damage dealt."
-      },
-      "damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for damage received."
-      },
-      "survived": {
-        "type": "BOOLEAN",
-        "desc": "Metric for survived.",
-        "flag": true
-      },
-      "time_first_blood": {
-        "type": "TIMESTAMP",
-        "desc": "Metric for time first blood."
-      },
-      "time_first_death": {
-        "type": "TIMESTAMP",
-        "desc": "Metric for time first death."
-      },
-      "time_alive": {
-        "type": "FLOAT",
-        "desc": "Metric for time alive."
-      },
-      "time_to_first_kill": {
-        "type": "FLOAT",
-        "desc": "Metric for time to first kill."
-      },
-      "agent_role": {
-        "type": "VARCHAR",
-        "desc": "Metric for agent role."
-      },
-      "is_duelist": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating duelist.",
-        "flag": true
-      },
-      "is_initiator": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating initiator.",
-        "flag": true
-      },
-      "is_controller": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating controller.",
-        "flag": true
-      },
-      "is_sentinel": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating sentinel.",
-        "flag": true
-      },
-      "kast": {
-        "type": "BOOLEAN",
-        "desc": "Metric for kast.",
-        "flag": true
-      },
-      "damage_per_kill": {
-        "type": "FLOAT",
-        "desc": "Metric for damage per kill."
-      },
-      "overkill_damage": {
-        "type": "FLOAT",
-        "desc": "Metric for overkill damage."
-      },
-      "is_entry_fragger": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating entry fragger.",
-        "flag": true
-      },
-      "is_opening_kill": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating opening kill.",
-        "flag": true
-      },
-      "is_opening_death": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating opening death.",
-        "flag": true
-      },
-      "is_entry_denied": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating entry denied.",
-        "flag": true
-      },
-      "is_traded": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating traded.",
-        "flag": true
-      },
-      "is_trade_kill": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating trade kill.",
-        "flag": true
-      },
-      "trade_kill_time": {
-        "type": "FLOAT",
-        "desc": "Metric for trade kill time."
-      },
-      "is_untraded_death": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating untraded death.",
-        "flag": true
-      },
-      "multi_kill_count": {
-        "type": "INTEGER",
-        "desc": "Metric for multi kill count."
-      },
-      "is_double_kill": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating double kill.",
-        "flag": true
-      },
-      "is_triple_kill": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating triple kill.",
-        "flag": true
-      },
-      "is_quad_kill": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating quad kill.",
-        "flag": true
-      },
-      "is_ace": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating ace.",
-        "flag": true
-      },
-      "is_clutch": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating clutch.",
-        "flag": true
-      },
-      "is_1v1": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating 1v1.",
-        "flag": true
-      },
-      "is_1v2": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating 1v2.",
-        "flag": true
-      },
-      "is_1v3": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating 1v3.",
-        "flag": true
-      },
-      "is_1v4": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating 1v4.",
-        "flag": true
-      },
-      "is_1v5": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating 1v5.",
-        "flag": true
-      },
-      "clutch_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for clutch won.",
-        "flag": true
-      },
-      "clutch_lost": {
-        "type": "BOOLEAN",
-        "desc": "Metric for clutch lost.",
-        "flag": true
-      },
-      "clutch_opponents": {
-        "type": "INTEGER",
-        "desc": "Metric for clutch opponents."
-      },
-      "clutch_time_remaining": {
-        "type": "FLOAT",
-        "desc": "Metric for clutch time remaining."
-      },
-      "clutch_difficulty_score": {
-        "type": "FLOAT",
-        "desc": "Metric for clutch difficulty score."
-      },
-      "loadout_value": {
-        "type": "INTEGER",
-        "desc": "Metric for loadout value."
-      },
-      "is_eco_round": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating eco round.",
-        "flag": true
-      },
-      "is_force_buy": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating force buy.",
-        "flag": true
-      },
-      "is_full_buy": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating full buy.",
-        "flag": true
-      },
-      "is_thrifty": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating thrifty.",
-        "flag": true
-      },
-      "flash_assists": {
-        "type": "INTEGER",
-        "desc": "Metric for flash assists."
-      },
-      "util_damage": {
-        "type": "FLOAT",
-        "desc": "Metric for util damage."
-      },
-      "early_util": {
-        "type": "BOOLEAN",
-        "desc": "Metric for early util.",
-        "flag": true
-      },
-      "weapon_name": {
-        "type": "VARCHAR",
-        "desc": "Weapon name."
-      },
-      "weapon_type": {
-        "type": "VARCHAR",
-        "desc": "Metric for weapon type."
-      },
-      "total_headshot_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for total headshot kills."
-      },
-      "headshot_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for headshot kills."
-      },
-      "headshot_hits_total": {
-        "type": "INTEGER",
-        "desc": "Total count of headshot hits."
-      },
-      "hits_total": {
-        "type": "INTEGER",
-        "desc": "Total count of hits."
-      },
-      "bodyshot_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for bodyshot kills."
-      },
-      "rifle_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for rifle kills."
-      },
-      "smg_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for smg kills."
-      },
-      "pistol_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for pistol kills."
-      },
-      "sniper_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for sniper kills."
-      },
-      "shotgun_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for shotgun kills."
-      },
-      "util_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of util used."
-      },
-      "flash_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of flash used."
-      },
-      "util_effect_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of util effect kills."
-      },
-      "util_effect_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for util effect kills."
-      },
-      "flash_assist_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of flash assist kills."
-      },
-      "flash_assist_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for flash assist kills."
-      },
-      "self_flash_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of self flash kills."
-      },
-      "self_flash_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for self flash kills."
-      },
-      "kill_distance_sum": {
-        "type": "FLOAT",
-        "desc": "Metric for kill distance sum."
-      },
-      "kill_distance_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for kill distance."
-      },
-      "trade_kill_distance_sum": {
-        "type": "FLOAT",
-        "desc": "Metric for trade kill distance sum."
-      },
-      "trade_kill_distance_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for trade kill distance."
-      },
-      "duel_initiated_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel initiated."
-      },
-      "duel_initiated_wins_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel initiated wins."
-      },
-      "duel_initiated_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel initiated."
-      },
-      "duel_held_wins_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel held wins."
-      },
-      "duel_held_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel held."
-      },
-      "duel_resolution_time_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for duel resolution time.",
-        "unit": "seconds"
-      },
-      "duel_resolution_time_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel resolution time."
-      },
-      "duel_wins_rifle_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel wins rifle."
-      },
-      "duel_losses_rifle_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel losses rifle."
-      },
-      "duel_rifle_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel rifle."
-      },
-      "duel_wins_smg_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel wins smg."
-      },
-      "duel_losses_smg_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel losses smg."
-      },
-      "duel_smg_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel smg."
-      },
-      "duel_wins_pistol_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel wins pistol."
-      },
-      "duel_losses_pistol_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel losses pistol."
-      },
-      "duel_pistol_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel pistol."
-      },
-      "duel_wins_sniper_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel wins sniper."
-      },
-      "duel_losses_sniper_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel losses sniper."
-      },
-      "duel_sniper_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel sniper."
-      },
-      "duel_wins_shotgun_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel wins shotgun."
-      },
-      "duel_losses_shotgun_total": {
-        "type": "INTEGER",
-        "desc": "Total count of duel losses shotgun."
-      },
-      "duel_shotgun_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for duel shotgun."
-      },
-      "repeek_deaths_total": {
-        "type": "INTEGER",
-        "desc": "Total count of repeek deaths."
-      },
-      "repeek_deaths_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for repeek deaths."
-      },
-      "iso_deaths_total": {
-        "type": "INTEGER",
-        "desc": "Total count of iso deaths."
-      },
-      "iso_deaths_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for iso deaths."
-      },
-      "stack_deaths_total": {
-        "type": "INTEGER",
-        "desc": "Total count of stack deaths."
-      },
-      "stack_deaths_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for stack deaths."
-      },
-      "crossfire_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of crossfire kills."
-      },
-      "crossfire_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for crossfire kills."
-      },
-      "off_angle_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of off angle kills."
-      },
-      "off_angle_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for off angle kills."
-      },
-      "rotate_deaths_total": {
-        "type": "INTEGER",
-        "desc": "Total count of rotate deaths."
-      },
-      "rotate_deaths_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for rotate deaths."
-      },
-      "survival_time_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for survival time.",
-        "unit": "seconds"
-      },
-      "survival_time_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for survival time."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {
-      "util_effect_kills": "util_effect_kills_total / util_effect_kills_denom",
-      "flash_assist_kills": "flash_assist_kills_total / flash_assist_kills_denom",
-      "self_flash_kills": "self_flash_kills_total / self_flash_kills_denom",
-      "duel_initiated": "duel_initiated_total / duel_initiated_denom",
-      "repeek_deaths": "repeek_deaths_total / repeek_deaths_denom",
-      "iso_deaths": "iso_deaths_total / iso_deaths_denom",
-      "stack_deaths": "stack_deaths_total / stack_deaths_denom",
-      "crossfire_kills": "crossfire_kills_total / crossfire_kills_denom",
-      "off_angle_kills": "off_angle_kills_total / off_angle_kills_denom",
-      "rotate_deaths": "rotate_deaths_total / rotate_deaths_denom",
-      "avg_duel_resolution_time": "duel_resolution_time_sum_s / duel_resolution_time_denom",
-      "avg_survival_time": "survival_time_sum_s / survival_time_denom"
-    }
+    "table": "agg_player_round_stats"
   },
   {
-    "table": "agg_player_game_stats",
+    "columns": {
+      "abilities_used": {
+        "desc": "Metric for abilities used.",
+        "type": "INTEGER"
+      },
+      "ability_damage_dealt": {
+        "desc": "Damage dealt by abilities in the game.",
+        "type": "FLOAT"
+      },
+      "aces": {
+        "desc": "Metric for aces.",
+        "type": "INTEGER"
+      },
+      "adr": {
+        "desc": "Metric for adr.",
+        "type": "FLOAT"
+      },
+      "agent_name": {
+        "desc": "Agent name.",
+        "type": "VARCHAR"
+      },
+      "assists": {
+        "desc": "Metric for assists.",
+        "type": "INTEGER"
+      },
+      "avg_loadout_value": {
+        "desc": "Metric for avg loadout value.",
+        "type": "FLOAT"
+      },
+      "avg_trade_time": {
+        "desc": "Metric for avg trade time.",
+        "type": "FLOAT"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "classic_kills": {
+        "desc": "Metric for classic kills.",
+        "type": "INTEGER"
+      },
+      "clutch_win_rate": {
+        "desc": "Metric for clutch win rate.",
+        "type": "FLOAT"
+      },
+      "clutches_1v1_won": {
+        "desc": "Metric for clutches 1v1 won.",
+        "type": "INTEGER"
+      },
+      "clutches_1v2_won": {
+        "desc": "Metric for clutches 1v2 won.",
+        "type": "INTEGER"
+      },
+      "clutches_1v3_won": {
+        "desc": "Metric for clutches 1v3 won.",
+        "type": "INTEGER"
+      },
+      "clutches_attempted": {
+        "desc": "Metric for clutches attempted.",
+        "type": "INTEGER"
+      },
+      "clutches_won": {
+        "desc": "Metric for clutches won.",
+        "type": "INTEGER"
+      },
+      "damage_dealt": {
+        "desc": "Metric for damage dealt.",
+        "type": "FLOAT"
+      },
+      "damage_received": {
+        "desc": "Metric for damage received.",
+        "type": "FLOAT"
+      },
+      "deaths": {
+        "desc": "Metric for deaths.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "double_kills": {
+        "desc": "Metric for double kills.",
+        "type": "INTEGER"
+      },
+      "eco_rounds_played": {
+        "desc": "Metric for eco rounds played.",
+        "type": "INTEGER"
+      },
+      "eco_rounds_won": {
+        "desc": "Metric for eco rounds won.",
+        "type": "INTEGER"
+      },
+      "eco_win_rate": {
+        "desc": "Metric for eco win rate.",
+        "type": "FLOAT"
+      },
+      "fd_percentage": {
+        "desc": "Metric for fd percentage.",
+        "type": "FLOAT"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "first_half_rating": {
+        "desc": "Metric for first half rating.",
+        "type": "FLOAT"
+      },
+      "fk_fd_differential": {
+        "desc": "Metric for fk fd differential.",
+        "type": "INTEGER"
+      },
+      "fk_percentage": {
+        "desc": "Metric for fk percentage.",
+        "type": "FLOAT"
+      },
+      "game_ended_at": {
+        "desc": "Timestamp for game ended.",
+        "type": "TIMESTAMP"
+      },
+      "game_id": {
+        "desc": "Game identifier.",
+        "type": "VARCHAR"
+      },
+      "game_started_at": {
+        "desc": "Timestamp for game started.",
+        "type": "TIMESTAMP"
+      },
+      "game_won": {
+        "desc": "Metric for game won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "half_diff": {
+        "desc": "Metric for half diff.",
+        "type": "FLOAT"
+      },
+      "headshot_hits_total": {
+        "desc": "Total count of headshot hits.",
+        "type": "INTEGER"
+      },
+      "headshot_kills_denom": {
+        "desc": "Denominator for headshot kills.",
+        "type": "INTEGER"
+      },
+      "hits_total": {
+        "desc": "Total count of hits.",
+        "type": "INTEGER"
+      },
+      "impact_rating": {
+        "desc": "Metric for impact rating.",
+        "type": "FLOAT"
+      },
+      "is_operator_player": {
+        "desc": "Flag indicating operator player.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "kast_percentage": {
+        "desc": "Metric for kast percentage.",
+        "type": "FLOAT"
+      },
+      "kd_ratio": {
+        "desc": "Metric for kd ratio.",
+        "type": "FLOAT"
+      },
+      "kda": {
+        "desc": "Metric for kda.",
+        "type": "FLOAT"
+      },
+      "kills": {
+        "desc": "Metric for kills.",
+        "type": "INTEGER"
+      },
+      "kpr": {
+        "desc": "Metric for kpr.",
+        "type": "FLOAT"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "opening_deaths": {
+        "desc": "Metric for opening deaths.",
+        "type": "INTEGER"
+      },
+      "opening_duel_win_rate": {
+        "desc": "Metric for opening duel win rate.",
+        "type": "FLOAT"
+      },
+      "opening_kills": {
+        "desc": "Metric for opening kills.",
+        "type": "INTEGER"
+      },
+      "operator_kills": {
+        "desc": "Metric for operator kills.",
+        "type": "INTEGER"
+      },
+      "opponent_team_name": {
+        "desc": "Opponent Team name.",
+        "type": "VARCHAR"
+      },
+      "phantom_kills": {
+        "desc": "Metric for phantom kills.",
+        "type": "INTEGER"
+      },
+      "pistol_kills": {
+        "desc": "Metric for pistol kills.",
+        "type": "INTEGER"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "player_id": {
+        "desc": "Player identifier.",
+        "type": "VARCHAR"
+      },
+      "player_name": {
+        "desc": "Player name.",
+        "type": "VARCHAR"
+      },
+      "quad_kills": {
+        "desc": "Metric for quad kills.",
+        "type": "INTEGER"
+      },
+      "rating_variance": {
+        "desc": "Metric for rating variance.",
+        "type": "FLOAT"
+      },
+      "rifle_kills": {
+        "desc": "Metric for rifle kills.",
+        "type": "INTEGER"
+      },
+      "rounds_played": {
+        "desc": "Metric for rounds played.",
+        "type": "INTEGER"
+      },
+      "rounds_won": {
+        "desc": "Metric for rounds won.",
+        "type": "INTEGER"
+      },
+      "second_half_rating": {
+        "desc": "Metric for second half rating.",
+        "type": "FLOAT"
+      },
+      "sheriff_kills": {
+        "desc": "Metric for sheriff kills.",
+        "type": "INTEGER"
+      },
+      "smg_kills": {
+        "desc": "Metric for smg kills.",
+        "type": "INTEGER"
+      },
+      "sniper_kills": {
+        "desc": "Metric for sniper kills.",
+        "type": "INTEGER"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "thrifty_count": {
+        "desc": "Metric for thrifty count.",
+        "type": "INTEGER"
+      },
+      "total_bodyshot_kills": {
+        "desc": "Metric for total bodyshot kills.",
+        "type": "INTEGER"
+      },
+      "total_headshot_kills": {
+        "desc": "Metric for total headshot kills.",
+        "type": "INTEGER"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "trade_kills": {
+        "desc": "Metric for trade kills.",
+        "type": "INTEGER"
+      },
+      "trade_success_rate": {
+        "desc": "Metric for trade success rate.",
+        "type": "FLOAT"
+      },
+      "traded_deaths": {
+        "desc": "Metric for traded deaths.",
+        "type": "INTEGER"
+      },
+      "triple_kills": {
+        "desc": "Metric for triple kills.",
+        "type": "INTEGER"
+      },
+      "untraded_deaths": {
+        "desc": "Metric for untraded deaths.",
+        "type": "INTEGER"
+      },
+      "vandal_kills": {
+        "desc": "Metric for vandal kills.",
+        "type": "INTEGER"
+      },
+      "weapon_preference": {
+        "desc": "Metric for weapon preference.",
+        "type": "VARCHAR"
+      }
+    },
     "grain": "One row per (game_id, player_id)",
+    "metrics": {},
     "pk": [
       "game_id",
       "player_id"
     ],
-    "columns": {
-      "game_id": {
-        "type": "VARCHAR",
-        "desc": "Game identifier."
-      },
-      "player_id": {
-        "type": "VARCHAR",
-        "desc": "Player identifier."
-      },
-      "player_name": {
-        "type": "VARCHAR",
-        "desc": "Player name."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "opponent_team_name": {
-        "type": "VARCHAR",
-        "desc": "Opponent Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "agent_name": {
-        "type": "VARCHAR",
-        "desc": "Agent name."
-      },
-      "game_started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for game started."
-      },
-      "game_ended_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for game ended."
-      },
-      "game_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for game won.",
-        "flag": true
-      },
-      "rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds played."
-      },
-      "rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds won."
-      },
-      "kills": {
-        "type": "INTEGER",
-        "desc": "Metric for kills."
-      },
-      "deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for deaths."
-      },
-      "assists": {
-        "type": "INTEGER",
-        "desc": "Metric for assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "abilities_used": {
-        "type": "INTEGER",
-        "desc": "Metric for abilities used."
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for damage dealt."
-      },
-      "damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for damage received."
-      },
-      "kd_ratio": {
-        "type": "FLOAT",
-        "desc": "Metric for kd ratio."
-      },
-      "kda": {
-        "type": "FLOAT",
-        "desc": "Metric for kda."
-      },
-      "adr": {
-        "type": "FLOAT",
-        "desc": "Metric for adr."
-      },
-      "kpr": {
-        "type": "FLOAT",
-        "desc": "Metric for kpr."
-      },
-      "fk_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fk percentage."
-      },
-      "fd_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fd percentage."
-      },
-      "kast_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for kast percentage."
-      },
-      "impact_rating": {
-        "type": "FLOAT",
-        "desc": "Metric for impact rating."
-      },
-      "trade_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for trade kills."
-      },
-      "traded_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for traded deaths."
-      },
-      "untraded_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for untraded deaths."
-      },
-      "trade_success_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for trade success rate."
-      },
-      "avg_trade_time": {
-        "type": "FLOAT",
-        "desc": "Metric for avg trade time."
-      },
-      "opening_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for opening kills."
-      },
-      "opening_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for opening deaths."
-      },
-      "fk_fd_differential": {
-        "type": "INTEGER",
-        "desc": "Metric for fk fd differential."
-      },
-      "opening_duel_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for opening duel win rate."
-      },
-      "clutches_attempted": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches attempted."
-      },
-      "clutches_won": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches won."
-      },
-      "clutch_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for clutch win rate."
-      },
-      "clutches_1v1_won": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches 1v1 won."
-      },
-      "clutches_1v2_won": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches 1v2 won."
-      },
-      "clutches_1v3_won": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches 1v3 won."
-      },
-      "double_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for double kills."
-      },
-      "triple_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for triple kills."
-      },
-      "quad_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for quad kills."
-      },
-      "aces": {
-        "type": "INTEGER",
-        "desc": "Metric for aces."
-      },
-      "eco_rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for eco rounds played."
-      },
-      "eco_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for eco rounds won."
-      },
-      "eco_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for eco win rate."
-      },
-      "thrifty_count": {
-        "type": "INTEGER",
-        "desc": "Metric for thrifty count."
-      },
-      "avg_loadout_value": {
-        "type": "FLOAT",
-        "desc": "Metric for avg loadout value."
-      },
-      "rating_variance": {
-        "type": "FLOAT",
-        "desc": "Metric for rating variance."
-      },
-      "first_half_rating": {
-        "type": "FLOAT",
-        "desc": "Metric for first half rating."
-      },
-      "second_half_rating": {
-        "type": "FLOAT",
-        "desc": "Metric for second half rating."
-      },
-      "half_diff": {
-        "type": "FLOAT",
-        "desc": "Metric for half diff."
-      },
-      "total_headshot_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for total headshot kills."
-      },
-      "headshot_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for headshot kills."
-      },
-      "headshot_hits_total": {
-        "type": "INTEGER",
-        "desc": "Total count of headshot hits."
-      },
-      "hits_total": {
-        "type": "INTEGER",
-        "desc": "Total count of hits."
-      },
-      "total_bodyshot_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for total bodyshot kills."
-      },
-      "vandal_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for vandal kills."
-      },
-      "phantom_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for phantom kills."
-      },
-      "operator_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for operator kills."
-      },
-      "sheriff_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for sheriff kills."
-      },
-      "classic_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for classic kills."
-      },
-      "rifle_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for rifle kills."
-      },
-      "smg_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for smg kills."
-      },
-      "pistol_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for pistol kills."
-      },
-      "sniper_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for sniper kills."
-      },
-      "weapon_preference": {
-        "type": "VARCHAR",
-        "desc": "Metric for weapon preference."
-      },
-      "is_operator_player": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating operator player.",
-        "flag": true
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {}
+    "table": "agg_player_game_stats"
   },
   {
-    "table": "agg_player_series_stats",
+    "columns": {
+      "abilities_used": {
+        "desc": "Metric for abilities used.",
+        "type": "INTEGER"
+      },
+      "ability_damage_dealt": {
+        "desc": "Damage dealt by abilities in the series.",
+        "type": "FLOAT"
+      },
+      "acs": {
+        "desc": "Metric for acs.",
+        "type": "FLOAT"
+      },
+      "adr": {
+        "desc": "Metric for adr.",
+        "type": "FLOAT"
+      },
+      "agents_played": {
+        "desc": "Metric for agents played.",
+        "type": "JSON"
+      },
+      "assists": {
+        "desc": "Metric for assists.",
+        "type": "INTEGER"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "damage_dealt": {
+        "desc": "Metric for damage dealt.",
+        "type": "FLOAT"
+      },
+      "damage_received": {
+        "desc": "Metric for damage received.",
+        "type": "FLOAT"
+      },
+      "deaths": {
+        "desc": "Metric for deaths.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "fd_percentage": {
+        "desc": "Metric for fd percentage.",
+        "type": "FLOAT"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "fk_percentage": {
+        "desc": "Metric for fk percentage.",
+        "type": "FLOAT"
+      },
+      "kd_ratio": {
+        "desc": "Metric for kd ratio.",
+        "type": "FLOAT"
+      },
+      "kda": {
+        "desc": "Metric for kda.",
+        "type": "FLOAT"
+      },
+      "kills": {
+        "desc": "Metric for kills.",
+        "type": "INTEGER"
+      },
+      "kpr": {
+        "desc": "Metric for kpr.",
+        "type": "FLOAT"
+      },
+      "maps_played": {
+        "desc": "Metric for maps played.",
+        "type": "INTEGER"
+      },
+      "maps_won": {
+        "desc": "Metric for maps won.",
+        "type": "INTEGER"
+      },
+      "opponent_team_name": {
+        "desc": "Opponent Team name.",
+        "type": "VARCHAR"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "player_id": {
+        "desc": "Player identifier.",
+        "type": "VARCHAR"
+      },
+      "player_name": {
+        "desc": "Player name.",
+        "type": "VARCHAR"
+      },
+      "rounds_played": {
+        "desc": "Metric for rounds played.",
+        "type": "INTEGER"
+      },
+      "rounds_won": {
+        "desc": "Metric for rounds won.",
+        "type": "INTEGER"
+      },
+      "series_id": {
+        "desc": "Series identifier.",
+        "type": "VARCHAR"
+      },
+      "series_started_at": {
+        "desc": "Timestamp for series started.",
+        "type": "TIMESTAMP"
+      },
+      "series_won": {
+        "desc": "Metric for series won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_region": {
+        "desc": "Metric for tournament region.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      }
+    },
     "grain": "One row per (series_id, player_id)",
+    "metrics": {},
     "pk": [
       "series_id",
       "player_id"
     ],
-    "columns": {
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Series identifier."
-      },
-      "player_id": {
-        "type": "VARCHAR",
-        "desc": "Player identifier."
-      },
-      "player_name": {
-        "type": "VARCHAR",
-        "desc": "Player name."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "opponent_team_name": {
-        "type": "VARCHAR",
-        "desc": "Opponent Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "tournament_region": {
-        "type": "VARCHAR",
-        "desc": "Metric for tournament region."
-      },
-      "series_started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for series started."
-      },
-      "series_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for series won.",
-        "flag": true
-      },
-      "maps_played": {
-        "type": "INTEGER",
-        "desc": "Metric for maps played."
-      },
-      "maps_won": {
-        "type": "INTEGER",
-        "desc": "Metric for maps won."
-      },
-      "rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds played."
-      },
-      "rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds won."
-      },
-      "kills": {
-        "type": "INTEGER",
-        "desc": "Metric for kills."
-      },
-      "deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for deaths."
-      },
-      "assists": {
-        "type": "INTEGER",
-        "desc": "Metric for assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "abilities_used": {
-        "type": "INTEGER",
-        "desc": "Metric for abilities used."
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for damage dealt."
-      },
-      "damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for damage received."
-      },
-      "kd_ratio": {
-        "type": "FLOAT",
-        "desc": "Metric for kd ratio."
-      },
-      "kda": {
-        "type": "FLOAT",
-        "desc": "Metric for kda."
-      },
-      "adr": {
-        "type": "FLOAT",
-        "desc": "Metric for adr."
-      },
-      "kpr": {
-        "type": "FLOAT",
-        "desc": "Metric for kpr."
-      },
-      "fk_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fk percentage."
-      },
-      "fd_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fd percentage."
-      },
-      "acs": {
-        "type": "FLOAT",
-        "desc": "Metric for acs."
-      },
-      "agents_played": {
-        "type": "JSON",
-        "desc": "Metric for agents played."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {}
+    "table": "agg_player_series_stats"
   },
   {
-    "table": "agg_team_round_stats",
+    "columns": {
+      "abilities_used": {
+        "desc": "Metric for abilities used.",
+        "type": "INTEGER"
+      },
+      "avg_trade_delay_denom": {
+        "desc": "Denominator for avg trade delay.",
+        "type": "INTEGER"
+      },
+      "avg_trade_delay_sum_s": {
+        "desc": "Sum of seconds for avg trade delay.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "bomb_time_remaining_denom": {
+        "desc": "Denominator for bomb time remaining.",
+        "type": "INTEGER"
+      },
+      "bomb_time_remaining_sum_s": {
+        "desc": "Sum of seconds for bomb time remaining.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "current_loss_streak": {
+        "desc": "Metric for current loss streak.",
+        "type": "INTEGER"
+      },
+      "current_win_streak": {
+        "desc": "Metric for current win streak.",
+        "type": "INTEGER"
+      },
+      "deaths_traded_total": {
+        "desc": "Total count of deaths traded.",
+        "type": "INTEGER"
+      },
+      "deaths_untraded_total": {
+        "desc": "Total count of deaths untraded.",
+        "type": "INTEGER"
+      },
+      "defuse_attempts_total": {
+        "desc": "Total count of defuse attempts.",
+        "type": "INTEGER"
+      },
+      "defuse_commit_denom": {
+        "desc": "Denominator for defuse commit.",
+        "type": "INTEGER"
+      },
+      "defuse_commit_success_total": {
+        "desc": "Total count of defuse commit success.",
+        "type": "INTEGER"
+      },
+      "defuse_commit_total": {
+        "desc": "Total count of defuse commit.",
+        "type": "INTEGER"
+      },
+      "defuse_denied_denom": {
+        "desc": "Denominator for defuse denied.",
+        "type": "INTEGER"
+      },
+      "defuse_denied_total": {
+        "desc": "Total count of defuse denied.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "eco_rounds_total": {
+        "desc": "Total count of eco rounds.",
+        "type": "INTEGER"
+      },
+      "end_reason": {
+        "desc": "Metric for end reason.",
+        "type": "VARCHAR"
+      },
+      "ended_at": {
+        "desc": "Timestamp for ended.",
+        "type": "TIMESTAMP"
+      },
+      "enemy_score_before": {
+        "desc": "Metric for enemy score before.",
+        "type": "INTEGER"
+      },
+      "entry_death": {
+        "desc": "Metric for entry death.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "entry_kill": {
+        "desc": "Metric for entry kill.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "fake_rounds_denom": {
+        "desc": "Denominator for fake rounds.",
+        "type": "INTEGER"
+      },
+      "fake_rounds_total": {
+        "desc": "Total count of fake rounds.",
+        "type": "INTEGER"
+      },
+      "fb_attempts_total": {
+        "desc": "Total count of fb attempts.",
+        "type": "INTEGER"
+      },
+      "fb_converted_total": {
+        "desc": "Total count of fb converted.",
+        "type": "INTEGER"
+      },
+      "fb_trade_delay_denom": {
+        "desc": "Denominator for fb trade delay.",
+        "type": "INTEGER"
+      },
+      "fb_trade_delay_sum_s": {
+        "desc": "Sum of seconds for fb trade delay.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "fb_traded_total": {
+        "desc": "Total count of fb traded.",
+        "type": "INTEGER"
+      },
+      "fb_won_total": {
+        "desc": "Total count of fb won.",
+        "type": "INTEGER"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "flash_assist_kills_denom": {
+        "desc": "Denominator for flash assist kills.",
+        "type": "INTEGER"
+      },
+      "flash_assist_kills_total": {
+        "desc": "Total count of flash assist kills.",
+        "type": "INTEGER"
+      },
+      "flash_used_total": {
+        "desc": "Total count of flash used.",
+        "type": "INTEGER"
+      },
+      "force_buy_rounds_total": {
+        "desc": "Total count of force buy rounds.",
+        "type": "INTEGER"
+      },
+      "full_buy_rounds_total": {
+        "desc": "Total count of full buy rounds.",
+        "type": "INTEGER"
+      },
+      "half_defuse_bait_denom": {
+        "desc": "Denominator for half defuse bait.",
+        "type": "INTEGER"
+      },
+      "half_defuse_bait_success_total": {
+        "desc": "Total count of half defuse bait success.",
+        "type": "INTEGER"
+      },
+      "half_defuse_taps_total": {
+        "desc": "Total count of half defuse taps.",
+        "type": "INTEGER"
+      },
+      "is_match_point": {
+        "desc": "Flag indicating match point.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_ot": {
+        "desc": "Flag indicating ot.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "loadout_value": {
+        "desc": "Metric for loadout value.",
+        "type": "INTEGER"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "mid_control_denom": {
+        "desc": "Denominator for mid control.",
+        "type": "INTEGER"
+      },
+      "mid_control_total": {
+        "desc": "Total count of mid control.",
+        "type": "INTEGER"
+      },
+      "molly_used_total": {
+        "desc": "Total count of molly used.",
+        "type": "INTEGER"
+      },
+      "net_worth": {
+        "desc": "Metric for net worth.",
+        "type": "INTEGER"
+      },
+      "opponent_team_name": {
+        "desc": "Opponent Team name.",
+        "type": "VARCHAR"
+      },
+      "other_util_used_total": {
+        "desc": "Total count of other util used.",
+        "type": "INTEGER"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "players_alive_at_end": {
+        "desc": "Metric for players alive at end.",
+        "type": "INTEGER"
+      },
+      "post_plant_deaths_total": {
+        "desc": "Total count of post plant deaths.",
+        "type": "INTEGER"
+      },
+      "post_plant_duration_s": {
+        "desc": "Seconds for post plant duration.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "post_plant_kills_total": {
+        "desc": "Total count of post plant kills.",
+        "type": "INTEGER"
+      },
+      "prev_round_won": {
+        "desc": "Metric for prev round won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "recon_used_total": {
+        "desc": "Total count of recon used.",
+        "type": "INTEGER"
+      },
+      "retake_attempted_total": {
+        "desc": "Total count of retake attempted.",
+        "type": "INTEGER"
+      },
+      "retake_kills_total": {
+        "desc": "Total count of retake kills.",
+        "type": "INTEGER"
+      },
+      "round_duration_s": {
+        "desc": "Seconds for round duration.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "round_id": {
+        "desc": "Round identifier.",
+        "type": "VARCHAR"
+      },
+      "round_number": {
+        "desc": "Round number.",
+        "type": "INTEGER"
+      },
+      "round_won": {
+        "desc": "Metric for round won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "self_flash_kills_denom": {
+        "desc": "Denominator for self flash kills.",
+        "type": "INTEGER"
+      },
+      "self_flash_kills_total": {
+        "desc": "Total count of self flash kills.",
+        "type": "INTEGER"
+      },
+      "side": {
+        "desc": "Metric for side.",
+        "type": "VARCHAR"
+      },
+      "site_hit_A_total": {
+        "desc": "Total count of site hit A.",
+        "type": "INTEGER"
+      },
+      "site_hit_B_total": {
+        "desc": "Total count of site hit B.",
+        "type": "INTEGER"
+      },
+      "site_hit_denom": {
+        "desc": "Denominator for site hit.",
+        "type": "INTEGER"
+      },
+      "site_hit_mid_total": {
+        "desc": "Total count of site hit mid.",
+        "type": "INTEGER"
+      },
+      "smoke_used_total": {
+        "desc": "Total count of smoke used.",
+        "type": "INTEGER"
+      },
+      "started_at": {
+        "desc": "Timestamp for started.",
+        "type": "TIMESTAMP"
+      },
+      "team_assists": {
+        "desc": "Metric for team assists.",
+        "type": "INTEGER"
+      },
+      "team_credits_spent": {
+        "desc": "Metric for team credits spent.",
+        "type": "INTEGER"
+      },
+      "team_damage_dealt": {
+        "desc": "Metric for team damage dealt.",
+        "type": "FLOAT"
+      },
+      "team_damage_received": {
+        "desc": "Metric for team damage received.",
+        "type": "FLOAT"
+      },
+      "team_deaths": {
+        "desc": "Metric for team deaths.",
+        "type": "INTEGER"
+      },
+      "team_kills": {
+        "desc": "Metric for team kills.",
+        "type": "INTEGER"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "team_score_before": {
+        "desc": "Metric for team score before.",
+        "type": "INTEGER"
+      },
+      "time_to_defuse_attempt_denom": {
+        "desc": "Denominator for time to defuse attempt.",
+        "type": "INTEGER"
+      },
+      "time_to_defuse_attempt_sum_s": {
+        "desc": "Sum of seconds for time to defuse attempt.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "time_to_first_contact_s": {
+        "desc": "Seconds for time to first contact.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "time_to_first_death_s": {
+        "desc": "Seconds for time to first death.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "time_to_first_kill_s": {
+        "desc": "Seconds for time to first kill.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "time_to_plant_s": {
+        "desc": "Seconds for time to plant.",
+        "type": "FLOAT",
+        "unit": "seconds"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "util_dump_rounds_denom": {
+        "desc": "Denominator for util dump rounds.",
+        "type": "INTEGER"
+      },
+      "util_dump_rounds_total": {
+        "desc": "Total count of util dump rounds.",
+        "type": "INTEGER"
+      },
+      "util_effect_kills_denom": {
+        "desc": "Denominator for util effect kills.",
+        "type": "INTEGER"
+      },
+      "util_effect_kills_total": {
+        "desc": "Total count of util effect kills.",
+        "type": "INTEGER"
+      },
+      "util_used_total": {
+        "desc": "Total count of util used.",
+        "type": "INTEGER"
+      }
+    },
     "grain": "One row per (round_id, team_name)",
+    "metrics": {
+      "avg_avg_trade_delay": "avg_trade_delay_sum_s / avg_trade_delay_denom",
+      "avg_bomb_time_remaining": "bomb_time_remaining_sum_s / bomb_time_remaining_denom",
+      "avg_fb_trade_delay": "fb_trade_delay_sum_s / fb_trade_delay_denom",
+      "avg_time_to_defuse_attempt": "time_to_defuse_attempt_sum_s / time_to_defuse_attempt_denom",
+      "defuse_commit": "defuse_commit_total / defuse_commit_denom",
+      "defuse_denied": "defuse_denied_total / defuse_denied_denom",
+      "fake_rounds": "fake_rounds_total / fake_rounds_denom",
+      "flash_assist_kills": "flash_assist_kills_total / flash_assist_kills_denom",
+      "mid_control": "mid_control_total / mid_control_denom",
+      "self_flash_kills": "self_flash_kills_total / self_flash_kills_denom",
+      "util_dump_rounds": "util_dump_rounds_total / util_dump_rounds_denom",
+      "util_effect_kills": "util_effect_kills_total / util_effect_kills_denom"
+    },
     "pk": [
       "round_id",
       "team_name"
     ],
-    "columns": {
-      "round_id": {
-        "type": "VARCHAR",
-        "desc": "Round identifier."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "opponent_team_name": {
-        "type": "VARCHAR",
-        "desc": "Opponent Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "round_number": {
-        "type": "INTEGER",
-        "desc": "Round number."
-      },
-      "started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for started."
-      },
-      "ended_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for ended."
-      },
-      "round_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for round won.",
-        "flag": true
-      },
-      "side": {
-        "type": "VARCHAR",
-        "desc": "Metric for side."
-      },
-      "end_reason": {
-        "type": "VARCHAR",
-        "desc": "Metric for end reason."
-      },
-      "team_score_before": {
-        "type": "INTEGER",
-        "desc": "Metric for team score before."
-      },
-      "enemy_score_before": {
-        "type": "INTEGER",
-        "desc": "Metric for enemy score before."
-      },
-      "prev_round_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for prev round won.",
-        "flag": true
-      },
-      "current_win_streak": {
-        "type": "INTEGER",
-        "desc": "Metric for current win streak."
-      },
-      "current_loss_streak": {
-        "type": "INTEGER",
-        "desc": "Metric for current loss streak."
-      },
-      "is_match_point": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating match point.",
-        "flag": true
-      },
-      "is_ot": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating ot.",
-        "flag": true
-      },
-      "team_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for team kills."
-      },
-      "team_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for team deaths."
-      },
-      "team_assists": {
-        "type": "INTEGER",
-        "desc": "Metric for team assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "abilities_used": {
-        "type": "INTEGER",
-        "desc": "Metric for abilities used."
-      },
-      "team_damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for team damage dealt."
-      },
-      "team_damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for team damage received."
-      },
-      "players_alive_at_end": {
-        "type": "INTEGER",
-        "desc": "Metric for players alive at end."
-      },
-      "entry_kill": {
-        "type": "BOOLEAN",
-        "desc": "Metric for entry kill.",
-        "flag": true
-      },
-      "entry_death": {
-        "type": "BOOLEAN",
-        "desc": "Metric for entry death.",
-        "flag": true
-      },
-      "team_credits_spent": {
-        "type": "INTEGER",
-        "desc": "Metric for team credits spent."
-      },
-      "loadout_value": {
-        "type": "INTEGER",
-        "desc": "Metric for loadout value."
-      },
-      "net_worth": {
-        "type": "INTEGER",
-        "desc": "Metric for net worth."
-      },
-      "eco_rounds_total": {
-        "type": "INTEGER",
-        "desc": "Total count of eco rounds."
-      },
-      "force_buy_rounds_total": {
-        "type": "INTEGER",
-        "desc": "Total count of force buy rounds."
-      },
-      "full_buy_rounds_total": {
-        "type": "INTEGER",
-        "desc": "Total count of full buy rounds."
-      },
-      "round_duration_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for round duration.",
-        "unit": "seconds"
-      },
-      "time_to_first_contact_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for time to first contact.",
-        "unit": "seconds"
-      },
-      "time_to_first_kill_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for time to first kill.",
-        "unit": "seconds"
-      },
-      "time_to_first_death_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for time to first death.",
-        "unit": "seconds"
-      },
-      "time_to_plant_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for time to plant.",
-        "unit": "seconds"
-      },
-      "post_plant_duration_s": {
-        "type": "FLOAT",
-        "desc": "Seconds for post plant duration.",
-        "unit": "seconds"
-      },
-      "fb_won_total": {
-        "type": "INTEGER",
-        "desc": "Total count of fb won."
-      },
-      "fb_converted_total": {
-        "type": "INTEGER",
-        "desc": "Total count of fb converted."
-      },
-      "fb_attempts_total": {
-        "type": "INTEGER",
-        "desc": "Total count of fb attempts."
-      },
-      "fb_traded_total": {
-        "type": "INTEGER",
-        "desc": "Total count of fb traded."
-      },
-      "fb_trade_delay_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for fb trade delay.",
-        "unit": "seconds"
-      },
-      "fb_trade_delay_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for fb trade delay."
-      },
-      "deaths_traded_total": {
-        "type": "INTEGER",
-        "desc": "Total count of deaths traded."
-      },
-      "deaths_untraded_total": {
-        "type": "INTEGER",
-        "desc": "Total count of deaths untraded."
-      },
-      "avg_trade_delay_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for avg trade delay.",
-        "unit": "seconds"
-      },
-      "avg_trade_delay_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for avg trade delay."
-      },
-      "post_plant_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of post plant kills."
-      },
-      "post_plant_deaths_total": {
-        "type": "INTEGER",
-        "desc": "Total count of post plant deaths."
-      },
-      "retake_attempted_total": {
-        "type": "INTEGER",
-        "desc": "Total count of retake attempted."
-      },
-      "retake_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of retake kills."
-      },
-      "defuse_attempts_total": {
-        "type": "INTEGER",
-        "desc": "Total count of defuse attempts."
-      },
-      "defuse_denied_total": {
-        "type": "INTEGER",
-        "desc": "Total count of defuse denied."
-      },
-      "defuse_denied_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for defuse denied."
-      },
-      "defuse_commit_total": {
-        "type": "INTEGER",
-        "desc": "Total count of defuse commit."
-      },
-      "defuse_commit_success_total": {
-        "type": "INTEGER",
-        "desc": "Total count of defuse commit success."
-      },
-      "defuse_commit_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for defuse commit."
-      },
-      "half_defuse_taps_total": {
-        "type": "INTEGER",
-        "desc": "Total count of half defuse taps."
-      },
-      "half_defuse_bait_success_total": {
-        "type": "INTEGER",
-        "desc": "Total count of half defuse bait success."
-      },
-      "half_defuse_bait_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for half defuse bait."
-      },
-      "time_to_defuse_attempt_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for time to defuse attempt.",
-        "unit": "seconds"
-      },
-      "time_to_defuse_attempt_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for time to defuse attempt."
-      },
-      "bomb_time_remaining_sum_s": {
-        "type": "FLOAT",
-        "desc": "Sum of seconds for bomb time remaining.",
-        "unit": "seconds"
-      },
-      "bomb_time_remaining_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for bomb time remaining."
-      },
-      "util_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of util used."
-      },
-      "flash_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of flash used."
-      },
-      "smoke_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of smoke used."
-      },
-      "molly_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of molly used."
-      },
-      "recon_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of recon used."
-      },
-      "other_util_used_total": {
-        "type": "INTEGER",
-        "desc": "Total count of other util used."
-      },
-      "util_effect_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of util effect kills."
-      },
-      "util_effect_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for util effect kills."
-      },
-      "flash_assist_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of flash assist kills."
-      },
-      "flash_assist_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for flash assist kills."
-      },
-      "self_flash_kills_total": {
-        "type": "INTEGER",
-        "desc": "Total count of self flash kills."
-      },
-      "self_flash_kills_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for self flash kills."
-      },
-      "util_dump_rounds_total": {
-        "type": "INTEGER",
-        "desc": "Total count of util dump rounds."
-      },
-      "util_dump_rounds_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for util dump rounds."
-      },
-      "site_hit_A_total": {
-        "type": "INTEGER",
-        "desc": "Total count of site hit A."
-      },
-      "site_hit_B_total": {
-        "type": "INTEGER",
-        "desc": "Total count of site hit B."
-      },
-      "site_hit_mid_total": {
-        "type": "INTEGER",
-        "desc": "Total count of site hit mid."
-      },
-      "site_hit_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for site hit."
-      },
-      "mid_control_total": {
-        "type": "INTEGER",
-        "desc": "Total count of mid control."
-      },
-      "mid_control_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for mid control."
-      },
-      "fake_rounds_total": {
-        "type": "INTEGER",
-        "desc": "Total count of fake rounds."
-      },
-      "fake_rounds_denom": {
-        "type": "INTEGER",
-        "desc": "Denominator for fake rounds."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {
-      "defuse_denied": "defuse_denied_total / defuse_denied_denom",
-      "defuse_commit": "defuse_commit_total / defuse_commit_denom",
-      "util_effect_kills": "util_effect_kills_total / util_effect_kills_denom",
-      "flash_assist_kills": "flash_assist_kills_total / flash_assist_kills_denom",
-      "self_flash_kills": "self_flash_kills_total / self_flash_kills_denom",
-      "util_dump_rounds": "util_dump_rounds_total / util_dump_rounds_denom",
-      "mid_control": "mid_control_total / mid_control_denom",
-      "fake_rounds": "fake_rounds_total / fake_rounds_denom",
-      "avg_fb_trade_delay": "fb_trade_delay_sum_s / fb_trade_delay_denom",
-      "avg_avg_trade_delay": "avg_trade_delay_sum_s / avg_trade_delay_denom",
-      "avg_time_to_defuse_attempt": "time_to_defuse_attempt_sum_s / time_to_defuse_attempt_denom",
-      "avg_bomb_time_remaining": "bomb_time_remaining_sum_s / bomb_time_remaining_denom"
-    }
+    "table": "agg_team_round_stats"
   },
   {
-    "table": "agg_team_game_stats",
+    "columns": {
+      "abilities_used": {
+        "desc": "Metric for abilities used.",
+        "type": "INTEGER"
+      },
+      "aces_count": {
+        "desc": "Metric for aces count.",
+        "type": "INTEGER"
+      },
+      "adr": {
+        "desc": "Metric for adr.",
+        "type": "FLOAT"
+      },
+      "agent_comp_string": {
+        "desc": "Metric for agent comp string.",
+        "type": "VARCHAR"
+      },
+      "agents_played": {
+        "desc": "Metric for agents played.",
+        "type": "JSON"
+      },
+      "anti_eco_rounds_won": {
+        "desc": "Metric for anti eco rounds won.",
+        "type": "INTEGER"
+      },
+      "attack_rounds_played": {
+        "desc": "Metric for attack rounds played.",
+        "type": "INTEGER"
+      },
+      "attack_rounds_won": {
+        "desc": "Metric for attack rounds won.",
+        "type": "INTEGER"
+      },
+      "attack_win_rate": {
+        "desc": "Metric for attack win rate.",
+        "type": "FLOAT"
+      },
+      "bonus_rounds_won": {
+        "desc": "Metric for bonus rounds won.",
+        "type": "INTEGER"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "clutch_win_rate": {
+        "desc": "Metric for clutch win rate.",
+        "type": "FLOAT"
+      },
+      "clutches_attempted": {
+        "desc": "Metric for clutches attempted.",
+        "type": "INTEGER"
+      },
+      "clutches_won": {
+        "desc": "Metric for clutches won.",
+        "type": "INTEGER"
+      },
+      "comeback_4v5": {
+        "desc": "Metric for comeback 4v5.",
+        "type": "FLOAT"
+      },
+      "conversion_5v4": {
+        "desc": "Metric for conversion 5v4.",
+        "type": "FLOAT"
+      },
+      "defense_rounds_played": {
+        "desc": "Metric for defense rounds played.",
+        "type": "INTEGER"
+      },
+      "defense_rounds_won": {
+        "desc": "Metric for defense rounds won.",
+        "type": "INTEGER"
+      },
+      "defense_win_rate": {
+        "desc": "Metric for defense win rate.",
+        "type": "FLOAT"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "entry_duels_lost": {
+        "desc": "Metric for entry duels lost.",
+        "type": "INTEGER"
+      },
+      "entry_duels_won": {
+        "desc": "Metric for entry duels won.",
+        "type": "INTEGER"
+      },
+      "fd_loss_rate": {
+        "desc": "Metric for fd loss rate.",
+        "type": "FLOAT"
+      },
+      "fd_percentage": {
+        "desc": "Metric for fd percentage.",
+        "type": "FLOAT"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "fk_conversion_rate": {
+        "desc": "Metric for fk conversion rate.",
+        "type": "FLOAT"
+      },
+      "fk_percentage": {
+        "desc": "Metric for fk percentage.",
+        "type": "FLOAT"
+      },
+      "game_ended_at": {
+        "desc": "Timestamp for game ended.",
+        "type": "TIMESTAMP"
+      },
+      "game_id": {
+        "desc": "Game identifier.",
+        "type": "VARCHAR"
+      },
+      "game_started_at": {
+        "desc": "Timestamp for game started.",
+        "type": "TIMESTAMP"
+      },
+      "game_won": {
+        "desc": "Metric for game won.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_double_duelist": {
+        "desc": "Flag indicating double duelist.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "is_no_duelist": {
+        "desc": "Flag indicating no duelist.",
+        "flag": true,
+        "type": "BOOLEAN"
+      },
+      "kd_ratio": {
+        "desc": "Metric for kd ratio.",
+        "type": "FLOAT"
+      },
+      "kpr": {
+        "desc": "Metric for kpr.",
+        "type": "FLOAT"
+      },
+      "longest_loss_streak": {
+        "desc": "Metric for longest loss streak.",
+        "type": "INTEGER"
+      },
+      "longest_win_streak": {
+        "desc": "Metric for longest win streak.",
+        "type": "INTEGER"
+      },
+      "map_name": {
+        "desc": "Map name.",
+        "type": "VARCHAR"
+      },
+      "num_controllers": {
+        "desc": "Metric for num controllers.",
+        "type": "INTEGER"
+      },
+      "num_duelists": {
+        "desc": "Metric for num duelists.",
+        "type": "INTEGER"
+      },
+      "num_initiators": {
+        "desc": "Metric for num initiators.",
+        "type": "INTEGER"
+      },
+      "num_sentinels": {
+        "desc": "Metric for num sentinels.",
+        "type": "INTEGER"
+      },
+      "opening_duel_win_rate": {
+        "desc": "Metric for opening duel win rate.",
+        "type": "FLOAT"
+      },
+      "opponent_team_name": {
+        "desc": "Opponent Team name.",
+        "type": "VARCHAR"
+      },
+      "pistol_rounds_played": {
+        "desc": "Metric for pistol rounds played.",
+        "type": "INTEGER"
+      },
+      "pistol_rounds_won": {
+        "desc": "Metric for pistol rounds won.",
+        "type": "INTEGER"
+      },
+      "pistol_win_rate": {
+        "desc": "Metric for pistol win rate.",
+        "type": "FLOAT"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "post_plant_rounds": {
+        "desc": "Metric for post plant rounds.",
+        "type": "INTEGER"
+      },
+      "post_plant_win_rate": {
+        "desc": "Metric for post plant win rate.",
+        "type": "FLOAT"
+      },
+      "post_plant_wins": {
+        "desc": "Metric for post plant wins.",
+        "type": "INTEGER"
+      },
+      "quad_kills_count": {
+        "desc": "Metric for quad kills count.",
+        "type": "INTEGER"
+      },
+      "rounds_4v5": {
+        "desc": "Metric for rounds 4v5.",
+        "type": "INTEGER"
+      },
+      "rounds_5v4": {
+        "desc": "Metric for rounds 5v4.",
+        "type": "INTEGER"
+      },
+      "rounds_after_timeout": {
+        "desc": "Metric for rounds after timeout.",
+        "type": "INTEGER"
+      },
+      "rounds_lost": {
+        "desc": "Metric for rounds lost.",
+        "type": "INTEGER"
+      },
+      "rounds_won": {
+        "desc": "Metric for rounds won.",
+        "type": "INTEGER"
+      },
+      "series_id": {
+        "desc": "Series identifier.",
+        "type": "VARCHAR"
+      },
+      "team_assists": {
+        "desc": "Metric for team assists.",
+        "type": "INTEGER"
+      },
+      "team_damage_dealt": {
+        "desc": "Metric for team damage dealt.",
+        "type": "FLOAT"
+      },
+      "team_damage_received": {
+        "desc": "Metric for team damage received.",
+        "type": "FLOAT"
+      },
+      "team_deaths": {
+        "desc": "Metric for team deaths.",
+        "type": "INTEGER"
+      },
+      "team_kills": {
+        "desc": "Metric for team kills.",
+        "type": "INTEGER"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "team_trade_success_rate": {
+        "desc": "Metric for team trade success rate.",
+        "type": "FLOAT"
+      },
+      "team_untraded_deaths": {
+        "desc": "Metric for team untraded deaths.",
+        "type": "INTEGER"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "triple_kills_count": {
+        "desc": "Metric for triple kills count.",
+        "type": "INTEGER"
+      },
+      "wins_4v5": {
+        "desc": "Metric for wins 4v5.",
+        "type": "INTEGER"
+      },
+      "wins_5v4": {
+        "desc": "Metric for wins 5v4.",
+        "type": "INTEGER"
+      },
+      "wins_after_timeout": {
+        "desc": "Metric for wins after timeout.",
+        "type": "INTEGER"
+      }
+    },
     "grain": "One row per (game_id, team_name)",
+    "metrics": {},
     "pk": [
       "game_id",
       "team_name"
     ],
-    "columns": {
-      "game_id": {
-        "type": "VARCHAR",
-        "desc": "Game identifier."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "series_id": {
-        "type": "VARCHAR",
-        "desc": "Series identifier."
-      },
-      "opponent_team_name": {
-        "type": "VARCHAR",
-        "desc": "Opponent Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "map_name": {
-        "type": "VARCHAR",
-        "desc": "Map name."
-      },
-      "game_started_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for game started."
-      },
-      "game_ended_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for game ended."
-      },
-      "game_won": {
-        "type": "BOOLEAN",
-        "desc": "Metric for game won.",
-        "flag": true
-      },
-      "rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds won."
-      },
-      "rounds_lost": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds lost."
-      },
-      "attack_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for attack rounds won."
-      },
-      "attack_rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for attack rounds played."
-      },
-      "defense_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for defense rounds won."
-      },
-      "defense_rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for defense rounds played."
-      },
-      "team_kills": {
-        "type": "INTEGER",
-        "desc": "Metric for team kills."
-      },
-      "team_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for team deaths."
-      },
-      "team_assists": {
-        "type": "INTEGER",
-        "desc": "Metric for team assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "abilities_used": {
-        "type": "INTEGER",
-        "desc": "Metric for abilities used."
-      },
-      "team_damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for team damage dealt."
-      },
-      "team_damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for team damage received."
-      },
-      "kd_ratio": {
-        "type": "FLOAT",
-        "desc": "Metric for kd ratio."
-      },
-      "adr": {
-        "type": "FLOAT",
-        "desc": "Metric for adr."
-      },
-      "kpr": {
-        "type": "FLOAT",
-        "desc": "Metric for kpr."
-      },
-      "attack_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for attack win rate."
-      },
-      "defense_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for defense win rate."
-      },
-      "fk_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fk percentage."
-      },
-      "fd_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fd percentage."
-      },
-      "agents_played": {
-        "type": "JSON",
-        "desc": "Metric for agents played."
-      },
-      "num_duelists": {
-        "type": "INTEGER",
-        "desc": "Metric for num duelists."
-      },
-      "num_initiators": {
-        "type": "INTEGER",
-        "desc": "Metric for num initiators."
-      },
-      "num_controllers": {
-        "type": "INTEGER",
-        "desc": "Metric for num controllers."
-      },
-      "num_sentinels": {
-        "type": "INTEGER",
-        "desc": "Metric for num sentinels."
-      },
-      "is_double_duelist": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating double duelist.",
-        "flag": true
-      },
-      "is_no_duelist": {
-        "type": "BOOLEAN",
-        "desc": "Flag indicating no duelist.",
-        "flag": true
-      },
-      "agent_comp_string": {
-        "type": "VARCHAR",
-        "desc": "Metric for agent comp string."
-      },
-      "entry_duels_won": {
-        "type": "INTEGER",
-        "desc": "Metric for entry duels won."
-      },
-      "entry_duels_lost": {
-        "type": "INTEGER",
-        "desc": "Metric for entry duels lost."
-      },
-      "opening_duel_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for opening duel win rate."
-      },
-      "fk_conversion_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for fk conversion rate."
-      },
-      "fd_loss_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for fd loss rate."
-      },
-      "team_trade_success_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for team trade success rate."
-      },
-      "team_untraded_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for team untraded deaths."
-      },
-      "pistol_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for pistol rounds won."
-      },
-      "pistol_rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for pistol rounds played."
-      },
-      "pistol_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for pistol win rate."
-      },
-      "bonus_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for bonus rounds won."
-      },
-      "anti_eco_rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for anti eco rounds won."
-      },
-      "aces_count": {
-        "type": "INTEGER",
-        "desc": "Metric for aces count."
-      },
-      "quad_kills_count": {
-        "type": "INTEGER",
-        "desc": "Metric for quad kills count."
-      },
-      "triple_kills_count": {
-        "type": "INTEGER",
-        "desc": "Metric for triple kills count."
-      },
-      "clutches_attempted": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches attempted."
-      },
-      "clutches_won": {
-        "type": "INTEGER",
-        "desc": "Metric for clutches won."
-      },
-      "clutch_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for clutch win rate."
-      },
-      "rounds_5v4": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds 5v4."
-      },
-      "wins_5v4": {
-        "type": "INTEGER",
-        "desc": "Metric for wins 5v4."
-      },
-      "conversion_5v4": {
-        "type": "FLOAT",
-        "desc": "Metric for conversion 5v4."
-      },
-      "rounds_4v5": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds 4v5."
-      },
-      "wins_4v5": {
-        "type": "INTEGER",
-        "desc": "Metric for wins 4v5."
-      },
-      "comeback_4v5": {
-        "type": "FLOAT",
-        "desc": "Metric for comeback 4v5."
-      },
-      "post_plant_rounds": {
-        "type": "INTEGER",
-        "desc": "Metric for post plant rounds."
-      },
-      "post_plant_wins": {
-        "type": "INTEGER",
-        "desc": "Metric for post plant wins."
-      },
-      "post_plant_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for post plant win rate."
-      },
-      "longest_win_streak": {
-        "type": "INTEGER",
-        "desc": "Metric for longest win streak."
-      },
-      "longest_loss_streak": {
-        "type": "INTEGER",
-        "desc": "Metric for longest loss streak."
-      },
-      "rounds_after_timeout": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds after timeout."
-      },
-      "wins_after_timeout": {
-        "type": "INTEGER",
-        "desc": "Metric for wins after timeout."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {}
+    "table": "agg_team_game_stats"
   },
   {
-    "table": "agg_player_daily_stats",
+    "columns": {
+      "ability_damage_dealt": {
+        "desc": "Damage dealt by abilities in the day.",
+        "type": "FLOAT"
+      },
+      "adr": {
+        "desc": "Metric for adr.",
+        "type": "FLOAT"
+      },
+      "agents_played": {
+        "desc": "Metric for agents played.",
+        "type": "JSON"
+      },
+      "assists": {
+        "desc": "Metric for assists.",
+        "type": "INTEGER"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "damage_dealt": {
+        "desc": "Metric for damage dealt.",
+        "type": "FLOAT"
+      },
+      "damage_received": {
+        "desc": "Metric for damage received.",
+        "type": "FLOAT"
+      },
+      "date": {
+        "desc": "Metric for date.",
+        "type": "DATE"
+      },
+      "deaths": {
+        "desc": "Metric for deaths.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "fd_percentage": {
+        "desc": "Metric for fd percentage.",
+        "type": "FLOAT"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "fk_percentage": {
+        "desc": "Metric for fk percentage.",
+        "type": "FLOAT"
+      },
+      "kd_ratio": {
+        "desc": "Metric for kd ratio.",
+        "type": "FLOAT"
+      },
+      "kda": {
+        "desc": "Metric for kda.",
+        "type": "FLOAT"
+      },
+      "kills": {
+        "desc": "Metric for kills.",
+        "type": "INTEGER"
+      },
+      "kpr": {
+        "desc": "Metric for kpr.",
+        "type": "FLOAT"
+      },
+      "maps_played": {
+        "desc": "Metric for maps played.",
+        "type": "INTEGER"
+      },
+      "maps_won": {
+        "desc": "Metric for maps won.",
+        "type": "INTEGER"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "player_id": {
+        "desc": "Player identifier.",
+        "type": "VARCHAR"
+      },
+      "player_name": {
+        "desc": "Player name.",
+        "type": "VARCHAR"
+      },
+      "rounds_played": {
+        "desc": "Metric for rounds played.",
+        "type": "INTEGER"
+      },
+      "rounds_won": {
+        "desc": "Metric for rounds won.",
+        "type": "INTEGER"
+      },
+      "series_played": {
+        "desc": "Metric for series played.",
+        "type": "INTEGER"
+      },
+      "series_won": {
+        "desc": "Metric for series won.",
+        "type": "INTEGER"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "win_rate": {
+        "desc": "Metric for win rate.",
+        "type": "FLOAT"
+      }
+    },
     "grain": "One row per (date, player_id)",
+    "metrics": {},
     "pk": [
       "date",
       "player_id"
     ],
-    "columns": {
-      "date": {
-        "type": "DATE",
-        "desc": "Metric for date."
-      },
-      "player_id": {
-        "type": "VARCHAR",
-        "desc": "Player identifier."
-      },
-      "player_name": {
-        "type": "VARCHAR",
-        "desc": "Player name."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "series_played": {
-        "type": "INTEGER",
-        "desc": "Metric for series played."
-      },
-      "series_won": {
-        "type": "INTEGER",
-        "desc": "Metric for series won."
-      },
-      "maps_played": {
-        "type": "INTEGER",
-        "desc": "Metric for maps played."
-      },
-      "maps_won": {
-        "type": "INTEGER",
-        "desc": "Metric for maps won."
-      },
-      "rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds played."
-      },
-      "rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds won."
-      },
-      "kills": {
-        "type": "INTEGER",
-        "desc": "Metric for kills."
-      },
-      "deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for deaths."
-      },
-      "assists": {
-        "type": "INTEGER",
-        "desc": "Metric for assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for damage dealt."
-      },
-      "damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for damage received."
-      },
-      "kd_ratio": {
-        "type": "FLOAT",
-        "desc": "Metric for kd ratio."
-      },
-      "kda": {
-        "type": "FLOAT",
-        "desc": "Metric for kda."
-      },
-      "adr": {
-        "type": "FLOAT",
-        "desc": "Metric for adr."
-      },
-      "kpr": {
-        "type": "FLOAT",
-        "desc": "Metric for kpr."
-      },
-      "fk_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fk percentage."
-      },
-      "fd_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fd percentage."
-      },
-      "win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for win rate."
-      },
-      "agents_played": {
-        "type": "JSON",
-        "desc": "Metric for agents played."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {}
+    "table": "agg_player_daily_stats"
   },
   {
-    "table": "agg_tournament_stats",
+    "columns": {
+      "ability_damage_dealt": {
+        "desc": "Damage dealt by abilities in the tournament.",
+        "type": "FLOAT"
+      },
+      "adr": {
+        "desc": "Metric for adr.",
+        "type": "FLOAT"
+      },
+      "agents_played": {
+        "desc": "Metric for agents played.",
+        "type": "JSON"
+      },
+      "assists": {
+        "desc": "Metric for assists.",
+        "type": "INTEGER"
+      },
+      "calculated_at": {
+        "desc": "Timestamp for calculated.",
+        "type": "TIMESTAMP"
+      },
+      "damage_dealt": {
+        "desc": "Metric for damage dealt.",
+        "type": "FLOAT"
+      },
+      "damage_received": {
+        "desc": "Metric for damage received.",
+        "type": "FLOAT"
+      },
+      "deaths": {
+        "desc": "Metric for deaths.",
+        "type": "INTEGER"
+      },
+      "defuses": {
+        "desc": "Metric for defuses.",
+        "type": "INTEGER"
+      },
+      "entity_id": {
+        "desc": "Entity identifier.",
+        "type": "VARCHAR"
+      },
+      "entity_name": {
+        "desc": "Entity name.",
+        "type": "VARCHAR"
+      },
+      "entity_type": {
+        "desc": "Metric for entity type.",
+        "type": "VARCHAR"
+      },
+      "fd_percentage": {
+        "desc": "Metric for fd percentage.",
+        "type": "FLOAT"
+      },
+      "first_bloods": {
+        "desc": "Metric for first bloods.",
+        "type": "INTEGER"
+      },
+      "first_deaths": {
+        "desc": "Metric for first deaths.",
+        "type": "INTEGER"
+      },
+      "fk_percentage": {
+        "desc": "Metric for fk percentage.",
+        "type": "FLOAT"
+      },
+      "kd_ratio": {
+        "desc": "Metric for kd ratio.",
+        "type": "FLOAT"
+      },
+      "kda": {
+        "desc": "Metric for kda.",
+        "type": "FLOAT"
+      },
+      "kills": {
+        "desc": "Metric for kills.",
+        "type": "INTEGER"
+      },
+      "kpr": {
+        "desc": "Metric for kpr.",
+        "type": "FLOAT"
+      },
+      "map_win_rate": {
+        "desc": "Metric for map win rate.",
+        "type": "FLOAT"
+      },
+      "maps_played": {
+        "desc": "Metric for maps played.",
+        "type": "INTEGER"
+      },
+      "maps_won": {
+        "desc": "Metric for maps won.",
+        "type": "INTEGER"
+      },
+      "placement": {
+        "desc": "Metric for placement.",
+        "type": "INTEGER"
+      },
+      "plants": {
+        "desc": "Metric for plants.",
+        "type": "INTEGER"
+      },
+      "prize_money": {
+        "desc": "Metric for prize money.",
+        "type": "FLOAT"
+      },
+      "roster": {
+        "desc": "Metric for roster.",
+        "type": "JSON"
+      },
+      "rounds_played": {
+        "desc": "Metric for rounds played.",
+        "type": "INTEGER"
+      },
+      "rounds_won": {
+        "desc": "Metric for rounds won.",
+        "type": "INTEGER"
+      },
+      "series_played": {
+        "desc": "Metric for series played.",
+        "type": "INTEGER"
+      },
+      "series_won": {
+        "desc": "Metric for series won.",
+        "type": "INTEGER"
+      },
+      "team_name": {
+        "desc": "Team name.",
+        "type": "VARCHAR"
+      },
+      "tournament_end_date": {
+        "desc": "Metric for tournament end date.",
+        "type": "DATE"
+      },
+      "tournament_id": {
+        "desc": "Tournament identifier.",
+        "type": "VARCHAR"
+      },
+      "tournament_name": {
+        "desc": "Tournament name.",
+        "type": "VARCHAR"
+      },
+      "tournament_region": {
+        "desc": "Metric for tournament region.",
+        "type": "VARCHAR"
+      },
+      "tournament_start_date": {
+        "desc": "Metric for tournament start date.",
+        "type": "DATE"
+      },
+      "tournament_year": {
+        "desc": "Tournament year.",
+        "type": "INTEGER"
+      },
+      "win_rate": {
+        "desc": "Metric for win rate.",
+        "type": "FLOAT"
+      }
+    },
     "grain": "One row per (tournament_id, team_name) or (tournament_id, player_id)",
+    "metrics": {},
     "pk": [
       "tournament_id",
       "entity_type",
       "entity_id"
     ],
-    "columns": {
-      "tournament_id": {
-        "type": "VARCHAR",
-        "desc": "Tournament identifier."
-      },
-      "tournament_name": {
-        "type": "VARCHAR",
-        "desc": "Tournament name."
-      },
-      "entity_type": {
-        "type": "VARCHAR",
-        "desc": "Metric for entity type."
-      },
-      "entity_id": {
-        "type": "VARCHAR",
-        "desc": "Entity identifier."
-      },
-      "entity_name": {
-        "type": "VARCHAR",
-        "desc": "Entity name."
-      },
-      "tournament_year": {
-        "type": "INTEGER",
-        "desc": "Tournament year."
-      },
-      "tournament_region": {
-        "type": "VARCHAR",
-        "desc": "Metric for tournament region."
-      },
-      "tournament_start_date": {
-        "type": "DATE",
-        "desc": "Metric for tournament start date."
-      },
-      "tournament_end_date": {
-        "type": "DATE",
-        "desc": "Metric for tournament end date."
-      },
-      "placement": {
-        "type": "INTEGER",
-        "desc": "Metric for placement."
-      },
-      "prize_money": {
-        "type": "FLOAT",
-        "desc": "Metric for prize money."
-      },
-      "series_played": {
-        "type": "INTEGER",
-        "desc": "Metric for series played."
-      },
-      "series_won": {
-        "type": "INTEGER",
-        "desc": "Metric for series won."
-      },
-      "maps_played": {
-        "type": "INTEGER",
-        "desc": "Metric for maps played."
-      },
-      "maps_won": {
-        "type": "INTEGER",
-        "desc": "Metric for maps won."
-      },
-      "rounds_played": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds played."
-      },
-      "rounds_won": {
-        "type": "INTEGER",
-        "desc": "Metric for rounds won."
-      },
-      "kills": {
-        "type": "INTEGER",
-        "desc": "Metric for kills."
-      },
-      "deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for deaths."
-      },
-      "assists": {
-        "type": "INTEGER",
-        "desc": "Metric for assists."
-      },
-      "first_bloods": {
-        "type": "INTEGER",
-        "desc": "Metric for first bloods."
-      },
-      "first_deaths": {
-        "type": "INTEGER",
-        "desc": "Metric for first deaths."
-      },
-      "plants": {
-        "type": "INTEGER",
-        "desc": "Metric for plants."
-      },
-      "defuses": {
-        "type": "INTEGER",
-        "desc": "Metric for defuses."
-      },
-      "damage_dealt": {
-        "type": "FLOAT",
-        "desc": "Metric for damage dealt."
-      },
-      "damage_received": {
-        "type": "FLOAT",
-        "desc": "Metric for damage received."
-      },
-      "kd_ratio": {
-        "type": "FLOAT",
-        "desc": "Metric for kd ratio."
-      },
-      "kda": {
-        "type": "FLOAT",
-        "desc": "Metric for kda."
-      },
-      "adr": {
-        "type": "FLOAT",
-        "desc": "Metric for adr."
-      },
-      "kpr": {
-        "type": "FLOAT",
-        "desc": "Metric for kpr."
-      },
-      "fk_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fk percentage."
-      },
-      "fd_percentage": {
-        "type": "FLOAT",
-        "desc": "Metric for fd percentage."
-      },
-      "win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for win rate."
-      },
-      "map_win_rate": {
-        "type": "FLOAT",
-        "desc": "Metric for map win rate."
-      },
-      "agents_played": {
-        "type": "JSON",
-        "desc": "Metric for agents played."
-      },
-      "team_name": {
-        "type": "VARCHAR",
-        "desc": "Team name."
-      },
-      "roster": {
-        "type": "JSON",
-        "desc": "Metric for roster."
-      },
-      "calculated_at": {
-        "type": "TIMESTAMP",
-        "desc": "Timestamp for calculated."
-      }
-    },
-    "metrics": {}
+    "table": "agg_tournament_stats"
   }
 ]

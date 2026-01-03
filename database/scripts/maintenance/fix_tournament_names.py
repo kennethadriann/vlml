@@ -4,7 +4,7 @@ import asyncio
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from vlml.client.grid_client import GRIDClient
 from vlml.client.queries_updated import GET_SERIES_BY_ID
