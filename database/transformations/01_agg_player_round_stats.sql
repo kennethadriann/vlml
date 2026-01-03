@@ -2,6 +2,9 @@
 -- Source: base_events
 -- Type: Incremental (re-aggregate rounds with new events)
 
+ALTER TABLE agg_player_round_stats
+ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
+
 -- Step 1: Find rounds that have new events
 CREATE TEMP TABLE new_rounds AS
 SELECT DISTINCT e.round_id
@@ -74,23 +77,241 @@ round_team_counts AS (
     FROM round_team_deaths rtd
     LEFT JOIN round_total_deaths rtt ON rtt.round_id = rtd.round_id
 ),
-kill_events AS (
+player_sides AS (
     SELECT
         round_id,
-        occurred_at,
-        actor_player_id AS killer_id,
-        actor_team_name AS killer_team,
-        target_player_id AS victim_id,
-        target_team_name AS victim_team,
-        actor_pos_x AS killer_x,
-        actor_pos_y AS killer_y,
-        target_pos_x AS victim_x,
-        target_pos_y AS victim_y,
-        map_name
+        actor_player_id AS player_id,
+        MAX(actor_side) AS side
     FROM base_events
     WHERE round_id IN (SELECT round_id FROM new_rounds)
-      AND is_kill = TRUE
       AND actor_player_id IS NOT NULL
+      AND actor_side IS NOT NULL
+    GROUP BY round_id, actor_player_id
+),
+damage_received_agg AS (
+    SELECT
+        round_id,
+        target_player_id AS player_id,
+        SUM(COALESCE(damage_dealt, 0))::FLOAT AS damage_received
+    FROM base_events
+    WHERE round_id IN (SELECT round_id FROM new_rounds)
+      AND target_player_id IS NOT NULL
+      AND damage_dealt IS NOT NULL
+    GROUP BY round_id, target_player_id
+),
+player_economy AS (
+    SELECT
+        round_id,
+        actor_player_id AS player_id,
+        MAX(actor_loadout_value) AS loadout_value
+    FROM base_events
+    WHERE round_id IN (SELECT round_id FROM new_rounds)
+      AND event_type = 'round-started-freezetime'
+      AND actor_player_id IS NOT NULL
+    GROUP BY round_id, actor_player_id
+),
+player_teams AS (
+    SELECT
+        round_id,
+        actor_player_id AS player_id,
+        MAX(actor_team_name) AS team_name
+    FROM base_events
+    WHERE round_id IN (SELECT round_id FROM new_rounds)
+      AND actor_player_id IS NOT NULL
+      AND actor_team_name IS NOT NULL
+    GROUP BY round_id, actor_player_id
+),
+weapon_events AS (
+    SELECT
+        e.round_id,
+        e.actor_player_id AS player_id,
+        e.occurred_at,
+        LOWER(COALESCE(e.weapon_type, wt.weapon_type)) AS weapon_type
+    FROM base_events e
+    LEFT JOIN weapon_types wt ON LOWER(e.weapon_name) = LOWER(wt.weapon_name)
+    WHERE e.round_id IN (SELECT round_id FROM new_rounds)
+      AND e.actor_player_id IS NOT NULL
+      AND (e.is_kill = TRUE OR e.event_type = 'player-damaged-player')
+      AND (e.weapon_type IS NOT NULL OR wt.weapon_type IS NOT NULL)
+),
+player_first_weapon AS (
+    SELECT
+        round_id,
+        player_id,
+        weapon_type
+    FROM (
+        SELECT
+            round_id,
+            player_id,
+            weapon_type,
+            ROW_NUMBER() OVER (
+                PARTITION BY round_id, player_id
+                ORDER BY occurred_at
+            ) AS rn
+        FROM weapon_events
+    )
+    WHERE rn = 1
+),
+team_weapon_counts AS (
+    SELECT
+        pt.round_id,
+        pt.team_name,
+        SUM(CASE WHEN pfw.weapon_type IN ('rifle', 'sniper', 'heavy') THEN 1 ELSE 0 END) AS primary_count,
+        SUM(CASE WHEN pfw.weapon_type IN ('smg', 'shotgun') THEN 1 ELSE 0 END) AS light_count,
+        SUM(CASE WHEN pfw.weapon_type = 'pistol' THEN 1 ELSE 0 END) AS pistol_count
+    FROM player_teams pt
+    LEFT JOIN player_first_weapon pfw
+      ON pfw.round_id = pt.round_id
+     AND pfw.player_id = pt.player_id
+    GROUP BY pt.round_id, pt.team_name
+),
+opponent_weapon_counts AS (
+    SELECT
+        twc.round_id,
+        twc.team_name,
+        MAX(twc2.primary_count) AS opponent_primary_count
+    FROM team_weapon_counts twc
+    LEFT JOIN team_weapon_counts twc2
+      ON twc2.round_id = twc.round_id
+     AND twc2.team_name <> twc.team_name
+    GROUP BY twc.round_id, twc.team_name
+),
+early_util_agg AS (
+    SELECT
+        e.round_id,
+        e.actor_player_id AS player_id,
+        CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS early_util_flag
+    FROM base_events e
+    JOIN rounds r ON r.round_id = e.round_id
+    WHERE e.round_id IN (SELECT round_id FROM new_rounds)
+      AND e.is_ability_use = TRUE
+      AND e.actor_player_id IS NOT NULL
+      AND r.started_at IS NOT NULL
+      AND EXTRACT(EPOCH FROM (e.occurred_at - r.started_at)) BETWEEN 0 AND 15
+    GROUP BY e.round_id, e.actor_player_id
+),
+kill_events AS (
+    SELECT
+        e.round_id,
+        e.occurred_at,
+        e.actor_player_id AS killer_id,
+        e.actor_team_name AS killer_team,
+        e.target_player_id AS victim_id,
+        e.target_team_name AS victim_team,
+        e.actor_pos_x AS killer_x,
+        e.actor_pos_y AS killer_y,
+        e.target_pos_x AS victim_x,
+        e.target_pos_y AS victim_y,
+        e.map_name,
+        LOWER(COALESCE(e.weapon_type, wt.weapon_type)) AS killer_weapon_type
+    FROM base_events e
+    LEFT JOIN weapon_types wt ON LOWER(e.weapon_name) = LOWER(wt.weapon_name)
+    WHERE e.round_id IN (SELECT round_id FROM new_rounds)
+      AND e.is_kill = TRUE
+      AND e.actor_player_id IS NOT NULL
+),
+damage_events AS (
+    SELECT
+        e.round_id,
+        e.occurred_at,
+        e.actor_player_id AS attacker_id,
+        e.target_player_id AS victim_id,
+        LOWER(COALESCE(e.weapon_type, wt.weapon_type)) AS damage_weapon_type
+    FROM base_events e
+    LEFT JOIN weapon_types wt ON LOWER(e.weapon_name) = LOWER(wt.weapon_name)
+    WHERE e.round_id IN (SELECT round_id FROM new_rounds)
+      AND e.event_type = 'player-damaged-player'
+      AND e.actor_player_id IS NOT NULL
+      AND e.target_player_id IS NOT NULL
+),
+duel_damage AS (
+    SELECT
+        k.round_id,
+        k.killer_id,
+        k.victim_id,
+        k.occurred_at AS kill_time,
+        k.killer_weapon_type,
+        d.attacker_id,
+        d.victim_id AS damage_victim_id,
+        d.occurred_at AS damage_time,
+        CASE WHEN d.attacker_id = k.killer_id THEN 1 ELSE 0 END AS damage_by_killer
+    FROM kill_events k
+    JOIN damage_events d
+      ON d.round_id = k.round_id
+     AND ((d.attacker_id = k.killer_id AND d.victim_id = k.victim_id)
+          OR (d.attacker_id = k.victim_id AND d.victim_id = k.killer_id))
+     AND d.occurred_at <= k.occurred_at
+     AND d.occurred_at >= k.occurred_at - INTERVAL '3 seconds'
+),
+duels AS (
+    SELECT
+        round_id,
+        killer_id,
+        victim_id,
+        kill_time,
+        killer_weapon_type,
+        damage_time AS first_damage_time,
+        damage_by_killer AS first_damage_by_killer
+    FROM (
+        SELECT
+            *,
+            ROW_NUMBER() OVER (
+                PARTITION BY round_id, killer_id, victim_id, kill_time
+                ORDER BY damage_time
+            ) AS rn
+        FROM duel_damage
+    ) dd
+    WHERE rn = 1
+),
+duel_participants AS (
+    SELECT
+        round_id,
+        killer_id AS player_id,
+        1 AS is_killer,
+        CASE WHEN first_damage_by_killer = 1 THEN 1 ELSE 0 END AS initiated_flag,
+        killer_weapon_type,
+        kill_time,
+        first_damage_time
+    FROM duels
+    UNION ALL
+    SELECT
+        round_id,
+        victim_id AS player_id,
+        0 AS is_killer,
+        CASE WHEN first_damage_by_killer = 0 THEN 1 ELSE 0 END AS initiated_flag,
+        killer_weapon_type,
+        kill_time,
+        first_damage_time
+    FROM duels
+),
+duel_agg AS (
+    SELECT
+        round_id,
+        player_id,
+        SUM(CASE WHEN initiated_flag = 1 THEN 1 ELSE 0 END)::INTEGER AS duel_initiated_total,
+        SUM(CASE WHEN initiated_flag = 1 AND is_killer = 1 THEN 1 ELSE 0 END)::INTEGER AS duel_initiated_wins_total,
+        SUM(CASE WHEN initiated_flag = 1 THEN 1 ELSE 0 END)::INTEGER AS duel_initiated_denom,
+        SUM(CASE WHEN initiated_flag = 0 AND is_killer = 1 THEN 1 ELSE 0 END)::INTEGER AS duel_held_wins_total,
+        SUM(CASE WHEN initiated_flag = 0 THEN 1 ELSE 0 END)::INTEGER AS duel_held_denom,
+        SUM(EXTRACT(EPOCH FROM (kill_time - first_damage_time)))::FLOAT AS duel_resolution_time_sum_s,
+        COUNT(*)::INTEGER AS duel_resolution_time_denom,
+        SUM(CASE WHEN is_killer = 1 AND killer_weapon_type = 'rifle' THEN 1 ELSE 0 END)::INTEGER AS duel_wins_rifle_total,
+        SUM(CASE WHEN is_killer = 0 AND killer_weapon_type = 'rifle' THEN 1 ELSE 0 END)::INTEGER AS duel_losses_rifle_total,
+        SUM(CASE WHEN killer_weapon_type = 'rifle' THEN 1 ELSE 0 END)::INTEGER AS duel_rifle_denom,
+        SUM(CASE WHEN is_killer = 1 AND killer_weapon_type = 'smg' THEN 1 ELSE 0 END)::INTEGER AS duel_wins_smg_total,
+        SUM(CASE WHEN is_killer = 0 AND killer_weapon_type = 'smg' THEN 1 ELSE 0 END)::INTEGER AS duel_losses_smg_total,
+        SUM(CASE WHEN killer_weapon_type = 'smg' THEN 1 ELSE 0 END)::INTEGER AS duel_smg_denom,
+        SUM(CASE WHEN is_killer = 1 AND killer_weapon_type = 'pistol' THEN 1 ELSE 0 END)::INTEGER AS duel_wins_pistol_total,
+        SUM(CASE WHEN is_killer = 0 AND killer_weapon_type = 'pistol' THEN 1 ELSE 0 END)::INTEGER AS duel_losses_pistol_total,
+        SUM(CASE WHEN killer_weapon_type = 'pistol' THEN 1 ELSE 0 END)::INTEGER AS duel_pistol_denom,
+        SUM(CASE WHEN is_killer = 1 AND killer_weapon_type = 'sniper' THEN 1 ELSE 0 END)::INTEGER AS duel_wins_sniper_total,
+        SUM(CASE WHEN is_killer = 0 AND killer_weapon_type = 'sniper' THEN 1 ELSE 0 END)::INTEGER AS duel_losses_sniper_total,
+        SUM(CASE WHEN killer_weapon_type = 'sniper' THEN 1 ELSE 0 END)::INTEGER AS duel_sniper_denom,
+        SUM(CASE WHEN is_killer = 1 AND killer_weapon_type = 'shotgun' THEN 1 ELSE 0 END)::INTEGER AS duel_wins_shotgun_total,
+        SUM(CASE WHEN is_killer = 0 AND killer_weapon_type = 'shotgun' THEN 1 ELSE 0 END)::INTEGER AS duel_losses_shotgun_total,
+        SUM(CASE WHEN killer_weapon_type = 'shotgun' THEN 1 ELSE 0 END)::INTEGER AS duel_shotgun_denom
+    FROM duel_participants
+    GROUP BY round_id, player_id
 ),
 kill_distances AS (
     SELECT
@@ -167,6 +388,45 @@ death_events AS (
     WHERE round_id IN (SELECT round_id FROM new_rounds)
       AND is_death = TRUE
       AND actor_player_id IS NOT NULL
+),
+traded_deaths AS (
+    SELECT
+        d.round_id,
+        d.player_id,
+        MIN(EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at))) AS trade_time
+    FROM death_events d
+    JOIN kill_events k
+      ON k.round_id = d.round_id
+     AND k.killer_id = d.killer_id
+     AND k.killer_team = d.team_name
+     AND k.occurred_at >= d.occurred_at
+     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 5.0
+    GROUP BY d.round_id, d.player_id
+),
+trade_kill_events AS (
+    SELECT
+        k.round_id,
+        k.killer_id AS player_id,
+        MIN(EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at))) AS trade_kill_time
+    FROM kill_events k
+    JOIN death_events d
+      ON d.round_id = k.round_id
+     AND d.killer_id = k.victim_id
+     AND d.team_name = k.killer_team
+     AND k.occurred_at >= d.occurred_at
+     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 5.0
+    GROUP BY k.round_id, k.killer_id
+),
+player_death_time AS (
+    SELECT
+        round_id,
+        actor_player_id AS player_id,
+        MIN(occurred_at) AS death_time
+    FROM base_events
+    WHERE round_id IN (SELECT round_id FROM new_rounds)
+      AND is_death = TRUE
+      AND actor_player_id IS NOT NULL
+    GROUP BY round_id, actor_player_id
 ),
 repeek_deaths AS (
     SELECT
@@ -456,6 +716,14 @@ rotate_deaths AS (
     FROM death_sites d
     JOIN plant_sites ps ON ps.round_id = d.round_id
     GROUP BY d.round_id, d.player_id
+),
+player_first_kill AS (
+    SELECT
+        round_id,
+        killer_id AS player_id,
+        MIN(occurred_at) AS first_kill_time
+    FROM kill_events
+    GROUP BY round_id, killer_id
 )
 INSERT INTO agg_player_round_stats (
     round_id,
@@ -481,6 +749,7 @@ INSERT INTO agg_player_round_stats (
     defuses,
     abilities_used,
     damage_dealt,
+    ability_damage_dealt,
     damage_received,
     survived,
     time_first_blood,
@@ -607,7 +876,7 @@ SELECT
     MAX(r.started_at) AS started_at,
     MAX(r.ended_at) AS ended_at,
     MAX(CASE WHEN r.winning_team_name = e.actor_team_name THEN TRUE ELSE FALSE END) AS round_won,
-    NULL AS side,
+    MAX(ps.side) AS side,
 
     -- Basic combat stats
     SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END)::INTEGER AS kills,
@@ -619,14 +888,37 @@ SELECT
     SUM(CASE WHEN e.is_defuse = TRUE THEN 1 ELSE 0 END)::INTEGER AS defuses,
     SUM(CASE WHEN e.is_ability_use = TRUE THEN 1 ELSE 0 END)::INTEGER AS abilities_used,
     SUM(COALESCE(e.damage_dealt, 0))::FLOAT AS damage_dealt,
-    0.0 AS damage_received,
-    NULL AS survived,
+    SUM(CASE WHEN e.is_ability_use = TRUE THEN COALESCE(e.damage_dealt, 0) ELSE 0 END)::FLOAT AS ability_damage_dealt,
+    MAX(COALESCE(dr.damage_received, 0))::FLOAT AS damage_received,
+    CASE WHEN MAX(pdt.death_time) IS NULL THEN TRUE ELSE FALSE END AS survived,
 
     -- Timing metrics
-    NULL AS time_first_blood,
-    NULL AS time_first_death,
-    NULL AS time_alive,
-    NULL AS time_to_first_kill,
+    MAX(
+        CASE
+            WHEN fk.killer_id = e.actor_player_id THEN fk.first_kill_time
+            ELSE NULL
+        END
+    ) AS time_first_blood,
+    MAX(
+        CASE
+            WHEN fk.victim_id = e.actor_player_id THEN fk.first_kill_time
+            ELSE NULL
+        END
+    ) AS time_first_death,
+    CASE
+        WHEN MAX(r.started_at) IS NULL OR MAX(r.ended_at) IS NULL THEN NULL
+        WHEN MAX(pdt.death_time) IS NOT NULL
+        THEN GREATEST(0, EXTRACT(EPOCH FROM (MAX(pdt.death_time) - MAX(r.started_at))))
+        ELSE GREATEST(0, EXTRACT(EPOCH FROM (MAX(r.ended_at) - MAX(r.started_at))))
+    END AS time_alive,
+    CASE
+        WHEN MIN(pfk.first_kill_time) IS NOT NULL
+             AND MIN(r.started_at) IS NOT NULL
+             AND MIN(r.ended_at) IS NOT NULL
+             AND MIN(pfk.first_kill_time) <= MIN(r.ended_at)
+        THEN GREATEST(0, EXTRACT(EPOCH FROM (MIN(pfk.first_kill_time) - MIN(r.started_at))))
+        ELSE NULL
+    END AS time_to_first_kill,
 
     -- Agent role (from lookup table)
     MAX(ar.agent_role) AS agent_role,
@@ -643,17 +935,35 @@ SELECT
         THEN SUM(COALESCE(e.damage_dealt, 0))::FLOAT / SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END)
         ELSE NULL
     END AS damage_per_kill,
-    0.0 AS overkill_damage,
+    SUM(
+        CASE
+            WHEN e.is_kill = TRUE AND COALESCE(e.damage_dealt, 0) > 150
+            THEN COALESCE(e.damage_dealt, 0) - 150
+            ELSE 0
+        END
+    )::FLOAT AS overkill_damage,
 
     -- Performance flags (simplified for now)
-    FALSE AS is_entry_fragger,
+    CASE
+        WHEN MAX(fk.killer_id) = e.actor_player_id
+             AND LOWER(COALESCE(MAX(ps.side), '')) IN ('attack', 'atk')
+        THEN TRUE ELSE FALSE
+    END AS is_entry_fragger,
     (SUM(CASE WHEN e.is_first_blood = TRUE THEN 1 ELSE 0 END) > 0) AS is_opening_kill,
     MAX(CASE WHEN fk.victim_id = e.actor_player_id THEN TRUE ELSE FALSE END) AS is_opening_death,
-    FALSE AS is_entry_denied,
-    FALSE AS is_traded,
-    FALSE AS is_trade_kill,
-    NULL AS trade_kill_time,
-    FALSE AS is_untraded_death,
+    CASE
+        WHEN MAX(fk.victim_id) = e.actor_player_id
+             AND LOWER(COALESCE(MAX(ps.side), '')) IN ('attack', 'atk')
+        THEN TRUE ELSE FALSE
+    END AS is_entry_denied,
+    CASE WHEN MAX(td2.trade_time) IS NOT NULL THEN TRUE ELSE FALSE END AS is_traded,
+    CASE WHEN MAX(tke.trade_kill_time) IS NOT NULL THEN TRUE ELSE FALSE END AS is_trade_kill,
+    MAX(tke.trade_kill_time) AS trade_kill_time,
+    CASE
+        WHEN LEAST(SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END), 1) > 0
+             AND MAX(td2.trade_time) IS NULL
+        THEN TRUE ELSE FALSE
+    END AS is_untraded_death,
     LEAST(SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END), 5)::INTEGER AS multi_kill_count,
 
     -- Multi-kills
@@ -720,16 +1030,33 @@ SELECT
     NULL AS clutch_difficulty_score,
 
     -- Economy (simplified)
-    NULL AS loadout_value,
-    FALSE AS is_eco_round,
-    FALSE AS is_force_buy,
-    FALSE AS is_full_buy,
-    FALSE AS is_thrifty,
+    MAX(pe.loadout_value) AS loadout_value,
+    CASE
+        WHEN MAX(COALESCE(twc.primary_count, 0)) = 0
+        THEN TRUE ELSE FALSE
+    END AS is_eco_round,
+    CASE
+        WHEN MAX(COALESCE(twc.primary_count, 0)) BETWEEN 1 AND 2
+        THEN TRUE ELSE FALSE
+    END AS is_force_buy,
+    CASE
+        WHEN MAX(COALESCE(twc.primary_count, 0)) >= 3
+        THEN TRUE ELSE FALSE
+    END AS is_full_buy,
+    CASE
+        WHEN MAX(COALESCE(twc.primary_count, 0)) <= 2
+             AND MAX(COALESCE(owc.opponent_primary_count, 0)) >= 3
+             AND MAX(CASE WHEN r.winning_team_name = e.actor_team_name THEN TRUE ELSE FALSE END)
+        THEN TRUE ELSE FALSE
+    END AS is_thrifty,
 
     -- Ability usage
-    0 AS flash_assists,
+    MAX(COALESCE(fa.flash_assist_kills_total, 0)) AS flash_assists,
     SUM(CASE WHEN e.is_ability_use = TRUE THEN COALESCE(e.damage_dealt, 0) ELSE 0 END)::FLOAT AS util_damage,
-    FALSE AS early_util,
+    CASE
+        WHEN MAX(COALESCE(eu.early_util_flag, 0)) = 1 THEN TRUE
+        ELSE FALSE
+    END AS early_util,
 
     -- Weapon stats
     MAX(e.weapon_name) AS weapon_name,
@@ -789,28 +1116,28 @@ SELECT
     MAX(COALESCE(td.trade_kill_distance_denom, 0)) AS trade_kill_distance_denom,
 
     -- Duel mechanics (totals/denoms)
-    0 AS duel_initiated_total,
-    0 AS duel_initiated_wins_total,
-    0 AS duel_initiated_denom,
-    0 AS duel_held_wins_total,
-    0 AS duel_held_denom,
-    NULL AS duel_resolution_time_sum_s,
-    0 AS duel_resolution_time_denom,
-    0 AS duel_wins_rifle_total,
-    0 AS duel_losses_rifle_total,
-    0 AS duel_rifle_denom,
-    0 AS duel_wins_smg_total,
-    0 AS duel_losses_smg_total,
-    0 AS duel_smg_denom,
-    0 AS duel_wins_pistol_total,
-    0 AS duel_losses_pistol_total,
-    0 AS duel_pistol_denom,
-    0 AS duel_wins_sniper_total,
-    0 AS duel_losses_sniper_total,
-    0 AS duel_sniper_denom,
-    0 AS duel_wins_shotgun_total,
-    0 AS duel_losses_shotgun_total,
-    0 AS duel_shotgun_denom,
+    MAX(COALESCE(duel.duel_initiated_total, 0)) AS duel_initiated_total,
+    MAX(COALESCE(duel.duel_initiated_wins_total, 0)) AS duel_initiated_wins_total,
+    MAX(COALESCE(duel.duel_initiated_denom, 0)) AS duel_initiated_denom,
+    MAX(COALESCE(duel.duel_held_wins_total, 0)) AS duel_held_wins_total,
+    MAX(COALESCE(duel.duel_held_denom, 0)) AS duel_held_denom,
+    MAX(COALESCE(duel.duel_resolution_time_sum_s, 0)) AS duel_resolution_time_sum_s,
+    MAX(COALESCE(duel.duel_resolution_time_denom, 0)) AS duel_resolution_time_denom,
+    MAX(COALESCE(duel.duel_wins_rifle_total, 0)) AS duel_wins_rifle_total,
+    MAX(COALESCE(duel.duel_losses_rifle_total, 0)) AS duel_losses_rifle_total,
+    MAX(COALESCE(duel.duel_rifle_denom, 0)) AS duel_rifle_denom,
+    MAX(COALESCE(duel.duel_wins_smg_total, 0)) AS duel_wins_smg_total,
+    MAX(COALESCE(duel.duel_losses_smg_total, 0)) AS duel_losses_smg_total,
+    MAX(COALESCE(duel.duel_smg_denom, 0)) AS duel_smg_denom,
+    MAX(COALESCE(duel.duel_wins_pistol_total, 0)) AS duel_wins_pistol_total,
+    MAX(COALESCE(duel.duel_losses_pistol_total, 0)) AS duel_losses_pistol_total,
+    MAX(COALESCE(duel.duel_pistol_denom, 0)) AS duel_pistol_denom,
+    MAX(COALESCE(duel.duel_wins_sniper_total, 0)) AS duel_wins_sniper_total,
+    MAX(COALESCE(duel.duel_losses_sniper_total, 0)) AS duel_losses_sniper_total,
+    MAX(COALESCE(duel.duel_sniper_denom, 0)) AS duel_sniper_denom,
+    MAX(COALESCE(duel.duel_wins_shotgun_total, 0)) AS duel_wins_shotgun_total,
+    MAX(COALESCE(duel.duel_losses_shotgun_total, 0)) AS duel_losses_shotgun_total,
+    MAX(COALESCE(duel.duel_shotgun_denom, 0)) AS duel_shotgun_denom,
     LEAST(
         MAX(COALESCE(rd.repeek_deaths_total, 0)),
         LEAST(SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END), 1)
@@ -833,8 +1160,16 @@ SELECT
     LEAST(SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END), 1)::INTEGER AS rotate_deaths_denom,
 
     -- Survival
-    NULL AS survival_time_sum_s,
-    0 AS survival_time_denom,
+    CASE
+        WHEN MAX(r.started_at) IS NULL OR MAX(r.ended_at) IS NULL THEN NULL
+        WHEN MAX(pdt.death_time) IS NOT NULL
+        THEN GREATEST(0, EXTRACT(EPOCH FROM (MAX(pdt.death_time) - MAX(r.started_at))))
+        ELSE GREATEST(0, EXTRACT(EPOCH FROM (MAX(r.ended_at) - MAX(r.started_at))))
+    END AS survival_time_sum_s,
+    CASE
+        WHEN MAX(r.started_at) IS NULL OR MAX(r.ended_at) IS NULL THEN 0
+        ELSE 1
+    END AS survival_time_denom,
 
     -- Metadata
     CURRENT_TIMESTAMP AS calculated_at
@@ -846,6 +1181,33 @@ LEFT JOIN weapon_types wt ON LOWER(e.weapon_name) = LOWER(wt.weapon_name)
 LEFT JOIN round_team_counts rtc
   ON rtc.round_id = e.round_id
  AND rtc.team_name = e.actor_team_name
+LEFT JOIN damage_received_agg dr
+  ON dr.round_id = e.round_id
+ AND dr.player_id = e.actor_player_id
+LEFT JOIN player_sides ps
+  ON ps.round_id = e.round_id
+ AND ps.player_id = e.actor_player_id
+LEFT JOIN player_death_time pdt
+  ON pdt.round_id = e.round_id
+ AND pdt.player_id = e.actor_player_id
+LEFT JOIN player_first_kill pfk
+  ON pfk.round_id = e.round_id
+ AND pfk.player_id = e.actor_player_id
+LEFT JOIN player_economy pe
+  ON pe.round_id = e.round_id
+ AND pe.player_id = e.actor_player_id
+LEFT JOIN team_weapon_counts twc
+  ON twc.round_id = e.round_id
+ AND twc.team_name = e.actor_team_name
+LEFT JOIN opponent_weapon_counts owc
+  ON owc.round_id = e.round_id
+ AND owc.team_name = e.actor_team_name
+LEFT JOIN traded_deaths td2
+  ON td2.round_id = e.round_id
+ AND td2.player_id = e.actor_player_id
+LEFT JOIN trade_kill_events tke
+  ON tke.round_id = e.round_id
+ AND tke.player_id = e.actor_player_id
 LEFT JOIN first_kill fk ON fk.round_id = e.round_id
 LEFT JOIN kill_distances kd
   ON kd.round_id = e.round_id
@@ -880,6 +1242,12 @@ LEFT JOIN self_flash_kills sf
 LEFT JOIN util_effect_kills ue
   ON ue.round_id = e.round_id
  AND ue.player_id = e.actor_player_id
+LEFT JOIN early_util_agg eu
+  ON eu.round_id = e.round_id
+ AND eu.player_id = e.actor_player_id
+LEFT JOIN duel_agg duel
+  ON duel.round_id = e.round_id
+ AND duel.player_id = e.actor_player_id
 WHERE e.round_id IN (SELECT round_id FROM new_rounds)
   AND e.actor_player_name IS NOT NULL
 GROUP BY

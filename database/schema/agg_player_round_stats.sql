@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     defuses INTEGER DEFAULT 0,
     abilities_used INTEGER DEFAULT 0,
     damage_dealt FLOAT DEFAULT 0,
+    ability_damage_dealt FLOAT DEFAULT 0,
     damage_received FLOAT DEFAULT 0,
     survived BOOLEAN,
 
@@ -167,4 +168,3 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     -- Metadata
     calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-

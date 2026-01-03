@@ -39,7 +39,7 @@ class EventDatabase:
 
         if result and result[0] == 0:
             print("⚠️  Warning: Database tables not found.")
-            print("    Please run: python database/scripts/init_schema.py")
+            print("    Please run: python database/scripts/orchestration/init_schema.py")
             raise RuntimeError("Database not initialized")
 
     def close(self):

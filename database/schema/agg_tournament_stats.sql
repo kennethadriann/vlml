@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS agg_tournament_stats (
     plants INTEGER DEFAULT 0,
     defuses INTEGER DEFAULT 0,
     damage_dealt FLOAT DEFAULT 0,
+    ability_damage_dealt FLOAT DEFAULT 0,
     damage_received FLOAT DEFAULT 0,
 
     -- Derived metrics
