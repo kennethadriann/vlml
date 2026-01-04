@@ -4,7 +4,7 @@
 
 ## Overview
 
-This database is designed for deep analytical queries on professional Valorant esports data. The schema follows a **denormalized, pre-aggregated** design pattern optimized for fast analytical queries at multiple grains (round → game → series → daily → tournament).
+This database is the core VLML modeling layer. It converts raw GRID JSON data into a **denormalized, pre-aggregated** OLAP schema optimized for fast analytical queries at multiple grains (round → game → series → daily → tournament).
 
 ### Key Features
 
@@ -21,6 +21,7 @@ This database is designed for deep analytical queries on professional Valorant e
   - Situational performance (5v4, 4v5, post-plant win rates)
 - **Incremental loading** - Delete-and-rebuild pattern for affected entities only
 - **Data validation** - Automated duplicate detection across all tables
+ - **GRID source data** - Raw JSON exports are standardized into consistent tables
 
 ## Directory Structure
 

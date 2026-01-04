@@ -11,11 +11,18 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 ```
 
 **Output**
-- `report_type`, `series_id`, `team_name`
+- `report_type`, `version`, `series_id`, `team_name`
+- `metadata` (tournament, date, teams, winner)
+- `games` (map list with scores)
 - `scope` (maps, rounds, confidence)
+- `team_comparison` (per-team summary including assists, opening duels, trading, timing, economy)
 - `key_metrics` (team + opponent)
-- `round_timeline` (per round opener, winner, highlight, flag)
-- `notes`
+- `player_performance` (per player round totals, ADR, KAST%, headshot hits/total, multikills)
+- `kast_impact_analysis` (deaths without KAST + loss rate)
+- `opening_death_impact` (opening deaths + loss rate)
+- `round_timeline` (per round FK/FD, winner, timings)
+- `highlight_rounds` (multi-kills + clutches)
+- `half_breakdown` (first/second half splits)
 
 ### `player_profile_report`
 **Input**
@@ -24,10 +31,17 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 ```
 
 **Output**
-- `report_type`, `player_name`
-- `scope` (series, rounds, confidence)
-- `key_metrics`
-- `notes`
+- `report_type`, `version`, `player_name`
+- `metadata` (team, date range, series/games/rounds)
+- `career_stats` (kills, deaths, assists, ADR, KAST%, FB/FD, win rate)
+- `agent_performance`
+- `map_performance`
+- `recent_form`
+- `kast_impact`
+- `opening_death_impact`
+- `clutch_performance` (overall + by clutch size)
+- `round_type_performance` (pistol/post-pistol/gun)
+- `multikills`
 
 ### `scouting_report`
 **Input**
@@ -36,15 +50,22 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 ```
 
 **Output**
-- `report_type`, `team_name`
-- `scope` (series, rounds, confidence)
-- `key_metrics`
-- `notes`
+- `report_type`, `version`, `team_name`
+- `metadata` (series/games/rounds analyzed)
+- `recent_form`
+- `map_pool`
+- `roster` (player stats + KAST%)
+- `player_agents` (agent usage snapshots)
+- `kast_impact`
+- `opening_death_impact`
+- `team_tendencies` (halves, pistol, opening duels, trades)
+- `map_tendencies` (win rate, FB rate, trade rates)
+- `agent_comps`
 
 ### `pattern_detection_report`
 **Input**
 ```
-{ "team_name"?: "string", "player_name"?: "string", "tournament_name"?: "string", "series_ids"?: ["..."], "min_rounds"?: 200 }
+{ "team_name"?: "string", "player_name"?: "string", "series_ids"?: ["..."], "min_rounds"?: 200 }
 ```
 
 **Output**
@@ -52,20 +73,25 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 - `scope` (series, rounds, confidence)
 - `summary` (facts only)
 - `key_metrics`
-- `notes`
 
 ## Database Tools
 
 ### `query_sql`
 Execute a `SELECT` query on DuckDB.
 
+**Output**
+- `columns` (list)
+- `rows` (list of rows)
+- `row_count`
+
 ### `get_database_info`
 Returns row counts, recent series, and table list.
 
-## Confidence Labels
-
-- **strong**: rounds >= 100
-- **moderate**: 50–99
-- **weak**: 20–49
-- **insufficient**: < 20
+**Output**
+- `database_path`
+- `statistics` (row counts, timestamps)
+- `recent_series`
+- `available_tables`
+- `sample_recent_stats`
+- `usage_tips`
 
