@@ -594,6 +594,7 @@ def _kast_impact(
     db: EventDatabase,
     series_id: Optional[str] = None,
     series_ids: Optional[List[str]] = None,
+    player_name: Optional[str] = None,
     min_deaths_no_kast: int = 5,
 ) -> List[Dict[str, Any]]:
     if not series_ids and series_id:
@@ -601,8 +602,17 @@ def _kast_impact(
     if not series_ids:
         return []
     series_clause = _in_clause(series_ids)
-    sql = _load_sql("kast_impact.sql").format(series_clause=series_clause)
-    rows = db.query(sql, list(series_ids) + [min_deaths_no_kast])
+    params: List[Any] = list(series_ids)
+    player_filter = ""
+    if player_name:
+        player_filter = " AND prs.player_name ILIKE ?"
+        params.append(f"%{player_name}%")
+    sql = _load_sql("kast_impact.sql").format(
+        series_clause=series_clause,
+        player_filter=player_filter,
+    )
+    params.append(min_deaths_no_kast)
+    rows = db.query(sql, params)
     results = []
     for row in rows:
         denom = row[2] or 0
@@ -621,6 +631,7 @@ def _opening_death_impact(
     db: EventDatabase,
     series_id: Optional[str] = None,
     series_ids: Optional[List[str]] = None,
+    player_name: Optional[str] = None,
     min_opening_deaths: int = 3,
 ) -> List[Dict[str, Any]]:
     if not series_ids and series_id:
@@ -628,8 +639,17 @@ def _opening_death_impact(
     if not series_ids:
         return []
     series_clause = _in_clause(series_ids)
-    sql = _load_sql("opening_death_impact.sql").format(series_clause=series_clause)
-    rows = db.query(sql, list(series_ids) + [min_opening_deaths])
+    params: List[Any] = list(series_ids)
+    player_filter = ""
+    if player_name:
+        player_filter = " AND prs.player_name ILIKE ?"
+        params.append(f"%{player_name}%")
+    sql = _load_sql("opening_death_impact.sql").format(
+        series_clause=series_clause,
+        player_filter=player_filter,
+    )
+    params.append(min_opening_deaths)
+    rows = db.query(sql, params)
     results = []
     for row in rows:
         denom = row[2] or 0
@@ -873,8 +893,18 @@ async def player_profile_report(
         recent_sql = _load_sql("player_profile_recent.sql").format(series_clause=series_clause)
         recent_rows = db.query(recent_sql, list(series_ids) + [f"%{player_name}%"])
 
-        kast_impact = _kast_impact(db, series_ids=series_ids, min_deaths_no_kast=0)
-        od_impact = _opening_death_impact(db, series_ids=series_ids, min_opening_deaths=0)
+        kast_impact = _kast_impact(
+            db,
+            series_ids=series_ids,
+            player_name=player_name,
+            min_deaths_no_kast=0,
+        )
+        od_impact = _opening_death_impact(
+            db,
+            series_ids=series_ids,
+            player_name=player_name,
+            min_opening_deaths=0,
+        )
 
         clutch_sql = _load_sql("player_profile_clutch.sql").format(series_clause=series_clause)
         clutch_row = db.query(clutch_sql, params)[0]

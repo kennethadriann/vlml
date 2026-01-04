@@ -1,5 +1,5 @@
 SELECT
-    prs.player_name,
+    MAX(prs.player_name) AS player_name,
     MAX(prs.team_name) AS team_name,
     MIN(r.started_at) AS first_game,
     MAX(r.started_at) AS last_game,
