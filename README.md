@@ -1,6 +1,26 @@
-# VLML - Valorant Analytics MCP Server
+# VLML — Valorant Analytics Modeling Layer
 
-VLML provides **data-only analytics** for Valorant. It exposes an MCP server backed by DuckDB and aggregated metrics so an LLM (Claude/Gemini/etc.) can generate coaching insights.
+VLML is a structured modeling layer for Valorant esports analytics.
+It standardizes metrics and relationships between datasets, then exposes them through MCP so AI tools can generate accurate and explainable insights.
+
+## Why This Exists
+
+- **The data model is the product.** VLML is built around an analytics data model with pre-computed metrics, so analysis is fast and consistent.
+- **MCP is just the bridge.** The server delivers structured, data-only payloads to Claude, Gemini, and other LLMs — the AI generates the coaching insights, not the server.
+- **Raw data becomes the model.** Source data comes from GRID JSON exports, and VLML transforms it into a structured analytics model.
+
+## Architecture at a Glance
+
+1. **Modeling layer (DuckDB)**: Atomic events plus aggregated round/game/series tables optimized for analytics.
+2. **MCP tools (bridge)**: Tools that return structured metrics only — no narratives, no opinions.
+3. **LLM layer (insights)**: Generates narrative, recommendations, and VOD priorities.
+
+## What You Get
+
+- **Match analysis**: Team comparison, round timelines, impact metrics, VOD review targets.
+- **Player profiling**: Career stats, agent/map splits, clutch performance, trend signals.
+- **Scouting reports**: Map pool, roster tendencies, opening duels, trade quality.
+- **Deep-dive queries**: Use `query_sql` for ad-hoc analysis directly against the analytics tables.
 
 ## Quick Start
 
@@ -30,7 +50,7 @@ Or:
 .venv/bin/python -m vlml.server
 ```
 
-## Tools (Data-Only)
+## Tools 
 
 Insights tools:
 - `match_analysis_report`
@@ -56,4 +76,5 @@ See [docs/tools.md](docs/tools.md) for input/output details.
 ## Notes
 
 - No prebuilt database is shipped. Use the pipeline to build `data/vlml_events.duckdb`.
+- Raw input data comes from GRID JSON exports and is transformed into VLML analytics tables.
 - All reports return metrics and evidence only. LLMs should generate insights and recommendations.
