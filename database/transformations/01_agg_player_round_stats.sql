@@ -395,10 +395,11 @@ traded_deaths AS (
     FROM death_events d
     JOIN kill_events k
       ON k.round_id = d.round_id
-     AND k.killer_id = d.killer_id
+     AND k.victim_id = d.killer_id
      AND k.killer_team = d.team_name
+     AND k.killer_id <> d.player_id
      AND k.occurred_at >= d.occurred_at
-     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 5.0
+     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 4.0
     GROUP BY d.round_id, d.player_id
 ),
 trade_kill_events AS (
@@ -412,7 +413,7 @@ trade_kill_events AS (
      AND d.killer_id = k.victim_id
      AND d.team_name = k.killer_team
      AND k.occurred_at >= d.occurred_at
-     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 5.0
+     AND EXTRACT(EPOCH FROM (k.occurred_at - d.occurred_at)) <= 4.0
     GROUP BY k.round_id, k.killer_id
 ),
 player_death_time AS (
@@ -779,7 +780,9 @@ SELECT
 
     -- Combat efficiency
     (SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END) > 0
-     OR SUM(CASE WHEN e.is_assist = TRUE THEN 1 ELSE 0 END) > 0) AS kast,
+     OR SUM(CASE WHEN e.is_assist = TRUE THEN 1 ELSE 0 END) > 0
+     OR SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END) = 0
+     OR MAX(td2.trade_time) IS NOT NULL) AS kast,
     CASE
         WHEN SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END) > 0
         THEN SUM(COALESCE(e.damage_dealt, 0))::FLOAT / SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END)
@@ -921,7 +924,7 @@ SELECT
     SUM(
         CASE
             WHEN e.event_type = 'player-damaged-player'
-                 AND (e.is_headshot = TRUE OR e.hit_location = 'head')
+                 AND e.hit_location = 'head'
             THEN 1
             ELSE 0
         END
@@ -929,7 +932,7 @@ SELECT
     SUM(
         CASE
             WHEN e.event_type = 'player-damaged-player'
-                 AND (e.hit_location IN ('head', 'body', 'leg') OR e.is_headshot = TRUE)
+                 AND e.hit_location IN ('head', 'body', 'leg')
             THEN 1
             ELSE 0
         END

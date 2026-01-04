@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     headshot_kills_denom INTEGER DEFAULT 0,
     headshot_hits_total INTEGER DEFAULT 0,
     hits_total INTEGER DEFAULT 0,
+    total_hits INTEGER DEFAULT 0,
     bodyshot_kills INTEGER DEFAULT 0,
     rifle_kills INTEGER DEFAULT 0,
     smg_kills INTEGER DEFAULT 0,

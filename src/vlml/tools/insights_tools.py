@@ -497,6 +497,7 @@ def _team_comparison(
             "name": team,
             "rounds_won": row[2] or 0,
             "rounds_played": rounds,
+            "assists": row[11] or 0,
             "opening_duels": {
                 "fb": {"num": row[3] or 0, "denom": rounds},
                 "fd": {"num": row[4] or 0, "denom": rounds},
@@ -521,22 +522,22 @@ def _team_comparison(
             },
             "consistency": {
                 "kast": {"num": impact[6] or 0, "denom": impact[7] or 0},
-                "adr": {"num": float(row[11]) if row[11] is not None else 0.0, "denom": rounds},
+                "adr": {"num": float(row[12]) if row[12] is not None else 0.0, "denom": rounds},
                 "kd_ratio": round((row[9] or 0) / (row[10] or 1), 2),
             },
             "timing": {
-                "avg_time_to_fk_s": float(row[14]) if row[14] is not None else None,
-                "avg_time_to_plant_s": float(row[15]) if row[15] is not None else None,
-                "avg_post_plant_duration_s": float(row[16]) if row[16] is not None else None,
+                "avg_time_to_fk_s": float(row[15]) if row[15] is not None else None,
+                "avg_time_to_plant_s": float(row[16]) if row[16] is not None else None,
+                "avg_post_plant_duration_s": float(row[17]) if row[17] is not None else None,
             },
             "trades": {
-                "deaths_traded": row[12] or 0,
-                "deaths_untraded": row[13] or 0,
-                "trade_rate": {"num": row[12] or 0, "denom": (row[12] or 0) + (row[13] or 0)},
+                "deaths_traded": row[13] or 0,
+                "deaths_untraded": row[14] or 0,
+                "trade_rate": {"num": row[13] or 0, "denom": (row[13] or 0) + (row[14] or 0)},
             },
             "post_plant": {
-                "kills": row[17] or 0,
-                "deaths": row[18] or 0,
+                "kills": row[18] or 0,
+                "deaths": row[19] or 0,
             },
             "economy": {
                 "pistol": {"wins": pistol[0] or 0, "played": pistol[1] or 0},
@@ -563,6 +564,8 @@ def _player_performance(
     for row in rows:
         rounds = row[3] or 0
         deaths = row[5] or 0
+        headshot_hits = row[12] or 0
+        hits_total = row[13] or 0
         results.append({
             "player_name": row[0],
             "team_name": row[1],
@@ -577,14 +580,17 @@ def _player_performance(
             "opening_kills": row[9] or 0,
             "opening_deaths": row[10] or 0,
             "adr": round((row[11] or 0) / rounds, 1) if rounds > 0 else 0.0,
-            "kast_pct": round((row[12] or 0) / (row[13] or 1) * 100, 1),
-            "clutch_attempts": row[14] or 0,
-            "clutches_won": row[15] or 0,
+            "headshot_hits": headshot_hits,
+            "hits_total": hits_total,
+            "hs_pct": round(headshot_hits / hits_total * 100, 2) if hits_total > 0 else 0.0,
+            "kast_pct": round((row[14] or 0) / (row[15] or 1) * 100, 1),
+            "clutch_attempts": row[16] or 0,
+            "clutches_won": row[17] or 0,
             "multikills": {
-                "2k": row[16] or 0,
-                "3k": row[17] or 0,
-                "4k": row[18] or 0,
-                "ace": row[19] or 0,
+                "2k": row[18] or 0,
+                "3k": row[19] or 0,
+                "4k": row[20] or 0,
+                "ace": row[21] or 0,
             },
         })
     return results

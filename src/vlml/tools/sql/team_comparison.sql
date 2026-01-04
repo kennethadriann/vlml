@@ -10,6 +10,7 @@ SELECT
     SUM(trs.first_deaths) AS fd_attempts,
     SUM(trs.team_kills) AS total_kills,
     SUM(trs.team_deaths) AS total_deaths,
+    SUM(trs.team_assists) AS total_assists,
     SUM(trs.team_damage_dealt) AS team_damage_sum,
     SUM(trs.deaths_traded_total) AS deaths_traded,
     SUM(trs.deaths_untraded_total) AS deaths_untraded,

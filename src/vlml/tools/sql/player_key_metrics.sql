@@ -11,7 +11,7 @@ SELECT
     SUM(CASE WHEN prs.is_ace THEN 1 ELSE 0 END) AS aces,
     SUM(prs.kills) AS kills,
     SUM(prs.deaths) AS deaths,
-    SUM(CASE WHEN prs.kast THEN 1 ELSE 0 END) AS kast_num,
+    SUM(CASE WHEN (prs.kills > 0 OR prs.assists > 0 OR prs.deaths = 0 OR prs.is_traded) THEN 1 ELSE 0 END) AS kast_num,
     COUNT(*) AS kast_denom,
     SUM(prs.damage_dealt) AS adr_num,
     COUNT(*) AS adr_denom

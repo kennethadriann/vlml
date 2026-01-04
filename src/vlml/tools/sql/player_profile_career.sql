@@ -3,7 +3,7 @@ SELECT
     SUM(prs.deaths) AS deaths,
     SUM(prs.assists) AS assists,
     SUM(prs.damage_dealt) AS damage_dealt,
-    SUM(CASE WHEN prs.kast THEN 1 ELSE 0 END) AS kast_num,
+    SUM(CASE WHEN (prs.kills > 0 OR prs.assists > 0 OR prs.deaths = 0 OR prs.is_traded) THEN 1 ELSE 0 END) AS kast_num,
     COUNT(*) AS kast_denom,
     SUM(prs.first_bloods) AS fb,
     SUM(prs.first_deaths) AS fd,
