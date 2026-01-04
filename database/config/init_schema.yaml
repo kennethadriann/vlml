@@ -44,4 +44,4 @@ validation:
       COUNT(*) AS table_count
     FROM information_schema.tables
     WHERE table_schema = 'main'
-  expected_table_count: 13
+  expected_table_count: 14

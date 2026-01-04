@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     defuses INTEGER DEFAULT 0,
     abilities_used INTEGER DEFAULT 0,
     damage_dealt FLOAT DEFAULT 0,
-    ability_damage_dealt FLOAT DEFAULT 0,
     damage_received FLOAT DEFAULT 0,
     survived BOOLEAN,
 
@@ -80,11 +79,9 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     clutch_won BOOLEAN,  -- NULL if not clutch
     clutch_lost BOOLEAN,  -- NULL if not clutch
     clutch_opponents INTEGER,
-    clutch_time_remaining FLOAT,
-    clutch_difficulty_score FLOAT,
-
     -- Economy
     loadout_value INTEGER,
+    net_worth INTEGER,
     is_eco_round BOOLEAN DEFAULT FALSE,
     is_force_buy BOOLEAN DEFAULT FALSE,
     is_full_buy BOOLEAN DEFAULT FALSE,
@@ -92,7 +89,6 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
 
     -- Ability usage
     flash_assists INTEGER DEFAULT 0,
-    util_damage FLOAT DEFAULT 0,
     early_util BOOLEAN DEFAULT FALSE,
 
     -- Weapon stats
@@ -154,12 +150,6 @@ CREATE TABLE IF NOT EXISTS agg_player_round_stats (
     iso_deaths_denom INTEGER DEFAULT 0,
     stack_deaths_total INTEGER DEFAULT 0,
     stack_deaths_denom INTEGER DEFAULT 0,
-    crossfire_kills_total INTEGER DEFAULT 0,
-    crossfire_kills_denom INTEGER DEFAULT 0,
-    off_angle_kills_total INTEGER DEFAULT 0,
-    off_angle_kills_denom INTEGER DEFAULT 0,
-    rotate_deaths_total INTEGER DEFAULT 0,
-    rotate_deaths_denom INTEGER DEFAULT 0,
 
     -- Survival (sum/denom for averages)
     survival_time_sum_s FLOAT DEFAULT 0,

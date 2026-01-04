@@ -2,7 +2,8 @@
 """Database loader helpers for raw event ingestion."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
+import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -98,6 +99,7 @@ def process_series_bulk_events(
     player_id_to_team_id = {}
     player_id_to_name = {}
     player_id_to_agent_name = {}
+    player_id_to_agent_name_by_game = {}
     platform_game_id_to_internal = {}
 
     series_info = {
@@ -136,6 +138,8 @@ def process_series_bulk_events(
                         player_id_to_agent_name[player_id] = agent_name
         if 'seriesState' in event and 'games' in event['seriesState']:
             for game in event['seriesState']['games']:
+                sequence_number = game.get("sequenceNumber")
+                internal_game_id = f"{series_id}_game_{sequence_number}" if sequence_number else None
                 for team in game.get('teams', []):
                     team_id = str(team.get('id'))
                     team_name = team.get('name')
@@ -152,6 +156,10 @@ def process_series_bulk_events(
                         character = player.get('character', {})
                         agent_name = character.get('name') or character.get('id')
                         if player_id and agent_name:
+                            if internal_game_id:
+                                player_id_to_agent_name_by_game.setdefault(
+                                    internal_game_id, {}
+                                )[player_id] = agent_name
                             player_id_to_agent_name[player_id] = agent_name
 
     try:
@@ -461,7 +469,11 @@ def process_series_bulk_events(
                         actor_team_name = team_id_to_name.get(team_id)
                     elif actor.get("state", {}).get("teamId"):
                         actor_team_name = team_id_to_name.get(str(actor["state"]["teamId"]))
-                    actor_agent_name = player_id_to_agent_name.get(actor_player_id)
+                    actor_agent_name = (
+                        player_id_to_agent_name_by_game
+                        .get(current_game_id, {})
+                        .get(actor_player_id)
+                    ) or player_id_to_agent_name.get(actor_player_id)
                     actor_side = actor.get("state", {}).get("side")
                     actor_game_state = actor.get("state", {}).get("game", {})
                     actor_pos = actor_game_state.get("position") or {}
@@ -496,7 +508,11 @@ def process_series_bulk_events(
                         target_team_name = team_id_to_name.get(team_id)
                     elif target.get("state", {}).get("teamId"):
                         target_team_name = team_id_to_name.get(str(target["state"]["teamId"]))
-                    target_agent_name = player_id_to_agent_name.get(target_player_id)
+                    target_agent_name = (
+                        player_id_to_agent_name_by_game
+                        .get(current_game_id, {})
+                        .get(target_player_id)
+                    ) or player_id_to_agent_name.get(target_player_id)
                     target_side = target.get("state", {}).get("side")
                     target_game_state = target.get("state", {}).get("game", {})
                     target_pos = target_game_state.get("position") or {}
@@ -757,7 +773,11 @@ def process_series_bulk_events(
                     assist_player_name = player_id_to_name.get(assist_player_id)
                     assist_team_id = player_id_to_team_id.get(assist_player_id)
                     assist_team_name = team_id_to_name.get(assist_team_id) if assist_team_id else None
-                    assist_agent_name = player_id_to_agent_name.get(assist_player_id)
+                    assist_agent_name = (
+                        player_id_to_agent_name_by_game
+                        .get(current_game_id, {})
+                        .get(assist_player_id)
+                    ) or player_id_to_agent_name.get(assist_player_id)
                     events_data.append((
                         event_base_id + f"_assist_{assist_player_id}",
                         occurred_at,

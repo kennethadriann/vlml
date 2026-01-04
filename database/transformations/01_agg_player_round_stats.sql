@@ -2,9 +2,6 @@
 -- Source: base_events
 -- Type: Incremental (re-aggregate rounds with new events)
 
-ALTER TABLE agg_player_round_stats
-ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
-
 -- Step 1: Find rounds that have new events
 CREATE TEMP TABLE new_rounds AS
 SELECT DISTINCT e.round_id
@@ -103,11 +100,12 @@ player_economy AS (
     SELECT
         round_id,
         actor_player_id AS player_id,
-        MAX(actor_loadout_value) AS loadout_value
+        MAX(actor_loadout_value) AS loadout_value,
+        MAX(actor_net_worth) AS net_worth
     FROM base_events
     WHERE round_id IN (SELECT round_id FROM new_rounds)
-      AND event_type = 'round-started-freezetime'
       AND actor_player_id IS NOT NULL
+      AND (actor_loadout_value IS NOT NULL OR actor_net_worth IS NOT NULL)
     GROUP BY round_id, actor_player_id
 ),
 player_teams AS (
@@ -510,34 +508,6 @@ iso_deaths_agg AS (
     FROM iso_deaths
     GROUP BY round_id, player_id
 ),
-crossfire_kills AS (
-    SELECT
-        k.round_id,
-        k.killer_id AS player_id,
-        CASE
-            WHEN EXISTS (
-                SELECT 1
-                FROM kill_events k2
-                WHERE k2.round_id = k.round_id
-                  AND k2.killer_team = k.killer_team
-                  AND k2.killer_id <> k.killer_id
-                  AND ABS(EXTRACT(EPOCH FROM (k2.occurred_at - k.occurred_at))) <= 5.0
-                  AND k2.killer_x IS NOT NULL AND k2.killer_y IS NOT NULL
-                  AND k.killer_x IS NOT NULL AND k.killer_y IS NOT NULL
-                  AND SQRT(POWER(k2.killer_x - k.killer_x, 2) + POWER(k2.killer_y - k.killer_y, 2)) <= 5.0
-            )
-            THEN 1 ELSE 0
-        END AS crossfire_kill_flag
-    FROM kill_events k
-),
-crossfire_kills_agg AS (
-    SELECT
-        round_id,
-        player_id,
-        SUM(crossfire_kill_flag) AS crossfire_kills_total
-    FROM crossfire_kills
-    GROUP BY round_id, player_id
-),
 flash_events AS (
     SELECT
         round_id,
@@ -607,116 +577,6 @@ util_effect_kills AS (
      AND SQRT(POWER(k.killer_x - a.util_x, 2) + POWER(k.killer_y - a.util_y, 2)) <= 10.0
     GROUP BY a.round_id, a.player_id
 ),
-map_zone_defaults AS (
-    SELECT map_name, zone_name, min_x, max_x, min_y, max_y
-    FROM map_zones
-    WHERE zone_type = 'default'
-),
-map_zone_sites AS (
-    SELECT map_name, zone_name, min_x, max_x, min_y, max_y
-    FROM map_zones
-    WHERE zone_type = 'site'
-),
-map_zone_default_counts AS (
-    SELECT map_name, COUNT(*) AS default_zone_count
-    FROM map_zone_defaults
-    GROUP BY map_name
-),
-kill_default_zone AS (
-    SELECT
-        k.round_id,
-        k.killer_id AS player_id,
-        MAX(
-            CASE
-                WHEN k.killer_x IS NOT NULL AND k.killer_y IS NOT NULL
-                     AND k.killer_x BETWEEN z.min_x AND z.max_x
-                     AND k.killer_y BETWEEN z.min_y AND z.max_y
-                THEN 1 ELSE 0
-            END
-        ) AS in_default_zone,
-        MAX(COALESCE(c.default_zone_count, 0)) AS default_zone_count
-    FROM kill_events k
-    LEFT JOIN map_zone_defaults z
-      ON z.map_name = k.map_name
-    LEFT JOIN map_zone_default_counts c
-      ON c.map_name = k.map_name
-    GROUP BY k.round_id, k.killer_id
-),
-off_angle_kills AS (
-    SELECT
-        k.round_id,
-        k.killer_id AS player_id,
-        SUM(
-            CASE
-                WHEN dz.default_zone_count > 0
-                     AND COALESCE(dz.in_default_zone, 0) = 0
-                THEN 1 ELSE 0
-            END
-        ) AS off_angle_kills_total
-    FROM kill_events k
-    LEFT JOIN kill_default_zone dz
-      ON dz.round_id = k.round_id
-     AND dz.player_id = k.killer_id
-    GROUP BY k.round_id, k.killer_id
-),
-plant_locations AS (
-    SELECT
-        round_id,
-        occurred_at AS plant_time,
-        actor_team_name AS plant_team,
-        actor_pos_x AS plant_x,
-        actor_pos_y AS plant_y,
-        map_name
-    FROM base_events
-    WHERE round_id IN (SELECT round_id FROM new_rounds)
-      AND is_plant = TRUE
-      AND actor_pos_x IS NOT NULL
-      AND actor_pos_y IS NOT NULL
-),
-plant_sites AS (
-    SELECT
-        p.round_id,
-        p.plant_time,
-        p.plant_team,
-        z.zone_name AS plant_site
-    FROM plant_locations p
-    LEFT JOIN map_zone_sites z
-      ON z.map_name = p.map_name
-     AND p.plant_x BETWEEN z.min_x AND z.max_x
-     AND p.plant_y BETWEEN z.min_y AND z.max_y
-),
-death_sites AS (
-    SELECT
-        d.round_id,
-        d.player_id,
-        d.team_name,
-        d.occurred_at,
-        z.zone_name AS death_site
-    FROM death_events d
-    LEFT JOIN rounds r
-      ON r.round_id = d.round_id
-    LEFT JOIN map_zone_sites z
-      ON z.map_name = r.map_name
-     AND d.death_x BETWEEN z.min_x AND z.max_x
-     AND d.death_y BETWEEN z.min_y AND z.max_y
-),
-rotate_deaths AS (
-    SELECT
-        d.round_id,
-        d.player_id,
-        SUM(
-            CASE
-                WHEN ps.plant_site IS NOT NULL
-                     AND d.death_site IS NOT NULL
-                     AND d.death_site <> ps.plant_site
-                     AND d.occurred_at > ps.plant_time
-                THEN 1 ELSE 0
-            END
-        ) AS rotate_deaths_total
-    FROM death_sites d
-    JOIN plant_sites ps ON ps.round_id = d.round_id
-    GROUP BY d.round_id, d.player_id
-),
 player_first_kill AS (
     SELECT
         round_id,
@@ -749,7 +609,6 @@ INSERT INTO agg_player_round_stats (
     defuses,
     abilities_used,
     damage_dealt,
-    ability_damage_dealt,
     damage_received,
     survived,
     time_first_blood,
@@ -786,15 +645,13 @@ INSERT INTO agg_player_round_stats (
     clutch_won,
     clutch_lost,
     clutch_opponents,
-    clutch_time_remaining,
-    clutch_difficulty_score,
     loadout_value,
+    net_worth,
     is_eco_round,
     is_force_buy,
     is_full_buy,
     is_thrifty,
     flash_assists,
-    util_damage,
     early_util,
     weapon_name,
     weapon_type,
@@ -848,12 +705,6 @@ INSERT INTO agg_player_round_stats (
     iso_deaths_denom,
     stack_deaths_total,
     stack_deaths_denom,
-    crossfire_kills_total,
-    crossfire_kills_denom,
-    off_angle_kills_total,
-    off_angle_kills_denom,
-    rotate_deaths_total,
-    rotate_deaths_denom,
     survival_time_sum_s,
     survival_time_denom,
     calculated_at
@@ -888,7 +739,6 @@ SELECT
     SUM(CASE WHEN e.is_defuse = TRUE THEN 1 ELSE 0 END)::INTEGER AS defuses,
     SUM(CASE WHEN e.is_ability_use = TRUE THEN 1 ELSE 0 END)::INTEGER AS abilities_used,
     SUM(COALESCE(e.damage_dealt, 0))::FLOAT AS damage_dealt,
-    SUM(CASE WHEN e.is_ability_use = TRUE THEN COALESCE(e.damage_dealt, 0) ELSE 0 END)::FLOAT AS ability_damage_dealt,
     MAX(COALESCE(dr.damage_received, 0))::FLOAT AS damage_received,
     CASE WHEN MAX(pdt.death_time) IS NULL THEN TRUE ELSE FALSE END AS survived,
 
@@ -1026,11 +876,10 @@ SELECT
         THEN (5 - MAX(rtc.opponent_deaths))
         ELSE NULL
     END AS clutch_opponents,
-    NULL AS clutch_time_remaining,
-    NULL AS clutch_difficulty_score,
 
     -- Economy (simplified)
     MAX(pe.loadout_value) AS loadout_value,
+    MAX(pe.net_worth) AS net_worth,
     CASE
         WHEN MAX(COALESCE(twc.primary_count, 0)) = 0
         THEN TRUE ELSE FALSE
@@ -1052,7 +901,6 @@ SELECT
 
     -- Ability usage
     MAX(COALESCE(fa.flash_assist_kills_total, 0)) AS flash_assists,
-    SUM(CASE WHEN e.is_ability_use = TRUE THEN COALESCE(e.damage_dealt, 0) ELSE 0 END)::FLOAT AS util_damage,
     CASE
         WHEN MAX(COALESCE(eu.early_util_flag, 0)) = 1 THEN TRUE
         ELSE FALSE
@@ -1149,15 +997,6 @@ SELECT
     SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END)::INTEGER AS iso_deaths_denom,
     MAX(COALESCE(sd.stack_deaths_total, 0)) AS stack_deaths_total,
     SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END)::INTEGER AS stack_deaths_denom,
-    MAX(COALESCE(ck.crossfire_kills_total, 0)) AS crossfire_kills_total,
-    SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END)::INTEGER AS crossfire_kills_denom,
-    MAX(COALESCE(ok.off_angle_kills_total, 0)) AS off_angle_kills_total,
-    SUM(CASE WHEN e.is_kill = TRUE THEN 1 ELSE 0 END)::INTEGER AS off_angle_kills_denom,
-    LEAST(
-        MAX(COALESCE(rot.rotate_deaths_total, 0)),
-        LEAST(SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END), 1)
-    ) AS rotate_deaths_total,
-    LEAST(SUM(CASE WHEN e.is_death = TRUE THEN 1 ELSE 0 END), 1)::INTEGER AS rotate_deaths_denom,
 
     -- Survival
     CASE
@@ -1176,7 +1015,7 @@ SELECT
 
 FROM base_events e
 LEFT JOIN rounds r ON e.round_id = r.round_id
-LEFT JOIN agent_roles ar ON e.actor_agent_name = ar.agent_name
+LEFT JOIN agent_roles ar ON LOWER(e.actor_agent_name) = LOWER(ar.agent_name)
 LEFT JOIN weapon_types wt ON LOWER(e.weapon_name) = LOWER(wt.weapon_name)
 LEFT JOIN round_team_counts rtc
   ON rtc.round_id = e.round_id
@@ -1224,15 +1063,6 @@ LEFT JOIN stack_deaths_agg sd
 LEFT JOIN iso_deaths_agg iso
   ON iso.round_id = e.round_id
  AND iso.player_id = e.actor_player_id
-LEFT JOIN crossfire_kills_agg ck
-  ON ck.round_id = e.round_id
- AND ck.player_id = e.actor_player_id
-LEFT JOIN off_angle_kills ok
-  ON ok.round_id = e.round_id
- AND ok.player_id = e.actor_player_id
-LEFT JOIN rotate_deaths rot
-  ON rot.round_id = e.round_id
- AND rot.player_id = e.actor_player_id
 LEFT JOIN flash_assist_kills fa
   ON fa.round_id = e.round_id
  AND fa.player_id = e.actor_player_id
