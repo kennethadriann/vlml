@@ -62,7 +62,7 @@ SELECT
     SUM(prs.first_deaths)::FLOAT / COUNT(*) AS fd_percentage,
 
     -- Composite scores
-    SUM(CASE WHEN prs.kast THEN 1 ELSE 0 END)::FLOAT / COUNT(*) AS kast_percentage,
+    SUM(CASE WHEN (prs.kills > 0 OR prs.assists > 0 OR prs.deaths = 0 OR prs.is_traded) THEN 1 ELSE 0 END)::FLOAT / COUNT(*) AS kast_percentage,
     NULL AS impact_rating,
 
     -- Trading aggregates

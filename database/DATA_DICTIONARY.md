@@ -144,7 +144,7 @@ Notes:
 - `is_initiator`: Flag indicating initiator.
 - `is_controller`: Flag indicating controller.
 - `is_sentinel`: Flag indicating sentinel.
-- `kast`: Metric for kast.
+- `kast`: Deprecated; compute KAST via kills/assists/deaths/is_traded.
 - `damage_per_kill`: Metric for damage per kill.
 - `overkill_damage`: Metric for overkill damage.
 - `is_entry_fragger`: Flag indicating entry fragger.
@@ -181,8 +181,8 @@ Notes:
 - `weapon_type`: Metric for weapon type.
 - `total_headshot_kills`: Metric for total headshot kills.
 - `headshot_kills_denom`: Denominator for headshot kills.
-- `headshot_hits_total`: Total count of headshot hits.
-- `hits_total`: Total count of hits.
+- `headshot_hits_total`: Total count of hit_location='head' in player-damaged-player events.
+- `hits_total`: Total count of hit_location in ('head','body','leg') in player-damaged-player events.
 - `bodyshot_kills`: Metric for bodyshot kills.
 - `rifle_kills`: Metric for rifle kills.
 - `smg_kills`: Metric for smg kills.
@@ -260,7 +260,7 @@ Notes:
 - `kpr`: Metric for kpr.
 - `fk_percentage`: Metric for fk percentage.
 - `fd_percentage`: Metric for fd percentage.
-- `kast_percentage`: Metric for kast percentage.
+- `kast_percentage`: Percentage of rounds with kill, assist, survived (deaths=0), or traded (is_traded).
 - `impact_rating`: Metric for impact rating.
 - `trade_kills`: Metric for trade kills.
 - `traded_deaths`: Metric for traded deaths.
@@ -292,8 +292,8 @@ Notes:
 - `half_diff`: Metric for half diff.
 - `total_headshot_kills`: Metric for total headshot kills.
 - `headshot_kills_denom`: Denominator for headshot kills.
-- `headshot_hits_total`: Total count of headshot hits.
-- `hits_total`: Total count of hits.
+- `headshot_hits_total`: Total count of hit_location='head' in player-damaged-player events.
+- `hits_total`: Total count of hit_location in ('head','body','leg') in player-damaged-player events.
 - `total_bodyshot_kills`: Metric for total bodyshot kills.
 - `vandal_kills`: Metric for vandal kills.
 - `phantom_kills`: Metric for phantom kills.

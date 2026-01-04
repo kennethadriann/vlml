@@ -667,7 +667,7 @@
         "type": "INTEGER"
       },
       "headshot_hits_total": {
-        "desc": "Total count of headshot hits.",
+        "desc": "Total count of hit_location='head' in player-damaged-player events.",
         "type": "INTEGER"
       },
       "headshot_kills_denom": {
@@ -675,7 +675,7 @@
         "type": "INTEGER"
       },
       "hits_total": {
-        "desc": "Total count of hits.",
+        "desc": "Total count of hit_location in ('head','body','leg') in player-damaged-player events.",
         "type": "INTEGER"
       },
       "is_1v1": {
@@ -812,7 +812,7 @@
         "type": "INTEGER"
       },
       "kast": {
-        "desc": "Metric for kast.",
+        "desc": "Deprecated: use kills/assists/deaths/is_traded to compute KAST.",
         "flag": true,
         "type": "BOOLEAN"
       },
@@ -1166,7 +1166,7 @@
         "type": "FLOAT"
       },
       "headshot_hits_total": {
-        "desc": "Total count of headshot hits.",
+        "desc": "Total count of hit_location='head' in player-damaged-player events.",
         "type": "INTEGER"
       },
       "headshot_kills_denom": {
@@ -1174,7 +1174,7 @@
         "type": "INTEGER"
       },
       "hits_total": {
-        "desc": "Total count of hits.",
+        "desc": "Total count of hit_location in ('head','body','leg') in player-damaged-player events.",
         "type": "INTEGER"
       },
       "impact_rating": {
@@ -1187,7 +1187,7 @@
         "type": "BOOLEAN"
       },
       "kast_percentage": {
-        "desc": "Metric for kast percentage.",
+        "desc": "Percentage of rounds with kill, assist, survived (deaths=0), or traded (is_traded).",
         "type": "FLOAT"
       },
       "kd_ratio": {
