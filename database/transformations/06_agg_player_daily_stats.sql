@@ -2,9 +2,6 @@
 -- Source: agg_player_game_stats, games, series
 -- Type: Incremental (re-aggregate dates with new game stats)
 
-ALTER TABLE agg_player_daily_stats
-ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
-
 -- Step 1: Find dates that have new or updated game stats
 CREATE TEMP TABLE new_dates AS
 SELECT DISTINCT CAST(game_started_at AS DATE) AS date
@@ -40,7 +37,6 @@ WITH player_games AS (
         pgs.plants,
         pgs.defuses,
         pgs.damage_dealt,
-        pgs.ability_damage_dealt,
         pgs.damage_received,
         pgs.agent_name,
         g.series_id,
@@ -78,7 +74,6 @@ SELECT
     SUM(pg.plants)::INTEGER AS plants,
     SUM(pg.defuses)::INTEGER AS defuses,
     SUM(pg.damage_dealt)::FLOAT AS damage_dealt,
-    SUM(pg.ability_damage_dealt)::FLOAT AS ability_damage_dealt,
     SUM(pg.damage_received)::FLOAT AS damage_received,
 
     -- Derived metrics

@@ -149,11 +149,11 @@ The separation ensures clean abstraction for application code while maintaining 
   - Combat: kills, deaths, assists, damage, survived
   - Opening duels: is_opening_kill, is_opening_death, is_entry_fragger
   - Trading: is_traded, is_trade_kill, trade_kill_time, is_untraded_death
-  - Clutch: is_1v1/1v2/1v3/1v4/1v5, clutch_won, clutch_difficulty_score
+  - Clutch: is_1v1/1v2/1v3/1v4/1v5, clutch_won
   - Multi-kills: is_double_kill, is_triple_kill, is_quad_kill, is_ace
   - Economy: loadout_value, is_eco_round, is_force_buy, is_thrifty
   - Weapons: weapon_name, weapon_type, rifle/smg/pistol/sniper kills
-  - Abilities: flash_assists, util_damage, early_util
+  - Abilities: flash_assists, early_util
 
 #### `agg_player_game_stats`
 - **Grain**: One row per (game_id, player_id)

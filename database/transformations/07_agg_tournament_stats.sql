@@ -2,9 +2,6 @@
 -- Source: agg_player_series_stats, agg_team_game_stats, games, series
 -- Type: Incremental (re-aggregate tournaments with new stats)
 
-ALTER TABLE agg_tournament_stats
-ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
-
 -- Step 1: Find tournaments that have new or updated stats
 CREATE TEMP TABLE new_tournaments AS
 SELECT DISTINCT s.tournament_id
@@ -93,7 +90,6 @@ SELECT
     pss_tournament.plants,
     pss_tournament.defuses,
     pss_tournament.damage_dealt,
-    pss_tournament.ability_damage_dealt,
     pss_tournament.damage_received,
     pss_tournament.kd_ratio,
     pss_tournament.kda,
@@ -136,7 +132,6 @@ FROM (
         SUM(pss.plants)::INTEGER AS plants,
         SUM(pss.defuses)::INTEGER AS defuses,
         SUM(pss.damage_dealt)::FLOAT AS damage_dealt,
-        SUM(pss.ability_damage_dealt)::FLOAT AS ability_damage_dealt,
         SUM(pss.damage_received)::FLOAT AS damage_received,
         CASE WHEN SUM(pss.deaths) > 0 THEN SUM(pss.kills)::FLOAT / SUM(pss.deaths) ELSE NULL END AS kd_ratio,
         CASE WHEN SUM(pss.deaths) > 0 THEN (SUM(pss.kills) + SUM(pss.assists))::FLOAT / SUM(pss.deaths) ELSE NULL END AS kda,
@@ -193,7 +188,6 @@ FROM (
         SUM(tgs.plants)::INTEGER AS plants,
         SUM(tgs.defuses)::INTEGER AS defuses,
         SUM(tgs.team_damage_dealt)::FLOAT AS damage_dealt,
-        0::FLOAT AS ability_damage_dealt,
         SUM(tgs.team_damage_received)::FLOAT AS damage_received,
         CASE WHEN SUM(tgs.team_deaths) > 0 THEN SUM(tgs.team_kills)::FLOAT / SUM(tgs.team_deaths) ELSE NULL END AS kd_ratio,
         CASE WHEN SUM(tgs.team_deaths) > 0 THEN (SUM(tgs.team_kills) + SUM(tgs.team_assists))::FLOAT / SUM(tgs.team_deaths) ELSE NULL END AS kda,

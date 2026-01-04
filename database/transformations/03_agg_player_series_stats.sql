@@ -2,9 +2,6 @@
 -- Source: agg_player_game_stats, series, games
 -- Type: Incremental (re-aggregate series with new game stats)
 
-ALTER TABLE agg_player_series_stats
-ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
-
 -- Step 1: Find series that have new/updated game stats
 CREATE TEMP TABLE new_series AS
 SELECT DISTINCT g.series_id
@@ -52,7 +49,6 @@ SELECT
     SUM(pgs.defuses)::INTEGER AS defuses,
     SUM(pgs.abilities_used)::INTEGER AS abilities_used,
     SUM(pgs.damage_dealt)::FLOAT AS damage_dealt,
-    SUM(pgs.ability_damage_dealt)::FLOAT AS ability_damage_dealt,
     SUM(pgs.damage_received)::FLOAT AS damage_received,
 
     -- Derived metrics

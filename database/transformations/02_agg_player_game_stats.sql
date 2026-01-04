@@ -2,9 +2,6 @@
 -- Source: agg_player_round_stats
 -- Type: Incremental (re-aggregate games with new round stats)
 
-ALTER TABLE agg_player_game_stats
-ADD COLUMN IF NOT EXISTS ability_damage_dealt FLOAT DEFAULT 0;
-
 -- Step 1: Find games that have new or updated round stats
 CREATE TEMP TABLE new_games AS
 SELECT DISTINCT r.game_id
@@ -54,7 +51,6 @@ SELECT
     SUM(prs.defuses)::INTEGER AS defuses,
     SUM(prs.abilities_used)::INTEGER AS abilities_used,
     SUM(prs.damage_dealt)::FLOAT AS damage_dealt,
-    SUM(prs.ability_damage_dealt)::FLOAT AS ability_damage_dealt,
     SUM(prs.damage_received)::FLOAT AS damage_received,
 
     -- Derived metrics

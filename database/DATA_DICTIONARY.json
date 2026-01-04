@@ -490,10 +490,6 @@
         "desc": "Metric for abilities used.",
         "type": "INTEGER"
       },
-      "ability_damage_dealt": {
-        "desc": "Damage dealt by abilities in the round.",
-        "type": "FLOAT"
-      },
       "agent_name": {
         "desc": "Agent name.",
         "type": "VARCHAR"
@@ -514,10 +510,6 @@
         "desc": "Timestamp for calculated.",
         "type": "TIMESTAMP"
       },
-      "clutch_difficulty_score": {
-        "desc": "Metric for clutch difficulty score.",
-        "type": "FLOAT"
-      },
       "clutch_lost": {
         "desc": "Metric for clutch lost.",
         "flag": true,
@@ -527,22 +519,10 @@
         "desc": "Metric for clutch opponents.",
         "type": "INTEGER"
       },
-      "clutch_time_remaining": {
-        "desc": "Metric for clutch time remaining.",
-        "type": "FLOAT"
-      },
       "clutch_won": {
         "desc": "Metric for clutch won.",
         "flag": true,
         "type": "BOOLEAN"
-      },
-      "crossfire_kills_denom": {
-        "desc": "Denominator for crossfire kills.",
-        "type": "INTEGER"
-      },
-      "crossfire_kills_total": {
-        "desc": "Total count of crossfire kills.",
-        "type": "INTEGER"
       },
       "damage_dealt": {
         "desc": "Metric for damage dealt.",
@@ -852,20 +832,16 @@
         "desc": "Metric for loadout value.",
         "type": "INTEGER"
       },
+      "net_worth": {
+        "desc": "Metric for net worth.",
+        "type": "INTEGER"
+      },
       "map_name": {
         "desc": "Map name.",
         "type": "VARCHAR"
       },
       "multi_kill_count": {
         "desc": "Metric for multi kill count.",
-        "type": "INTEGER"
-      },
-      "off_angle_kills_denom": {
-        "desc": "Denominator for off angle kills.",
-        "type": "INTEGER"
-      },
-      "off_angle_kills_total": {
-        "desc": "Total count of off angle kills.",
         "type": "INTEGER"
       },
       "opponent_team_name": {
@@ -902,14 +878,6 @@
       },
       "rifle_kills": {
         "desc": "Metric for rifle kills.",
-        "type": "INTEGER"
-      },
-      "rotate_deaths_denom": {
-        "desc": "Denominator for rotate deaths.",
-        "type": "INTEGER"
-      },
-      "rotate_deaths_total": {
-        "desc": "Total count of rotate deaths.",
         "type": "INTEGER"
       },
       "round_id": {
@@ -1019,10 +987,6 @@
         "desc": "Metric for trade kill time.",
         "type": "FLOAT"
       },
-      "util_damage": {
-        "desc": "Metric for util damage.",
-        "type": "FLOAT"
-      },
       "util_effect_kills_denom": {
         "desc": "Denominator for util effect kills.",
         "type": "INTEGER"
@@ -1048,13 +1012,10 @@
     "metrics": {
       "avg_duel_resolution_time": "duel_resolution_time_sum_s / duel_resolution_time_denom",
       "avg_survival_time": "survival_time_sum_s / survival_time_denom",
-      "crossfire_kills": "crossfire_kills_total / crossfire_kills_denom",
       "duel_initiated": "duel_initiated_total / duel_initiated_denom",
       "flash_assist_kills": "flash_assist_kills_total / flash_assist_kills_denom",
       "iso_deaths": "iso_deaths_total / iso_deaths_denom",
-      "off_angle_kills": "off_angle_kills_total / off_angle_kills_denom",
       "repeek_deaths": "repeek_deaths_total / repeek_deaths_denom",
-      "rotate_deaths": "rotate_deaths_total / rotate_deaths_denom",
       "self_flash_kills": "self_flash_kills_total / self_flash_kills_denom",
       "stack_deaths": "stack_deaths_total / stack_deaths_denom",
       "util_effect_kills": "util_effect_kills_total / util_effect_kills_denom"
@@ -1070,10 +1031,6 @@
       "abilities_used": {
         "desc": "Metric for abilities used.",
         "type": "INTEGER"
-      },
-      "ability_damage_dealt": {
-        "desc": "Damage dealt by abilities in the game.",
-        "type": "FLOAT"
       },
       "aces": {
         "desc": "Metric for aces.",
@@ -1395,10 +1352,6 @@
       "abilities_used": {
         "desc": "Metric for abilities used.",
         "type": "INTEGER"
-      },
-      "ability_damage_dealt": {
-        "desc": "Damage dealt by abilities in the series.",
-        "type": "FLOAT"
       },
       "acs": {
         "desc": "Metric for acs.",
@@ -2262,10 +2215,6 @@
   },
   {
     "columns": {
-      "ability_damage_dealt": {
-        "desc": "Damage dealt by abilities in the day.",
-        "type": "FLOAT"
-      },
       "adr": {
         "desc": "Metric for adr.",
         "type": "FLOAT"
@@ -2397,10 +2346,6 @@
   },
   {
     "columns": {
-      "ability_damage_dealt": {
-        "desc": "Damage dealt by abilities in the tournament.",
-        "type": "FLOAT"
-      },
       "adr": {
         "desc": "Metric for adr.",
         "type": "FLOAT"

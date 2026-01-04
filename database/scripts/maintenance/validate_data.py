@@ -189,18 +189,6 @@ def run_table_specific_checks(conn: duckdb.DuckDBPyConnection, table: str) -> li
         ).fetchone()[0]
         if bad_headshot > 0:
             issues.append(f"headshot_hits_total > hits_total in {bad_headshot} rows")
-        bad_off_angle = conn.execute(
-            "SELECT COUNT(*) FROM agg_player_round_stats "
-            "WHERE off_angle_kills_total > kills"
-        ).fetchone()[0]
-        if bad_off_angle > 0:
-            issues.append(f"off_angle_kills_total > kills in {bad_off_angle} rows")
-        bad_rotate_deaths = conn.execute(
-            "SELECT COUNT(*) FROM agg_player_round_stats "
-            "WHERE rotate_deaths_total > deaths"
-        ).fetchone()[0]
-        if bad_rotate_deaths > 0:
-            issues.append(f"rotate_deaths_total > deaths in {bad_rotate_deaths} rows")
     if table == "agg_team_round_stats":
         bad_team_kills = conn.execute(
             "SELECT COUNT(*) FROM agg_team_round_stats WHERE team_kills < 0 OR team_kills > 5"
