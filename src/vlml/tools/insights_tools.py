@@ -764,32 +764,6 @@ def _half_breakdown(
     return results
 
 
-def _vod_review_priority(
-    db: EventDatabase,
-    series_id: str,
-    map_name: Optional[str] = None,
-) -> List[Dict[str, Any]]:
-    params: List[Any] = [series_id]
-    map_filter = ""
-    if map_name:
-        map_filter = " AND r.map_name = ?"
-        params.append(map_name)
-
-    sql = _load_sql("vod_review_priority.sql").format(map_filter=map_filter)
-    rows = db.query(sql, params)
-    results = []
-    for row in rows:
-        results.append({
-            "game_number": row[0],
-            "map_name": row[1],
-            "round_number": row[2],
-            "reason": row[3],
-            "description": f"{row[4]} won FB ({row[5]} -> {row[6]}) but lost the round",
-            "focus": "Post-plant positioning and trade timing",
-        })
-    return results
-
-
 async def match_analysis_report(
     series_id: str,
     team_name: Optional[str] = None,
@@ -839,7 +813,6 @@ async def match_analysis_report(
             "round_timeline": _round_timeline_enhanced(db, series_id, map_name),
             "highlight_rounds": _highlight_rounds(db, series_id, map_name),
             "half_breakdown": _half_breakdown(db, series_id, map_name),
-            "vod_review_priority": _vod_review_priority(db, series_id, map_name),
         }
 
 
