@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Moneyball for Valorant: Why I Built a Data Layer, Not an AI</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #141416;
+            --bg-tertiary: #1c1c1f;
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --text-muted: #6e6e73;
+            --accent-blue: #2997ff;
+            --accent-purple: #bf5af2;
+            --accent-red: #ff453a;
+            --border-color: #2c2c2e;
+            --code-bg: #1c1c1f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 64px;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 48px;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--accent-purple);
+            padding-left: 24px;
+            margin: 32px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        blockquote cite {
+            display: block;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        em {
+            color: var(--text-secondary);
+        }
+
+        a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 48px 0;
+        }
+
+        ul,
+        ol {
+            margin-bottom: 24px;
+            padding-left: 24px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        td {
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent-blue);
+        }
+
+        pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .conversation {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .conversation .speaker {
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+        }
+
+        .conversation .speaker.ai {
+            color: var(--accent-purple);
+        }
+
+        .conversation .message {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .conversation .message:last-child {
+            margin-bottom: 0;
+        }
+
+        .note {
+            background: linear-gradient(135deg, rgba(41, 151, 255, 0.1) 0%, rgba(191, 90, 242, 0.1) 100%);
+            border: 1px solid rgba(41, 151, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .note strong {
+            color: var(--accent-blue);
+        }
+
+        .footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .footer a {
+            color: var(--accent-blue);
+        }
+
+        .diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            color: var(--accent-purple);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Building Moneyball for Valorant: Why I Built a Data Layer, Not an AI</h1>
+
+        <blockquote>
+            "It's about getting things down to one number. Using stats the way we read them, we'll find value in players
+            that nobody else can see."
+            <cite>— Peter Brand, <em>Moneyball</em></cite>
+        </blockquote>
+
+        <p class="subtitle">How I approached the Cloud9 x JetBrains Hackathon with a pragmatic philosophy: let the best
+            AI be Peter Brand.</p>
+
+        <hr>
+
+        <h2>The Scene That Started It All</h2>
+
+        <p>There's a scene in <em>Moneyball</em> that every data person remembers.</p>
+
+        <p>Billy Beane is sitting across from his scouts, listening to them debate which players "look" like winners.
+            Then Peter Brand walks in with a laptop and says something like: "The data says you're wrong. Here's who you
+            should actually draft."</p>
+
+        <p>That scene isn't about the laptop. It's not about the spreadsheet. It's about having someone who can
+            <strong>translate raw numbers into decisions</strong>.
+        </p>
+
+        <p>Peter Brand wasn't a dashboard. He was an interpreter — someone who understood both the math and the game
+            deeply enough to say, "This player is undervalued. Sign him."</p>
+
+        <p>When I saw the Cloud9 x JetBrains Hackathon and read the Category 1 prompt — <em>"A comprehensive Assistant
+                Coach powered by Data Science and AI, inspired by Moneyball"</em> — I knew exactly what I wanted to
+            build.</p>
+
+        <p>Not a dashboard. Not a custom AI model.</p>
+
+        <p>I wanted to build the <strong>data foundation</strong> that lets a Peter Brand-level analyst work.</p>
+
+        <p>And in 2025, the best Peter Brand available is Claude.</p>
+
+        <hr>
+
+        <h2>How I Got Here</h2>
+
+        <p>It was New Year's break, and I was looking for a fun side project.</p>
+
+        <p>I play Valorant. I'm also an analytics engineer by profession. And I've been using AI tools since Gemini was
+            still called Bard. So when I stumbled across GRID's esports data API while browsing Valorant analytics
+            resources, something clicked.</p>
+
+        <p>Then I found the Cloud9 x JetBrains Hackathon — and realized I could get access to official VCT data just by
+            signing up.</p>
+
+        <p>So here I am.</p>
+
+        <p>What started as a "let's see what's in this data" weekend project turned into a full analytics modeling
+            layer. Turns out, when you give an analytics engineer access to rich event data and a long weekend, things
+            escalate quickly.</p>
+
+        <hr>
+
+        <h2>The Architecture: Data, Peter Brand, and the Coach</h2>
+
+        <p>Here's how I think about the Moneyball parallel:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Moneyball</th>
+                    <th>VLML</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Baseball statistics</td>
+                    <td>VLML Analytics Model (DuckDB)</td>
+                </tr>
+                <tr>
+                    <td>Peter Brand</td>
+                    <td>Claude (via MCP)</td>
+                </tr>
+                <tr>
+                    <td>Billy Beane</td>
+                    <td>The Coach (user)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The <strong>data layer</strong> is the foundation. Pre-computed metrics at every grain: round, game, series,
+            player, team. Opening duels, trade rates, KAST, clutch performance, economy patterns — everything a coach
+            would want to ask about, already calculated and waiting.</p>
+
+        <p><strong>Claude</strong> is the interpreter. Connected via MCP (Model Context Protocol), Claude can query the
+            analytics model, reason over the results, and have a real conversation with the coach. Not just "here's a
+            number" — but "here's what this number means for your next match."</p>
+
+        <p><strong>The coach</strong> is the decision-maker. They ask the questions, challenge the analysis, and
+            ultimately decide what to practice.</p>
+
+        <div class="diagram">┌─────────────────────────────────────────────────────────┐
+            │ <span class="highlight">COACH (User)</span> │
+            │ "Why did we lose that Bind series?" │
+            └─────────────────────┬───────────────────────────────────┘
+            │ Conversation
+            ▼
+            ┌─────────────────────────────────────────────────────────┐
+            │ <span class="highlight">PETER BRAND (Claude + MCP)</span> │
+            │ - Queries the data model │
+            │ - Interprets results │
+            │ - Explains patterns │
+            │ - Suggests what to review in VOD │
+            └─────────────────────┬───────────────────────────────────┘
+            │ MCP Tools
+            ▼
+            ┌─────────────────────────────────────────────────────────┐
+            │ <span class="highlight">THE DATA (VLML Analytics)</span> │
+            │ - 7 aggregation tables │
+            │ - Pre-computed metrics │
+            │ - Optimized for coaching questions │
+            └─────────────────────────────────────────────────────────┘</div>
+
+        <hr>
+
+        <h2>Being Pragmatic About AI</h2>
+
+        <p>Early in this project, I had to make a decision: <strong>build a custom model or use what's already
+                best?</strong></p>
+
+        <p>I chose the second option. Here's why.</p>
+
+        <p>Frontier models like Claude and GPT-5 are trained on trillions of tokens with billions of dollars of compute.
+            They understand language, reasoning, context, and nuance at a level that no domain-specific fine-tune can
+            match.</p>
+
+        <p>What they <em>don't</em> have is access to structured Valorant esports data. That's the gap.</p>
+
+        <p>The smart play isn't to compete with Anthropic or OpenAI on the AI side. It's to <strong>build the data
+                infrastructure</strong> that makes their AI useful for coaching.</p>
+
+        <p>Think of it this way:</p>
+        <ul>
+            <li><strong>Fine-tuning a model</strong> = Teaching someone a new skill from scratch</li>
+            <li><strong>Connecting a model to the right data</strong> = Giving an expert the information they need</li>
+        </ul>
+
+        <p>A fine-tuned model knows Valorant terms but can't access real match data. Claude connected to VLML knows
+            <em>everything</em> — because it can query the actual numbers.
+        </p>
+
+        <p>The data layer is where I can add value. The AI layer is where I should ride the wave.</p>
+
+        <p>The pragmatic choice is clear: <strong>build the data layer, use the best AI available.</strong></p>
+
+        <p>Today, that's Claude with MCP. Tomorrow, it could be Gemini 3.0, GPT-5, or whatever model leads the pack. The
+            architecture is model-agnostic by design.</p>
+
+        <p>This isn't a limitation. It's a feature.</p>
+
+        <hr>
+
+        <h2>Why Claude Right Now?</h2>
+
+        <p>If the architecture is model-agnostic, why am I using Claude specifically?</p>
+
+        <p>One reason: <strong>MCP integration.</strong></p>
+
+        <p>MCP (Model Context Protocol) is a standard that Anthropic released in late 2024. It lets AI models connect
+            directly to external tools and data sources — databases, APIs, file systems — in a structured, secure way.
+        </p>
+
+        <p>As of today, Claude is the only frontier model with first-class MCP support built into its desktop client.
+            You connect your MCP server, and Claude can call your tools natively. No custom glue code. No API wrappers.
+            Just a clean connection between the AI and your data.</p>
+
+        <p>Other models will catch up. OpenAI, Google, and others are all working on similar tool-use protocols. When
+            they do, VLML will work with them too — that's the point of building on an open standard.</p>
+
+        <p>But <strong>right now</strong>, Claude + MCP is the best experience for building a conversational AI
+            assistant that needs structured data access. That's why I'm using it.</p>
+
+        <hr>
+
+        <h2>What I Actually Built: VLML</h2>
+
+        <p>VLML (Valorant Analytics Modeling Layer) is a structured data model for professional Valorant esports
+            analytics.</p>
+
+        <h3>The Data Pipeline</h3>
+
+        <p>Raw data comes from GRID's official esports API — the same data source used by VCT broadcast teams. The
+            pipeline:</p>
+
+        <ol>
+            <li><strong>Ingests</strong> raw JSON event data (kills, deaths, abilities, economy, etc.)</li>
+            <li><strong>Transforms</strong> events into a normalized schema (series → games → rounds → events)</li>
+            <li><strong>Aggregates</strong> metrics at multiple grains (player-round, player-game, team-round, etc.)
+            </li>
+            <li><strong>Exposes</strong> everything via MCP for AI access</li>
+        </ol>
+
+        <p>The database is DuckDB — fast, embedded, and perfect for analytical queries.</p>
+
+        <div class="note">
+            <p><strong>A note on data access:</strong> Huge thanks to GRID for providing official esports data through
+                their API. Currently, I have access to VCT Americas data, which powers all the examples in this post. If
+                GRID ever expands access to include VCT Masters, Champions, Pacific, and EMEA data — that would unlock
+                even deeper cross-region analysis. (Consider this my formal request. 😄)</p>
+            <p style="margin-top: 16px; margin-bottom: 0;">Also — a thought for GRID: I come from the ecommerce
+                industry, where almost every major app and platform now has their own MCP server. Shopify has one.
+                Stripe has one. It's becoming the standard way to let AI tools interact with structured data. GRID is
+                sitting on some of the richest esports data in the world — an official GRID MCP server could be a
+                game-changer for the entire esports analytics ecosystem.</p>
+        </div>
+
+        <h3>The Metrics</h3>
+
+        <p>Every metric a coach might care about is pre-computed:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Metrics</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Opening Duels</strong></td>
+                    <td>First bloods, first deaths, FB conversion rate, FD salvage rate</td>
+                </tr>
+                <tr>
+                    <td><strong>Trading</strong></td>
+                    <td>Trade kills, untraded deaths, trade window timing</td>
+                </tr>
+                <tr>
+                    <td><strong>Impact</strong></td>
+                    <td>Multi-kills (2k, 3k, 4k, ace), clutch attempts and wins</td>
+                </tr>
+                <tr>
+                    <td><strong>Consistency</strong></td>
+                    <td>KAST%, ADR, kill participation</td>
+                </tr>
+                <tr>
+                    <td><strong>Economy</strong></td>
+                    <td>Pistol win rate, eco rounds, thrifty conversions</td>
+                </tr>
+                <tr>
+                    <td><strong>Agent/Map Splits</strong></td>
+                    <td>Performance by agent, by map, by side</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>These aren't just raw counts. They're <strong>coaching-ready metrics</strong> — the same numbers a
+            professional analyst would calculate manually, but available instantly.</p>
+
+        <h3>The MCP Tools</h3>
+
+        <p>The server exposes four main insight tools:</p>
+
+        <ul>
+            <li><code>match_analysis_report</code> — Post-match breakdown: team comparison, player performance, round
+                timeline, VOD priority queue</li>
+            <li><code>player_profile_report</code> — Individual player assessment: career stats, agent/map splits,
+                recent form, clutch performance</li>
+            <li><code>scouting_report</code> — Pre-match opponent prep: map pool, roster tendencies, strategic patterns
+            </li>
+            <li><code>pattern_detection_report</code> — Identify recurring issues or strengths across many matches</li>
+        </ul>
+
+        <p>Plus two database tools for ad-hoc analysis:</p>
+
+        <ul>
+            <li><code>query_sql</code> — Run any SELECT query directly on the analytics tables</li>
+            <li><code>get_database_info</code> — Explore what data is available</li>
+        </ul>
+
+        <p>The tools return <strong>data only</strong> — structured metrics with no narrative. The AI generates the
+            insights, recommendations, and explanations based on the numbers.</p>
+
+        <hr>
+
+        <h2>The Coaching Experience</h2>
+
+        <p>Here's what it actually looks like to use VLML:</p>
+
+        <div class="conversation">
+            <div class="speaker">Coach:</div>
+            <div class="message">"Analyze Cloud9's loss to NRG on Bind. What went wrong?"</div>
+
+            <div class="speaker ai">Claude:</div>
+            <div class="message">
+                <p><em>[Calls match_analysis_report, examines the data]</em></p>
+                <p>"Cloud9 lost Bind 11-13 despite winning more opening duels (+3 FB advantage). The issue was
+                    post-first-blood conversion: C9 won only 55% of rounds where they got first blood, compared to NRG's
+                    78%.</p>
+                <p>Looking at the round timeline, three specific rounds stand out:</p>
+                <ul style="margin-top: 12px;">
+                    <li>Round 7: C9 won FB but lost a 4v5</li>
+                    <li>Round 15: C9 won FB but lost a 5v4</li>
+                    <li>Round 22: C9 won FB but lost a 4v5</li>
+                </ul>
+                <p style="margin-top: 16px;">All three losses came on A-site attacks. Checking player positions... the
+                    deaths after first blood were concentrated on trent, who died within 8 seconds of the opening kill
+                    in all three rounds.</p>
+                <p><strong>Hypothesis:</strong> Trade timing is too slow after trent's entries. The team isn't
+                    converting his space creation.</p>
+                <p><strong>VOD Review Priority:</strong></p>
+                <ol>
+                    <li>Bind R7 — Watch trent's entry and team follow-up timing</li>
+                    <li>Bind R15 — Same pattern, check if support utility arrived on time</li>
+                    <li>Bind R22 — Verify if this is a positioning issue or timing issue</li>
+                </ol>
+            </div>
+        </div>
+
+        <p>That analysis took 15 seconds. Manually reviewing VODs to find those patterns would take hours.</p>
+
+        <p>And this is just one question. The conversation continues:</p>
+
+        <div class="conversation">
+            <div class="speaker">Coach:</div>
+            <div class="message">"What about trent's overall first death rate? Is this a recurring problem?"</div>
+
+            <div class="speaker ai">Claude:</div>
+            <div class="message">
+                <p><em>[Calls player_profile_report]</em></p>
+                <p>"Across his last 5 series, trent has a 19% first death rate — higher than typical for a duelist
+                    (benchmark: 15-18%). On Bind specifically, it's 24%.</p>
+                <p>However, his first <em>blood</em> rate is also high at 22%, which means he's taking aggressive fights
+                    and winning more than he loses. The issue isn't that he's dying first — it's that the team isn't
+                    consistently trading him when he does.</p>
+                <p>Looking at untraded death percentage..."</p>
+            </div>
+        </div>
+
+        <p>This is what a Moneyball-style coaching assistant should be: <strong>a conversation</strong>, not a report.
+        </p>
+
+        <hr>
+
+        <h2>Why Conversational > Dashboard</h2>
+
+        <p>A dashboard answers the questions you already know to ask.</p>
+
+        <p>A conversation discovers the questions you didn't.</p>
+
+        <p>When I started this project, I considered building a traditional analytics dashboard. But I realized that the
+            most valuable coaching insights come from <strong>follow-up questions</strong>:</p>
+
+        <ul>
+            <li>"Why did Round 8 go differently than Round 3?"</li>
+            <li>"Is this a trent problem or a team structure problem?"</li>
+            <li>"What would you practice to fix this?"</li>
+        </ul>
+
+        <p>Those aren't queries you can pre-build into a dashboard. They emerge from context — from understanding the
+            specific situation and asking the next logical question.</p>
+
+        <p>Claude, connected to the right data, can handle that. A dashboard can't.</p>
+
+        <hr>
+
+        <h2>The Memory Advantage</h2>
+
+        <p>There's another reason conversational AI beats static dashboards: <strong>memory</strong>.</p>
+
+        <p>Every time I use Claude with VLML, it learns more context about how I think, what questions I care about, and
+            what patterns matter to me. The analysis gets better over time — not because the model is fine-tuned, but
+            because the <em>conversation</em> has more context.</p>
+
+        <p>This is something you can't replicate with a custom model or a one-shot API call. The long-running
+            relationship between coach and AI assistant is part of the value.</p>
+
+        <hr>
+
+        <h2>What I'd Build With More Resources</h2>
+
+        <p>If I had a full engineering team and a year of development time, here's what I'd add:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Why</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Scrim data integration</strong></td>
+                    <td>Official matches are public. Scrims are where real patterns hide.</td>
+                </tr>
+                <tr>
+                    <td><strong>Comms analysis</strong></td>
+                    <td>"Team tilted after round 8" is a real coaching insight</td>
+                </tr>
+                <tr>
+                    <td><strong>VOD timestamp linking</strong></td>
+                    <td>"Jump to 22:47 in the VOD to see this play"</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-time ingestion</strong></td>
+                    <td>Update the database during a live match</td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-game memory</strong></td>
+                    <td>"Remember what we said about NRG last month?"</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>But those are enhancements. The core — the data layer, the MCP interface, the conversational AI — that's
+            already here.</p>
+
+        <hr>
+
+        <h2>The Right Person Still Matters</h2>
+
+        <p>Here's the thing about Moneyball that people often forget: Peter Brand didn't replace the scouts. He changed
+            <em>how</em> they evaluated talent.
+        </p>
+
+        <p>The same is true for AI coaching assistants. Claude doesn't replace the coach — it augments them.</p>
+
+        <p>The AI can surface patterns, crunch numbers, and generate hypotheses. But someone still needs to:</p>
+        <ul>
+            <li>Know <em>which</em> questions to ask</li>
+            <li>Understand the context of why a player made a decision</li>
+            <li>Translate insights into practice drills and game plans</li>
+        </ul>
+
+        <p>That's the coach. And if you're an esports organization, you already have this person — your coaching staff
+            has the game knowledge and context that makes AI insights actionable.</p>
+
+        <p>VLML isn't trying to replace that expertise. It's trying to give it superpowers.</p>
+
+        <hr>
+
+        <h2>What I Learned</h2>
+
+        <p>Building VLML taught me a few things:</p>
+
+        <ol>
+            <li><strong>The data model is the product.</strong> Anyone can call an API. Few can build the right
+                analytics schema that makes AI responses actually useful.</li>
+            <li><strong>Pre-compute everything.</strong> Raw events are noise. Coaches need answers, not 10 million rows
+                to query.</li>
+            <li><strong>MCP is powerful.</strong> Connecting structured data to Claude via MCP feels like magic. The AI
+                reasons naturally over the tools — it doesn't feel like "using a database," it feels like "talking to an
+                analyst."</li>
+            <li><strong>Be pragmatic about AI.</strong> Fine-tuning is expensive and gets outdated. Riding the frontier
+                model wave is the smarter play.</li>
+            <li><strong>Conversation > Dashboard.</strong> The most valuable insights come from follow-up questions that
+                emerge in dialogue.</li>
+        </ol>
+
+        <hr>
+
+        <div class="footer">
+            <p><em>VLML is my submission to the Cloud9 x JetBrains Hackathon, Category 1: Comprehensive Assistant Coach.
+                    Built with DuckDB, Python, and MCP. Powered by whatever LLM is best today — and tomorrow.</em></p>
+            <p style="margin-top: 16px;"><a href="https://github.com/kennethadriann/vlml">GitHub Repository</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
