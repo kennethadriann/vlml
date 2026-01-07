@@ -378,27 +378,36 @@
         <p><strong>The coach</strong> is the decision-maker. They ask the questions, challenge the analysis, and
             ultimately decide what to practice.</p>
 
-        <div class="diagram">┌─────────────────────────────────────────────────────────┐
-            │ <span class="highlight">COACH (User)</span> │
-            │ "Why did we lose that Bind series?" │
-            └─────────────────────┬───────────────────────────────────┘
-            │ Conversation
-            ▼
-            ┌─────────────────────────────────────────────────────────┐
-            │ <span class="highlight">PETER BRAND (Claude + MCP)</span> │
-            │ - Queries the data model │
-            │ - Interprets results │
-            │ - Explains patterns │
-            │ - Suggests what to review in VOD │
-            └─────────────────────┬───────────────────────────────────┘
-            │ MCP Tools
-            ▼
-            ┌─────────────────────────────────────────────────────────┐
-            │ <span class="highlight">THE DATA (VLML Analytics)</span> │
-            │ - 7 aggregation tables │
-            │ - Pre-computed metrics │
-            │ - Optimized for coaching questions │
-            └─────────────────────────────────────────────────────────┘</div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 32px 0;">
+            <div
+                style="background: var(--bg-secondary); border: 2px solid var(--accent-blue); border-radius: 12px; padding: 20px 32px; text-align: center; max-width: 400px;">
+                <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 8px;">COACH (User)</div>
+                <div style="color: var(--text-secondary); font-size: 0.95rem;">"Why did we lose that Bind series?"</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">↓ Conversation</div>
+            <div
+                style="background: var(--bg-secondary); border: 2px solid var(--accent-purple); border-radius: 12px; padding: 20px 32px; text-align: center; max-width: 400px;">
+                <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 8px;">PETER BRAND (Claude +
+                    MCP)</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">
+                    • Queries the data model<br>
+                    • Interprets results<br>
+                    • Explains patterns<br>
+                    • Suggests VOD review priorities
+                </div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">↓ MCP Tools</div>
+            <div
+                style="background: var(--bg-secondary); border: 2px solid var(--accent-blue); border-radius: 12px; padding: 20px 32px; text-align: center; max-width: 400px;">
+                <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 8px;">THE DATA (VLML
+                    Analytics)</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">
+                    • 7 aggregation tables<br>
+                    • Pre-computed metrics<br>
+                    • Optimized for coaching questions
+                </div>
+            </div>
+        </div>
 
         <hr>
 
