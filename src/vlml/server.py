@@ -1,6 +1,8 @@
 """VLML MCP Server - Valorant esports analytics."""
 from mcp.server.fastmcp import FastMCP
 from vlml.tools import insights_tools, db_query_tools
+from vlml.tools.prediction_tools import predict_retake_win_probability
+from vlml.tools.common.formatting import format_coach_agenda
 
 # Initialize FastMCP server
 mcp = FastMCP("vlml-valorant-analytics")
@@ -11,6 +13,30 @@ mcp = FastMCP("vlml-valorant-analytics")
 async def match_analysis_report(series_id: str, team_name: str | None = None, map_name: str | None = None) -> dict:
     """Generate a match analysis report for a single series."""
     return await insights_tools.match_analysis_report(series_id, team_name, map_name)
+
+@mcp.tool()
+async def generate_coach_agenda(series_id: str, team_name: str | None = None) -> str:
+    """Generate a text-based Game Review Agenda for a coach."""
+    report = await insights_tools.match_analysis_report(series_id, team_name)
+    return format_coach_agenda(report)
+
+@mcp.tool()
+async def predict_round_outcome(
+    map_name: str,
+    attackers_alive: int,
+    defenders_alive: int,
+    site: str | None = None,
+) -> dict:
+    """
+    Predict the probability of a retake win (Defenders winning after plant).
+    Use this to answer 'What if' scenarios about saving vs retaking.
+    """
+    return await predict_retake_win_probability(
+        map_name=map_name,
+        attackers_alive=attackers_alive,
+        defenders_alive=defenders_alive,
+        site=site
+    )
 
 @mcp.tool()
 async def player_profile_report(
