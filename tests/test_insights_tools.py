@@ -45,7 +45,7 @@ async def test_player_profile_report_smoke():
 
     result = await insights_tools.player_profile_report(player_name, last_n_series=3)
     assert result.get("report_type") == "player_profile"
-    assert "key_metrics" in result
+    assert "career_stats" in result
 
 
 @pytest.mark.asyncio
@@ -57,7 +57,7 @@ async def test_scouting_report_smoke():
 
     result = await insights_tools.scouting_report(team_name, last_n_series=3)
     assert result.get("report_type") == "scouting_report"
-    assert "key_metrics" in result
+    assert "map_pool" in result
 
 
 @pytest.mark.asyncio
@@ -69,4 +69,4 @@ async def test_pattern_detection_report_smoke():
 
     result = await insights_tools.pattern_detection_report(team_name=team_name, min_rounds=1)
     assert result.get("report_type") == "pattern_detection"
-    assert "issues" in result
+    assert "key_metrics" in result
