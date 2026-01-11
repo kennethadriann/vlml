@@ -17,6 +17,7 @@ series (series_id)
 - `weapon_types`: one row per weapon, type/cost mapping
 - `map_zones`: map bounding boxes for site/default zones
 - `ability_types`: ability name/type mapping (seed JSON)
+- `ref_win_probability_factors`: win probability lift weights (VCT Americas 2025)
 
 ## Aggregation Tables
 
@@ -45,5 +46,31 @@ series (series_id)
 **Use cases:** team map performance, composition, opening duels, post-plant stats.
 
 ### Tournament (`agg_tournament_stats`)
-**Grain:** `(tournament_id, entity_type, entity_id)`  
+**Grain:** `(tournament_id, entity_type, entity_id)`
 **Use cases:** tournament-level rollups for teams and players.
+
+## Derived Aggregates
+
+### First Blood Stats (`agg_first_blood_stats`)
+**Grain:** `round_id`
+**Use cases:** first blood conversion analysis, FB team win correlation.
+
+### Post-Plant Stats (`agg_post_plant_stats`)
+**Grain:** `round_id`
+**Use cases:** post-plant conversion rates, detonation vs defuse analysis.
+
+### Team Round Summary (`agg_team_round_summary`)
+**Grain:** `(round_id, team_name)`
+**Use cases:** team-level round aggregates, fast queries without player-level joins.
+
+### Team Map Stats (`agg_team_map_stats`)
+**Grain:** `(team_name, map_name, tournament_name)`
+**Use cases:** map pool analysis, team map win rates and performance.
+
+### Team Series Stats (`agg_team_series_stats`)
+**Grain:** `(series_id, team_name)`
+**Use cases:** head-to-head records, series-level team performance.
+
+### Player Win Shares (`agg_player_win_shares`)
+**Grain:** `(player_id, game_id)`
+**Use cases:** player impact quantification using probability lift weights.

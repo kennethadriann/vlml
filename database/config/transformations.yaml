@@ -71,6 +71,51 @@ models:
       - "series"
     target_table: "agg_tournament_stats"
 
+  - name: "agg_first_blood_stats"
+    description: "Pre-join first blood events with round outcomes"
+    file: "database/transformations/08_agg_first_blood_stats.sql"
+    depends_on:
+      - "base_events"
+      - "rounds"
+    target_table: "agg_first_blood_stats"
+
+  - name: "agg_post_plant_stats"
+    description: "Pre-join plant events with round outcomes"
+    file: "database/transformations/09_agg_post_plant_stats.sql"
+    depends_on:
+      - "base_events"
+      - "rounds"
+    target_table: "agg_post_plant_stats"
+
+  - name: "agg_team_round_summary"
+    description: "Aggregate player round stats to team level"
+    file: "database/transformations/10_agg_team_round_summary.sql"
+    depends_on:
+      - "agg_player_round_stats"
+    target_table: "agg_team_round_summary"
+
+  - name: "agg_team_map_stats"
+    description: "Team performance aggregated by map"
+    file: "database/transformations/11_agg_team_map_stats.sql"
+    depends_on:
+      - "agg_player_game_stats"
+    target_table: "agg_team_map_stats"
+
+  - name: "agg_team_series_stats"
+    description: "Team head-to-head records at series level"
+    file: "database/transformations/12_agg_team_series_stats.sql"
+    depends_on:
+      - "series"
+      - "games"
+    target_table: "agg_team_series_stats"
+
+  - name: "agg_player_win_shares"
+    description: "Pre-calculated win shares per player per game"
+    file: "database/transformations/13_agg_player_win_shares.sql"
+    depends_on:
+      - "agg_player_round_stats"
+    target_table: "agg_player_win_shares"
+
 # Validation queries after transformations
 validation:
   queries:
@@ -110,3 +155,33 @@ validation:
           'agg_tournament_stats' AS table_name,
           COUNT(*) AS row_count
         FROM agg_tournament_stats
+        UNION ALL
+        SELECT
+          'agg_first_blood_stats' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_first_blood_stats
+        UNION ALL
+        SELECT
+          'agg_post_plant_stats' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_post_plant_stats
+        UNION ALL
+        SELECT
+          'agg_team_round_summary' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_team_round_summary
+        UNION ALL
+        SELECT
+          'agg_team_map_stats' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_team_map_stats
+        UNION ALL
+        SELECT
+          'agg_team_series_stats' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_team_series_stats
+        UNION ALL
+        SELECT
+          'agg_player_win_shares' AS table_name,
+          COUNT(*) AS row_count
+        FROM agg_player_win_shares

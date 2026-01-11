@@ -3,14 +3,17 @@
 -- Type: Incremental (re-aggregate rounds with new events)
 
 -- Step 1: Find rounds that have new events
+-- Note: Uses r.ingested_at (when data was loaded) instead of e.occurred_at (when match happened)
+-- This ensures backfilled historical matches are properly detected and processed
 CREATE TEMP TABLE new_rounds AS
 SELECT DISTINCT e.round_id
 FROM base_events e
 LEFT JOIN agg_player_round_stats prs ON prs.round_id = e.round_id
+LEFT JOIN rounds r ON r.round_id = e.round_id
 WHERE e.round_id IS NOT NULL
   AND (
       prs.round_id IS NULL
-      OR e.occurred_at > COALESCE(
+      OR r.ingested_at > COALESCE(
           (SELECT MAX(calculated_at) FROM agg_player_round_stats),
           '1900-01-01'::TIMESTAMP
       )
