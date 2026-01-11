@@ -24,6 +24,30 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 - `highlight_rounds` (multi-kills + clutches)
 - `half_breakdown` (first/second half splits)
 
+### `generate_coach_agenda`
+**Input**
+```
+{ "series_id": "string", "team_name"?: "string" }
+```
+
+**Output**
+A formatted text-based agenda (string) including:
+- Series summary (Teams, Maps)
+- Key metrics summary (Pistol, Eco, Openings, Clutches)
+- **Coach's Action Plan**: Automated immediate/strategic/tactical recommendations based on performance thresholds.
+
+### `predict_round_outcome`
+**Input**
+```
+{ "map_name": "string", "attackers_alive": number, "defenders_alive": number }
+```
+
+**Output**
+- `scenario` (map, survivors)
+- `prediction` (win probability, sample size, confidence score/label)
+- `strategic_reasoning`: Data-backed explanation for the probability.
+- `recommendation`: "Save" vs "Retake".
+
 ### `player_profile_report`
 **Input**
 ```

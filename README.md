@@ -54,6 +54,8 @@ Or:
 
 Insights tools:
 - `match_analysis_report`
+- `generate_coach_agenda` (new: automated review agenda)
+- `predict_round_outcome` (new: "What if" retake probability)
 - `player_profile_report`
 - `scouting_report`
 - `pattern_detection_report`

@@ -29,6 +29,10 @@ This document defines the standard framework for producing consistent, high-qual
 **Use Case:** Identifying recurring issues or strengths
 **Scope:** Full tournament or stage data
 
+### Type 5: Strategic "What If" Analysis
+**Use Case:** Modeling alternative outcomes for critical decisions
+**Scope:** Specific rounds or scenarios (e.g., Retake vs Save)
+
 ---
 
 ## Standard Sections (All Report Types)
@@ -103,6 +107,14 @@ Issue #[N]: [Short Title]
 - **Immediate** (this week's practice)
 - **Short-term** (next 2-3 weeks)
 - **Long-term** (strategic adjustments)
+
+### Section 7: Strategic Reasoning & Predictive Modeling
+**Use Case:** For "What If" queries and decision-support tools
+**Content:**
+- **Scenario Definition**: Exact game state (Map, Survivors, Site)
+- **Probability Analysis**: Win % based on N historical samples
+- **Data-Backed Reasoning**: Explanation of why the recommendation is made
+- **Confidence Disclosure**: Sample size and statistical significance label
 
 ---
 
