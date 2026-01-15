@@ -1,4 +1,29 @@
-"""Pattern detection report generation."""
+"""Pattern detection report generation.
+
+This module generates pattern detection reports across large datasets.
+It aggregates key metrics over many series to identify recurring tendencies
+that may not be visible in single-match analysis.
+
+Report Sections:
+    - subject: Team or player being analyzed
+    - scope: Series count, round count, confidence level
+    - summary: High-level overview of dataset size
+    - key_metrics: Aggregated metrics across all series
+
+Use Cases:
+    - Identify long-term tendencies (e.g., consistently weak pistol rounds)
+    - Compare performance across tournaments
+    - Build larger sample sizes for statistical significance
+
+SQL Dependencies:
+    Uses assemble_team_metrics() from match_analysis and
+    player_key_metrics() from player_profile for metric calculation.
+
+Usage:
+    >>> from vlml.tools.reports import pattern_detection_report
+    >>> report = await pattern_detection_report(team_name="LOUD")
+    >>> report = await pattern_detection_report(player_name="aspas", min_rounds=500)
+"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -21,7 +46,32 @@ async def pattern_detection_report(
     series_ids: Optional[List[str]] = None,
     min_rounds: int = 200,
 ) -> Dict[str, Any]:
-    """Detect recurring patterns across a large dataset."""
+    """Detect recurring patterns across a large dataset.
+
+    Aggregates key metrics over multiple series to identify statistically
+    significant patterns. Requires either team_name or player_name.
+
+    Args:
+        team_name: Team to analyze (mutually exclusive with player_name).
+        player_name: Player to analyze (mutually exclusive with team_name).
+        tournament_name: Optional tournament filter (not yet implemented).
+        series_ids: Optional explicit series list. If not provided,
+            fetches the most recent 20 series.
+        min_rounds: Minimum rounds for statistical significance (default 200).
+
+    Returns:
+        Dict containing:
+            - report_type: "pattern_detection"
+            - subject: team_name and player_name being analyzed
+            - scope: Series count, rounds, confidence level
+            - summary: High-level dataset overview
+            - key_metrics: Full metrics structure (same as match_analysis)
+
+    Example:
+        >>> report = await pattern_detection_report(team_name="LOUD")
+        >>> if report["scope"]["confidence"] == "high":
+        ...     print("Statistically significant sample")
+    """
     if not team_name and not player_name:
         return {"error": "Provide team_name or player_name for pattern detection"}
 

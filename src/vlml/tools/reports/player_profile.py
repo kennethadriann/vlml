@@ -1,4 +1,29 @@
-"""Player profile report generation."""
+"""Player profile report generation.
+
+This module generates career-focused player profile reports across multiple series.
+It provides career stats, agent/map splits, recent form, and clutch performance.
+
+Report Sections:
+    - metadata: Player name, team, date range, series/games/rounds count
+    - career_stats: Aggregate K/D/A, ADR, KAST%, FB/FD rates, win rate
+    - agent_performance: Stats broken down by agent played
+    - map_performance: Stats broken down by map
+    - recent_form: Last N series results with key stats
+    - kast_impact: Correlation between KAST and round outcomes
+    - opening_death_impact: Correlation between first deaths and losses
+    - clutch_performance: 1v1 through 1v5 attempt/win breakdown
+    - round_type_performance: Pistol/eco/gun round splits
+    - multikills: 2k/3k/4k/ace counts
+
+SQL Dependencies:
+    See src/vlml/tools/sql/README.md for the complete file mapping.
+    Key files: player_profile_*.sql, player_key_metrics.sql
+
+Usage:
+    >>> from vlml.tools.reports import player_profile_report
+    >>> report = await player_profile_report(player_name="aspas")
+    >>> report = await player_profile_report(player_name="aspas", last_n_series=10, map_name="Ascent")
+"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -21,7 +46,22 @@ def player_key_metrics(
     map_name: Optional[str] = None,
     agent_name: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Calculate key metrics for a player across series."""
+    """Calculate key metrics for a player across multiple series.
+
+    Assembles the standard key_metrics structure used across reports,
+    including opening duels, impact (multikills, clutches), and consistency.
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        player_name: Player name to filter (uses ILIKE matching).
+        map_name: Optional map filter.
+        agent_name: Optional agent filter.
+
+    Returns:
+        Dict with rounds_played and key_metrics containing opening_duels,
+        conversion, impact (multikills, clutches), consistency, and economy sections.
+    """
     series_clause = in_clause(series_ids)
     params: List[Any] = list(series_ids) + [f"%{player_name}%"]
     map_filter = ""
@@ -84,7 +124,41 @@ async def player_profile_report(
     map_name: Optional[str] = None,
     agent_name: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Generate a player profile report over multiple series."""
+    """Generate a comprehensive player profile report over multiple series.
+
+    This is the main entry point for player analysis. It aggregates performance
+    data across multiple series to provide career stats, agent/map splits,
+    recent form, and detailed clutch/impact metrics.
+
+    Args:
+        player_name: The player name to search for (uses ILIKE matching).
+        series_ids: Optional explicit list of series IDs. If not provided,
+            fetches the most recent series for the player.
+        last_n_series: Number of recent series to include (default 5).
+            Ignored if series_ids is provided.
+        map_name: Optional map filter to analyze specific map performance.
+        agent_name: Optional agent filter to analyze specific agent performance.
+
+    Returns:
+        Dict containing:
+            - report_type: "player_profile"
+            - version: Report format version
+            - player_name: The searched player name
+            - metadata: Player info, team, date range, sample sizes
+            - career_stats: Aggregate K/D/A, ADR, KAST%, FB/FD, win rate
+            - agent_performance: List of agent-specific stats
+            - map_performance: List of map-specific stats
+            - recent_form: Recent series with results and key stats
+            - kast_impact: KAST correlation with round outcomes
+            - opening_death_impact: First death correlation with losses
+            - clutch_performance: 1v1-1v5 attempt/win breakdown
+            - round_type_performance: Pistol/eco/gun round splits
+            - multikills: 2k/3k/4k/ace counts
+
+    Example:
+        >>> report = await player_profile_report("aspas", last_n_series=10)
+        >>> print(report["career_stats"]["adr"])
+    """
     with EventDatabase(read_only=True) as db:
         if not series_ids:
             series_ids = fetch_series_ids_for_player(db, player_name, last_n_series)

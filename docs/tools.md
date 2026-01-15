@@ -95,3 +95,8 @@ Returns row counts, recent series, and table list.
 - `sample_recent_stats`
 - `usage_tips`
 
+## Related Documentation
+
+- [Data Flow Walkthrough](data_flow.md) - How data flows from raw events to reports
+- [SQL Helper Index](../src/vlml/tools/sql/README.md) - Query file mapping for each report
+- [Database Schema](../database/README.md) - Table definitions and example queries
