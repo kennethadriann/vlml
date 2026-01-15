@@ -8,7 +8,7 @@ This database is the core VLML modeling layer. It converts raw GRID JSON data in
 
 ### Key Features
 
-- **11 tables** across 4 layers (atomic → aggregated → time-series → reference)
+- **21 tables** across 5 layers (reference → atomic → aggregated → time-series → derived)
 - **70+ coaching metrics** including:
   - Combat efficiency (KAST%, headshot totals, damage per kill)
   - Trading analysis (trade kills, traded deaths, revenge timings)
@@ -19,7 +19,7 @@ This database is the core VLML modeling layer. It converts raw GRID JSON data in
   - Weapon preferences (rifle/operator dependency, headshot totals)
   - Team composition (agent roles, double duelist detection)
   - Situational performance (5v4, 4v5, post-plant win rates)
-- **Incremental loading** - Delete-and-rebuild pattern for affected entities only
+- **Incremental loading** - Delete-and-rebuild pattern using `ingested_at` timestamps to detect new data (supports backfilling historical matches)
 - **Data validation** - Automated duplicate detection across all tables
  - **GRID source data** - Raw JSON exports are standardized into consistent tables
 
@@ -27,7 +27,7 @@ This database is the core VLML modeling layer. It converts raw GRID JSON data in
 
 ```
 database/
-├── schema/              # DDL for all 11 tables
+├── schema/              # DDL for all 21 tables
 │   ├── series.sql
 │   ├── games.sql
 │   ├── rounds.sql
@@ -38,13 +38,20 @@ database/
 │   ├── agg_team_round_stats.sql
 │   ├── agg_team_game_stats.sql
 │   ├── agg_player_daily_stats.sql
-│   └── agg_tournament_stats.sql
+│   ├── agg_tournament_stats.sql
+│   ├── agg_first_blood_stats.sql
+│   ├── agg_post_plant_stats.sql
+│   ├── agg_team_round_summary.sql
+│   ├── agg_team_map_stats.sql
+│   ├── agg_team_series_stats.sql
+│   └── agg_player_win_shares.sql
 ├── metadata/            # Metadata and dictionary sources
 │   └── column_definitions.yaml  # Column dictionary
 ├── seeds/               # Lookup tables / seed data
 │   ├── agent_roles.sql      # 26 agents with role mappings
 │   ├── weapon_types.sql     # 20 weapons with type classifications
 │   ├── map_zones.sql        # Map zones bounding boxes
+│   ├── ref_win_probability_factors.sql  # Win share weights
 │   └── ability_types.json   # Ability type mapping
 ├── transformations/     # Incremental ETL logic
 │   ├── 01_agg_player_round_stats.sql
@@ -53,7 +60,13 @@ database/
 │   ├── 04_agg_team_round_stats.sql
 │   ├── 05_agg_team_game_stats.sql
 │   ├── 06_agg_player_daily_stats.sql
-│   └── 07_agg_tournament_stats.sql
+│   ├── 07_agg_tournament_stats.sql
+│   ├── 08_agg_first_blood_stats.sql
+│   ├── 09_agg_post_plant_stats.sql
+│   ├── 10_agg_team_round_summary.sql
+│   ├── 11_agg_team_map_stats.sql
+│   ├── 12_agg_team_series_stats.sql
+│   └── 13_agg_player_win_shares.sql
 ├── config/              # YAML configurations
 │   ├── init_schema.yaml         # Schema initialization config
 │   └── transformations.yaml     # Transformation pipeline config
@@ -118,6 +131,11 @@ The separation ensures clean abstraction for application code while maintaining 
 - **Grain**: One row per weapon (20 weapons)
 - **Purpose**: Classify weapons by type and cost
 - **Usage**: JOIN for weapon preference analysis
+
+#### `ref_win_probability_factors`
+- **Grain**: One row per factor (9 factors)
+- **Purpose**: Win probability lift weights derived from VCT Americas 2025
+- **Usage**: Win Share calculation weights
 
 ### Layer 1: Atomic Tables
 
@@ -201,6 +219,38 @@ The separation ensures clean abstraction for application code while maintaining 
 - **Grain**: One row per (tournament_id, entity_type, entity_id)
 - **PK**: `(tournament_id, entity_type, entity_id)`
 - **Contains**: Tournament-level stats for players and teams
+
+### Layer 4: Derived Aggregates
+
+#### `agg_first_blood_stats`
+- **Grain**: One row per round (where first blood occurred)
+- **PK**: `round_id`
+- **Contains**: First blood events pre-joined with round outcomes, FB team/player, round winner
+
+#### `agg_post_plant_stats`
+- **Grain**: One row per round (where plant occurred)
+- **PK**: `round_id`
+- **Contains**: Plant events pre-joined with round outcomes, conversion rates, detonated/defused flags
+
+#### `agg_team_round_summary`
+- **Grain**: One row per (round_id, team_name)
+- **PK**: `(round_id, team_name)`
+- **Contains**: Team-level round aggregates from player stats (kills, deaths, FB, trading, clutches)
+
+#### `agg_team_map_stats`
+- **Grain**: One row per (team_name, map_name, tournament_name)
+- **PK**: `(team_name, map_name, tournament_name)`
+- **Contains**: Team performance by map (win rates, opening duels, trading efficiency)
+
+#### `agg_team_series_stats`
+- **Grain**: One row per (series_id, team_name) - both perspectives
+- **PK**: `(series_id, team_name)`
+- **Contains**: Team head-to-head records at series level (maps won/lost)
+
+#### `agg_player_win_shares`
+- **Grain**: One row per (player_id, game_id)
+- **PK**: `(player_id, game_id)`
+- **Contains**: Pre-calculated win shares using probability lift weights (FB, survival, trades, plants, defuses)
 
 ## Usage
 
@@ -389,6 +439,22 @@ This trades storage space for query performance.
 - [ ] **Data lineage** - Track metric calculation logic and dependencies
 - [ ] **Performance benchmarks** - Query performance testing suite
 
+## Related Documentation
+
+**Data Model:**
+- [DATA_MODEL.md](DATA_MODEL.md) - Table grains and relationships
+- [DATA_DICTIONARY.md](DATA_DICTIONARY.md) - Column definitions
+- [DERIVED_TABLES.md](DERIVED_TABLES.md) - Derived aggregate tables (Layer 4)
+
+**Methodology:**
+- [docs/win_shares.md](../docs/win_shares.md) - Win Share methodology and benchmarks
+
+**Development:**
+- [docs/data_flow.md](../docs/data_flow.md) - End-to-end pipeline walkthrough
+- [docs/contributing.md](../docs/contributing.md) - How to add metrics and tables
+- [docs/troubleshooting.md](../docs/troubleshooting.md) - Common issues and solutions
+- [src/vlml/tools/sql/README.md](../src/vlml/tools/sql/README.md) - SQL helper file index
+
 ## Design Principles
 
 1. **Query Performance First** - Denormalized for fast analytical queries
@@ -402,4 +468,4 @@ This trades storage space for query performance.
 
 **Database Engine**: DuckDB (embedded OLAP database)
 **Schema Version**: 1.0.0
-**Last Updated**: 2025-12-31
+**Last Updated**: 2026-01-08

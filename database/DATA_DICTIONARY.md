@@ -585,3 +585,166 @@ Notes:
 - `team_name`: Team name.
 - `roster`: Metric for roster.
 - `calculated_at`: Aggregation timestamp.
+
+## ref_win_probability_factors
+- `factor_name`: Factor name (primary key).
+- `factor_type`: Factor type (event/state).
+- `win_rate_with`: Win rate when factor is present.
+- `win_rate_without`: Win rate when factor is absent.
+- `probability_lift`: Difference (win_rate_with - win_rate_without).
+- `weight`: Win share weight (equals probability_lift for events).
+- `sample_size`: Number of observations in analysis.
+- `notes`: Description of the factor.
+
+## agg_first_blood_stats
+- `round_id`: Round identifier (primary key).
+- `game_id`: Game identifier.
+- `series_id`: Series identifier.
+- `tournament_name`: Tournament name.
+- `tournament_year`: Tournament year.
+- `map_name`: Map name.
+- `round_number`: Round number within game.
+- `fb_team`: Team that got first blood.
+- `fd_team`: Team that suffered first death.
+- `fb_player`: Player who got first blood.
+- `fb_player_id`: Player ID of first blood.
+- `fb_agent`: Agent of first blood player.
+- `fd_player`: Player who died first.
+- `fd_agent`: Agent of first death player.
+- `fb_side`: Side of first blood team (attacker/defender).
+- `winning_team_name`: Round winning team.
+- `losing_team_name`: Round losing team.
+- `end_reason`: Round end reason.
+- `fb_team_won`: Flag indicating if FB team won the round.
+- `fd_team_won`: Flag indicating if FD team won the round.
+- `calculated_at`: Aggregation timestamp.
+
+## agg_post_plant_stats
+- `round_id`: Round identifier (primary key).
+- `game_id`: Game identifier.
+- `series_id`: Series identifier.
+- `tournament_name`: Tournament name.
+- `tournament_year`: Tournament year.
+- `map_name`: Map name.
+- `round_number`: Round number within game.
+- `planting_team`: Team that planted the spike.
+- `defending_team`: Team defending against plant.
+- `planter`: Player who planted.
+- `planter_id`: Player ID of planter.
+- `planter_agent`: Agent of planter.
+- `winning_team_name`: Round winning team.
+- `end_reason`: Round end reason.
+- `plant_converted`: Flag indicating if plant led to attacker win.
+- `detonated`: Flag indicating spike detonated.
+- `defused`: Flag indicating spike was defused.
+- `attacker_elim_win`: Flag indicating attackers won by elimination post-plant.
+- `defender_elim_win`: Flag indicating defenders won by elimination post-plant.
+- `calculated_at`: Aggregation timestamp.
+
+## agg_team_round_summary
+- `round_id`: Round identifier.
+- `team_name`: Team name.
+- `opponent_team_name`: Opponent team name.
+- `game_id`: Game identifier.
+- `tournament_name`: Tournament name.
+- `tournament_year`: Tournament year.
+- `map_name`: Map name.
+- `round_number`: Round number within game.
+- `side`: Side for the round (attacker/defender).
+- `round_won`: Flag indicating round won.
+- `team_kills`: Total team kills in round.
+- `team_deaths`: Total team deaths in round.
+- `team_assists`: Total team assists in round.
+- `team_damage`: Total team damage dealt.
+- `team_adr`: Team ADR for the round.
+- `team_fb`: Team first bloods.
+- `team_fd`: Team first deaths.
+- `fb_differential`: First blood differential (FB - FD).
+- `team_survivors`: Players alive at round end.
+- `team_deaths_traded`: Deaths that were traded.
+- `team_trade_kills`: Trade kills secured.
+- `team_untraded_deaths`: Untraded deaths.
+- `team_multikills`: Multi-kills (2+) in round.
+- `team_aces`: Aces in round.
+- `team_plants`: Spike plants.
+- `team_defuses`: Spike defuses.
+- `team_abilities`: Abilities used.
+- `team_early_util`: Early utility usage count.
+- `team_clutch_situations`: Clutch situations faced.
+- `team_clutches_won`: Clutches won.
+- `team_kast_count`: Players with KAST in round.
+- `calculated_at`: Aggregation timestamp.
+
+## agg_team_map_stats
+- `team_name`: Team name.
+- `opponent_team_name`: Most frequent opponent (if applicable).
+- `map_name`: Map name.
+- `tournament_name`: Tournament name.
+- `games_played`: Total games played on map.
+- `games_won`: Games won on map.
+- `games_lost`: Games lost on map.
+- `map_win_rate`: Win rate on map.
+- `total_rounds`: Total rounds played on map.
+- `rounds_won`: Rounds won on map.
+- `round_win_rate`: Round win rate on map.
+- `avg_adr`: Average ADR on map.
+- `avg_kd`: Average K/D on map.
+- `avg_kast`: Average KAST percentage on map.
+- `total_fb`: Total first bloods on map.
+- `total_fd`: Total first deaths on map.
+- `avg_opening_wr`: Average opening duel win rate.
+- `avg_trade_rate`: Average trade success rate.
+- `total_clutches_won`: Total clutches won on map.
+- `total_clutches_attempted`: Total clutch attempts on map.
+- `calculated_at`: Aggregation timestamp.
+
+## agg_team_series_stats
+- `series_id`: Series identifier.
+- `team_name`: Team name.
+- `tournament_name`: Tournament name.
+- `tournament_year`: Tournament year.
+- `start_time`: Series start timestamp.
+- `opponent_name`: Opponent team name.
+- `series_won`: Flag indicating series won.
+- `series_lost`: Flag indicating series lost.
+- `maps_played`: Maps played in series.
+- `maps_won`: Maps won in series.
+- `maps_lost`: Maps lost in series.
+- `calculated_at`: Aggregation timestamp.
+
+## agg_player_win_shares
+- `player_id`: Player identifier.
+- `game_id`: Game identifier.
+- `player_name`: Player name.
+- `team_name`: Team name.
+- `opponent_team_name`: Opponent team name.
+- `tournament_name`: Tournament name.
+- `tournament_year`: Tournament year.
+- `map_name`: Map name.
+- `agent_name`: Agent played.
+- `agent_role`: Agent role.
+- `rounds_played`: Rounds played in game.
+- `rounds_won`: Rounds won in game.
+- `first_bloods`: First blood count.
+- `first_deaths`: First death count.
+- `trade_kills`: Trade kills secured.
+- `survivals`: Rounds survived.
+- `deaths_traded`: Deaths that were traded.
+- `multi_kills`: Multi-kill rounds (2+).
+- `plants`: Spike plants.
+- `defuses`: Spike defuses.
+- `fb_win_share`: First blood win share contribution.
+- `trade_kill_share`: Trade kill win share contribution.
+- `survival_share`: Survival win share contribution.
+- `traded_death_share`: Traded death win share contribution.
+- `multikill_share`: Multi-kill win share contribution.
+- `plant_share`: Plant win share contribution.
+- `defuse_share`: Defuse win share contribution.
+- `total_win_share`: Total win share for game.
+- `win_share_per_round`: Win share per round.
+- `opening_duel_efficiency`: Opening duel win rate (FB / (FB + FD)).
+- `survival_rate`: Rounds survived / rounds played.
+- `trade_efficiency`: Trade kills / rounds with deaths.
+- `adr`: Average damage per round.
+- `kd_ratio`: Kill/death ratio.
+- `calculated_at`: Aggregation timestamp.

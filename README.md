@@ -11,6 +11,8 @@ It standardizes metrics and relationships between datasets, then exposes them th
 
 ## Architecture at a Glance
 
+![VLML Architecture](docs/infographics.png)
+
 1. **Modeling layer (DuckDB)**: Atomic events plus aggregated round/game/series tables optimized for analytics.
 2. **MCP tools (bridge)**: Tools that return structured metrics only — no narratives, no opinions.
 3. **LLM layer (insights)**: Generates narrative, recommendations, and VOD priorities.
@@ -66,12 +68,25 @@ See [docs/tools.md](docs/tools.md) for input/output details.
 
 ## Documentation
 
+**Getting Started:**
 - Setup: [docs/setup.md](docs/setup.md)
+- Data flow: [docs/data_flow.md](docs/data_flow.md)
+- Troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
+
+**Reference:**
 - Tools: [docs/tools.md](docs/tools.md)
 - Architecture: [docs/architecture.md](docs/architecture.md)
-- Database pipeline: [database/README.md](database/README.md)
-- Data model: [database/DATA_MODEL.md](database/DATA_MODEL.md)
+- Win Shares: [docs/win_shares.md](docs/win_shares.md)
 - Report standard: [insights_reference.md](insights_reference.md)
+
+**Database:**
+- Pipeline guide: [database/README.md](database/README.md)
+- Data model: [database/DATA_MODEL.md](database/DATA_MODEL.md)
+- Derived tables: [database/DERIVED_TABLES.md](database/DERIVED_TABLES.md)
+
+**Contributing:**
+- Contributor guide: [docs/contributing.md](docs/contributing.md)
+- SQL helper index: [src/vlml/tools/sql/README.md](src/vlml/tools/sql/README.md)
 
 ## Notes
 
