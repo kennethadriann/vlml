@@ -402,8 +402,8 @@
                 <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 8px;">THE DATA (VLML
                     Analytics)</div>
                 <div style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">
-                    • 7 aggregation tables<br>
-                    • Pre-computed metrics<br>
+                    • 21 analytics tables<br>
+                    • 70+ pre-computed metrics<br>
                     • Optimized for coaching questions
                 </div>
             </div>
@@ -418,7 +418,7 @@
 
         <p>I chose the second option. Here's why.</p>
 
-        <p>Frontier models like Claude and GPT-5 are trained on trillions of tokens with billions of dollars of compute.
+        <p>Frontier models like Claude, ChatGPT, and Gemini are trained on trillions of tokens with billions of dollars of compute.
             They understand language, reasoning, context, and nuance at a level that no domain-specific fine-tune can
             match.</p>
 
@@ -467,6 +467,36 @@
 
         <p>But <strong>right now</strong>, Claude + MCP is the best experience for building a conversational AI
             assistant that needs structured data access. That's why I'm using it.</p>
+
+        <hr>
+
+        <h2>The Sky Is the Limit: Junie + IDE Integration</h2>
+
+        <p>Here's where it gets exciting: <strong>MCP isn't limited to Claude Desktop.</strong></p>
+
+        <p>JetBrains recently released <strong>Junie</strong> — their AI coding assistant with full MCP support. That means
+            VLML works directly inside your IDE.</p>
+
+        <p>For data people who live in their development environment, this is a game-changer. You can run coaching analysis,
+            query the database, and generate insights — all without leaving your editor.</p>
+
+        <img src="junie_vlml.png" alt="Junie running VLML analysis in JetBrains IDE"
+            style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin: 24px 0;">
+
+        <p>In this example, Junie is running a full C9 roster optimization analysis — pulling map data, comparing agent
+            performance, and generating strategic recommendations. All inside the IDE, all powered by the same VLML data
+            layer.</p>
+
+        <p>This is the power of building on open standards. Today it's Claude Desktop and Junie. Tomorrow it could be:</p>
+
+        <ul>
+            <li><strong>VS Code + GitHub Copilot</strong> with MCP support</li>
+            <li><strong>Custom team dashboards</strong> built on the same data layer</li>
+            <li><strong>Mobile coaching apps</strong> that query VLML remotely</li>
+            <li><strong>Automated scouting pipelines</strong> triggered before each match</li>
+        </ul>
+
+        <p>The data model is the foundation. <strong>The sky is the limit for how you access it.</strong></p>
 
         <hr>
 
@@ -695,13 +725,14 @@
                 analytics schema that makes AI responses actually useful.</li>
             <li><strong>Pre-compute everything.</strong> Raw events are noise. Coaches need answers, not 10 million rows
                 to query.</li>
-            <li><strong>MCP is powerful.</strong> Connecting structured data to Claude via MCP feels like magic. The AI
-                reasons naturally over the tools — it doesn't feel like "using a database," it feels like "talking to an
-                analyst."</li>
+            <li><strong>MCP is powerful — and portable.</strong> Connecting structured data to AI via MCP feels like magic.
+                And because it's an open standard, the same data layer works with Claude, Junie, and whatever comes next.</li>
             <li><strong>Be pragmatic about AI.</strong> Fine-tuning is expensive and gets outdated. Riding the frontier
                 model wave is the smarter play.</li>
             <li><strong>Conversation > Dashboard.</strong> The most valuable insights come from follow-up questions that
                 emerge in dialogue.</li>
+            <li><strong>Meet users where they are.</strong> Some coaches want a chat interface. Some analysts want an IDE.
+                MCP lets you serve both with the same data layer.</li>
         </ol>
 
         <hr>
@@ -709,7 +740,12 @@
         <div class="footer">
             <p><em>VLML is my submission to the Cloud9 x JetBrains Hackathon, Category 1: Comprehensive Assistant Coach.
                     Built with DuckDB, Python, and MCP. Powered by whatever LLM is best today — and tomorrow.</em></p>
-            <p style="margin-top: 16px;"><a href="https://github.com/kennethadriann/vlml">GitHub Repository</a></p>
+            <p style="margin-top: 16px;">
+                <a href="https://github.com/kennethadriann/vlml">GitHub Repository</a> ·
+                <a href="https://github.com/kennethadriann/vlml/blob/main/docs/architecture.md">Architecture</a> ·
+                <a href="https://github.com/kennethadriann/vlml/blob/main/docs/data_flow.md">Data Flow</a> ·
+                <a href="https://github.com/kennethadriann/vlml/blob/main/docs/setup.md">Setup Guide</a>
+            </p>
         </div>
     </div>
 </body>
