@@ -602,60 +602,27 @@
 
         <h2>The Coaching Experience</h2>
 
-        <p>Here's what it actually looks like to use VLML:</p>
+        <p>Here's what it actually looks like to use VLML in a real-world scenario: a post-match review after Cloud9's playoff loss to NRG.</p>
 
-        <div class="conversation">
-            <div class="speaker">Coach:</div>
-            <div class="message">"Analyze Cloud9's loss to NRG on Bind. What went wrong?"</div>
+        <p>Instead of a dashboard, the coach starts a conversation. They ask for an agenda, and Claude calls <code>match_analysis_report</code> to synthesize the data into a prioritized checklist.</p>
 
-            <div class="speaker ai">Claude:</div>
-            <div class="message">
-                <p><em>[Calls match_analysis_report, examines the data]</em></p>
-                <p>"Cloud9 lost Bind 11-13 despite winning more opening duels (+3 FB advantage). The issue was
-                    post-first-blood conversion: C9 won only 55% of rounds where they got first blood, compared to NRG's
-                    78%.</p>
-                <p>Looking at the round timeline, three specific rounds stand out:</p>
-                <ul style="margin-top: 12px;">
-                    <li>Round 7: C9 won FB but lost a 4v5</li>
-                    <li>Round 15: C9 won FB but lost a 5v4</li>
-                    <li>Round 22: C9 won FB but lost a 4v5</li>
-                </ul>
-                <p style="margin-top: 16px;">All three losses came on A-site attacks. Checking player positions... the
-                    deaths after first blood were concentrated on trent, who died within 8 seconds of the opening kill
-                    in all three rounds.</p>
-                <p><strong>Hypothesis:</strong> Trade timing is too slow after trent's entries. The team isn't
-                    converting his space creation.</p>
-                <p><strong>VOD Review Priority:</strong></p>
-                <ol>
-                    <li>Bind R7 — Watch trent's entry and team follow-up timing</li>
-                    <li>Bind R15 — Same pattern, check if support utility arrived on time</li>
-                    <li>Bind R22 — Verify if this is a positioning issue or timing issue</li>
-                </ol>
-            </div>
-        </div>
+        <img src="claude_1.png" alt="Claude generating a C9 vs NRG Game Review Agenda"
+            style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin: 24px 0;">
 
-        <p>That analysis took 15 seconds. Manually reviewing VODs to find those patterns would take hours.</p>
+        <p>In seconds, the AI identifies the statistical "why" behind the loss. It doesn't just show kills; it flags that <strong>when OXY dies first, C9 loses 91.7% of their rounds</strong>. That's an immediate, actionable coaching point that would normally take hours of VOD review to quantify.</p>
 
-        <p>And this is just one question. The conversation continues:</p>
+        <h3>Micro-Level Tactics & "What If" Analysis</h3>
 
-        <div class="conversation">
-            <div class="speaker">Coach:</div>
-            <div class="message">"What about trent's overall first death rate? Is this a recurring problem?"</div>
+        <p>The conversation doesn't stop at the series level. The coach can drill down into a specific map, or even a specific round that felt like a turning point.</p>
 
-            <div class="speaker ai">Claude:</div>
-            <div class="message">
-                <p><em>[Calls player_profile_report]</em></p>
-                <p>"Across his last 5 series, trent has a 19% first death rate — higher than typical for a duelist
-                    (benchmark: 15-18%). On Bind specifically, it's 24%.</p>
-                <p>However, his first <em>blood</em> rate is also high at 22%, which means he's taking aggressive fights
-                    and winning more than he loses. The issue isn't that he's dying first — it's that the team isn't
-                    consistently trading him when he does.</p>
-                <p>Looking at untraded death percentage..."</p>
-            </div>
-        </div>
+        <p>In this example, the AI performs a post-mortem on Haven Round 22. It breaks down the kill sequence to the millisecond and identifies the exact tactical failure: <strong>stacking too closely post-trade</strong>, which allowed an enemy Neon to land a 6-second ACE.</p>
 
-        <p>This is what a Moneyball-style coaching assistant should be: <strong>data-driven insights delivered in
-                seconds</strong>, not hours of manual VOD review.</p>
+        <img src="claude_2_round22_1.png" alt="Claude analyzing the kill sequence of Haven Round 22"
+            style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 24px;">
+        <img src="claude_2_round22_2.png" alt="Claude offering tactical solutions for Haven Round 22"
+            style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 12px; margin-bottom: 24px;">
+
+        <p>Most impressively, it offers four distinct <strong>"Options to Win."</strong> It moves from being a "stat bot" to a "coach," suggesting specific protocols like a 10-meter spacing rule and utility counters for high-mobility agents. This is the "Moneyball" promise fulfilled: turning data into a winning process.</p>
 
         <hr>
 
