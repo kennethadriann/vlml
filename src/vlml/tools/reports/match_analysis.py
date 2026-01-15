@@ -1,4 +1,31 @@
-"""Match analysis report generation."""
+"""Match analysis report generation.
+
+This module generates detailed match analysis reports for single Valorant series.
+It provides team comparisons, round-by-round timelines, and impact metrics.
+
+Report Sections:
+    - metadata: Series info (tournament, date, teams)
+    - games: Per-map results and scores
+    - scope: Data coverage and confidence level
+    - team_comparison: Side-by-side team stats
+    - key_metrics: Opening duels, conversions, impact, consistency, economy
+    - player_performance: Per-player stats (K/D, ADR, clutches, multikills)
+    - kast_impact_analysis: KAST correlation with round outcomes
+    - opening_death_impact: First death correlation with losses
+    - round_timeline: Chronological round-by-round breakdown
+    - highlight_rounds: Aces, clutches, and multikill rounds
+    - half_breakdown: First vs second half performance
+
+SQL Dependencies:
+    See src/vlml/tools/sql/README.md for the complete file mapping.
+    Key files: team_round_metrics.sql, team_impact_metrics.sql, team_comparison.sql,
+    player_performance.sql, round_timeline_enhanced.sql, highlight_rounds.sql
+
+Usage:
+    >>> from vlml.tools.reports import match_analysis_report
+    >>> report = await match_analysis_report(series_id="abc123")
+    >>> report = await match_analysis_report(series_id="abc123", team_name="Cloud9", map_name="Ascent")
+"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -22,6 +49,18 @@ def _team_round_metrics(
     team_name: str,
     map_name: Optional[str] = None,
 ) -> Dict[str, Any]:
+    """Fetch round-level metrics for a team (opening duels, conversions).
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        team_name: Team name to filter (uses ILIKE matching).
+        map_name: Optional map name filter.
+
+    Returns:
+        Dict with rounds_played, rounds_won, first_bloods, first_deaths,
+        fb_converted_total, fb_attempts_total, fd_salvage_total, fd_attempts_total.
+    """
     series_clause = in_clause(series_ids)
     params: List[Any] = list(series_ids) + [f"%{team_name}%"]
     map_filter = ""
@@ -53,6 +92,18 @@ def _team_impact_metrics(
     team_name: str,
     map_name: Optional[str] = None,
 ) -> Dict[str, Any]:
+    """Fetch impact metrics for a team (multikills, clutches).
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        team_name: Team name to filter.
+        map_name: Optional map name filter.
+
+    Returns:
+        Dict with double_kills, triple_kills, quad_kills, aces,
+        clutch_attempts, clutch_wins, clutch_avg_opponents.
+    """
     series_clause = in_clause(series_ids)
     params: List[Any] = list(series_ids) + [f"%{team_name}%"]
     map_filter = ""
@@ -556,7 +607,39 @@ async def match_analysis_report(
     team_name: Optional[str] = None,
     map_name: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Generate a match analysis report for a single series."""
+    """Generate a comprehensive match analysis report for a single series.
+
+    This is the main entry point for match analysis. It assembles data from
+    multiple queries to provide a complete picture of a series including
+    team comparisons, player performance, round timelines, and coaching insights.
+
+    Args:
+        series_id: The unique identifier for the series to analyze.
+        team_name: Optional focus team (defaults to first team found).
+        map_name: Optional map filter to analyze a specific game.
+
+    Returns:
+        Dict containing:
+            - report_type: "match_analysis"
+            - version: Report format version
+            - series_id: The analyzed series ID
+            - team_name: Focus team name
+            - metadata: Tournament, date, teams involved
+            - games: List of maps with scores
+            - scope: Round count and confidence level
+            - team_comparison: Side-by-side team metrics
+            - key_metrics: Focus team's detailed metrics
+            - player_performance: Per-player stats
+            - kast_impact_analysis: KAST correlation data
+            - opening_death_impact: First death impact data
+            - round_timeline: Round-by-round breakdown
+            - highlight_rounds: Notable rounds (aces, clutches)
+            - half_breakdown: First/second half splits
+
+    Example:
+        >>> report = await match_analysis_report("abc123")
+        >>> print(report["team_comparison"]["Team A"]["rounds_won"])
+    """
     with EventDatabase(read_only=True) as db:
         metadata = series_metadata(db, series_id)
         teams_sql = load_sql("match_analysis_teams.sql")

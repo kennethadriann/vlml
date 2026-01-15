@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
-"""Load raw JSONL event files into DuckDB using bulk operations."""
+"""Load raw JSONL event files into DuckDB using bulk operations.
+
+This script loads downloaded GRID event data from JSONL files into the
+atomic tables (series, games, rounds, base_events).
+
+Usage:
+    # Load all years
+    python load_data.py
+
+    # Load specific year
+    python load_data.py --year 2025
+
+    # Custom database path
+    python load_data.py --year 2025 --db /path/to/db.duckdb
+
+Processing:
+    1. Scans data/raw_events/{year}/ for *.jsonl files
+    2. Parses each file using parsers.py
+    3. Bulk inserts into atomic tables using db_loader.py
+    4. Skips already-loaded series (idempotent)
+
+Output Tables:
+    - series: Tournament metadata (series_id, tournament, date)
+    - games: Map-level info (game_id, map_name, winner)
+    - rounds: Round-level info (round_id, round_number, winner)
+    - base_events: Individual events (kills, deaths, plants, abilities)
+"""
 from __future__ import annotations
 
 import argparse

@@ -441,10 +441,19 @@ This trades storage space for query performance.
 
 ## Related Documentation
 
+**Data Model:**
 - [DATA_MODEL.md](DATA_MODEL.md) - Table grains and relationships
 - [DATA_DICTIONARY.md](DATA_DICTIONARY.md) - Column definitions
 - [DERIVED_TABLES.md](DERIVED_TABLES.md) - Derived aggregate tables (Layer 4)
+
+**Methodology:**
 - [docs/win_shares.md](../docs/win_shares.md) - Win Share methodology and benchmarks
+
+**Development:**
+- [docs/data_flow.md](../docs/data_flow.md) - End-to-end pipeline walkthrough
+- [docs/contributing.md](../docs/contributing.md) - How to add metrics and tables
+- [docs/troubleshooting.md](../docs/troubleshooting.md) - Common issues and solutions
+- [src/vlml/tools/sql/README.md](../src/vlml/tools/sql/README.md) - SQL helper file index
 
 ## Design Principles
 

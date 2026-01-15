@@ -1,6 +1,56 @@
+-- ============================================================================
 -- Model: agg_player_round_stats
--- Source: base_events
--- Type: Incremental (re-aggregate rounds with new events)
+-- Source: base_events, rounds, agent_roles, weapon_types
+-- Type: Incremental (delete-and-rebuild affected rounds)
+-- Target: agg_player_round_stats (40+ metrics per player per round)
+-- ============================================================================
+--
+-- PURPOSE:
+--   This is the foundational transformation that converts raw base_events into
+--   per-player per-round statistics. All downstream aggregations (game, series,
+--   daily, tournament) depend on this table.
+--
+-- PROCESSING PATTERN:
+--   1. Find rounds with new data (using ingested_at, not occurred_at)
+--   2. Delete existing stats for those rounds
+--   3. Rebuild all stats for affected rounds from base_events
+--
+-- KEY METRICS COMPUTED:
+--   - Combat: kills, deaths, assists, damage_dealt, damage_received
+--   - Opening duels: first_bloods, first_deaths, is_opening_kill/death
+--   - Trading: is_traded, is_trade_kill, trade_kill_time, is_untraded_death
+--   - Clutches: is_1v1 through is_1v5, clutch_won/lost, clutch_opponents
+--   - Multi-kills: is_double_kill, is_triple_kill, is_quad_kill, is_ace
+--   - Economy: loadout_value, is_eco_round, is_force_buy, is_thrifty
+--   - Weapons: rifle_kills, sniper_kills, headshot metrics by weapon type
+--   - Duels: duel_initiated_wins, duel_held_wins, by weapon category
+--   - Positioning: iso_deaths, stack_deaths, repeek_deaths
+--   - Utility: flash_assists, util_effect_kills, early_util
+--
+-- INCREMENTAL LOGIC:
+--   Uses r.ingested_at (when data was loaded into DB) instead of e.occurred_at
+--   (when match happened). This ensures backfilled historical matches are
+--   properly detected. For example, 2023 matches loaded after 2025 matches
+--   will be processed because their ingested_at is recent.
+--
+-- CTE STRUCTURE:
+--   1. new_rounds - Identify rounds needing (re)processing
+--   2. round_team_deaths - Count deaths per team per round
+--   3. first_kill - Find opening kill of each round
+--   4. player_sides - Determine attack/defense side per player
+--   5. damage_received_agg - Sum damage taken per player
+--   6. player_economy - Loadout values and net worth
+--   7. weapon_events - Classify weapons used
+--   8. team_weapon_counts - Determine eco/force/full buy
+--   9. early_util_agg - Track utility used in first 15 seconds
+--   10. kill_events - Extract all kills with positions
+--   11. duel_* - Analyze 1v1 engagements and outcomes
+--   12. trade_* - Identify trades (revenge kills within 4-5 seconds)
+--   13. *_deaths - Categorize death types (iso, stack, repeek)
+--   14. flash_* - Track flash assists and self-flash kills
+--   15. util_effect_kills - Kills assisted by any utility
+--
+-- ============================================================================
 
 -- Step 1: Find rounds that have new events
 -- Note: Uses r.ingested_at (when data was loaded) instead of e.occurred_at (when match happened)
