@@ -465,14 +465,19 @@ def _player_performance(
     db: EventDatabase,
     series_id: str,
     map_name: Optional[str] = None,
+    team_name: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     params: List[Any] = [series_id]
     map_filter = ""
+    team_filter = ""
     if map_name:
         map_filter = " AND prs.map_name = ?"
         params.append(map_name)
+    if team_name:
+        team_filter = " AND prs.team_name ILIKE ?"
+        params.append(f"%{team_name}%")
 
-    sql = load_sql("player_performance.sql").format(map_filter=map_filter)
+    sql = load_sql("player_performance.sql").format(map_filter=map_filter, team_filter=team_filter)
     rows = db.query(sql, params)
     results = []
     for row in rows:
@@ -1072,9 +1077,9 @@ async def match_players_report(
             "version": "1.0",
             "series_id": series_id,
             "team_name": focus_team,
-            "player_performance": _player_performance(db, series_id, map_name),
-            "kast_impact_analysis": kast_impact(db, series_id),
-            "opening_death_impact": opening_death_impact(db, series_id),
+            "player_performance": _player_performance(db, series_id, map_name, focus_team),
+            "kast_impact_analysis": kast_impact(db, series_id, player_name=None),
+            "opening_death_impact": opening_death_impact(db, series_id, player_name=None),
             "highlight_rounds": _highlight_rounds(db, series_id, map_name),
         }
 

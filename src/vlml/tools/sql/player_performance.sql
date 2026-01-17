@@ -26,5 +26,6 @@ JOIN rounds r ON r.round_id = prs.round_id
 JOIN games g ON g.game_id = r.game_id
 WHERE g.series_id = ?
   {map_filter}
+  {team_filter}
 GROUP BY prs.player_name, prs.team_name, prs.agent_name
 ORDER BY prs.team_name, kills DESC
