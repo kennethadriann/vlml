@@ -13,6 +13,32 @@ async def match_analysis_report(series_id: str, team_name: str | None = None, ma
     return await insights_tools.match_analysis_report(series_id, team_name, map_name)
 
 @mcp.tool()
+async def match_summary_report(series_id: str, team_name: str | None = None, map_name: str | None = None) -> dict:
+    """Generate a lightweight match summary (metadata, team comparison, key metrics, benchmarks). Call this first for overview."""
+    return await insights_tools.match_summary_report(series_id, team_name, map_name)
+
+@mcp.tool()
+async def match_players_report(series_id: str, team_name: str | None = None, map_name: str | None = None) -> dict:
+    """Generate a player-focused report (performance stats, KAST impact, highlight rounds). Use for player analysis."""
+    return await insights_tools.match_players_report(series_id, team_name, map_name)
+
+@mcp.tool()
+async def match_rounds_report(
+    series_id: str,
+    team_name: str | None = None,
+    map_name: str | None = None,
+    round_start: int | None = None,
+    round_end: int | None = None,
+) -> dict:
+    """Generate a round-by-round report (timeline, situations, half breakdown). Heavy - use pagination for large datasets."""
+    return await insights_tools.match_rounds_report(series_id, team_name, map_name, round_start, round_end)
+
+@mcp.tool()
+async def match_economy_report(series_id: str, team_name: str | None = None, map_name: str | None = None) -> dict:
+    """Generate an economy/tactical report (economy context, attack patterns). Use for economy cascade or predictability analysis."""
+    return await insights_tools.match_economy_report(series_id, team_name, map_name)
+
+@mcp.tool()
 async def player_profile_report(
     player_name: str,
     series_ids: list[str] | None = None,
