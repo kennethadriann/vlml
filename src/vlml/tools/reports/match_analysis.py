@@ -40,6 +40,7 @@ from ..common import (
     opening_death_impact,
     series_games,
     series_metadata,
+    situation_benchmarks,
 )
 
 
@@ -602,6 +603,262 @@ def _half_breakdown(
     return results
 
 
+def _economy_context(
+    db: EventDatabase,
+    series_ids: List[str],
+    team_name: str,
+    map_name: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Fetch round-by-round economy progression for cascade pattern analysis.
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        team_name: Team name to filter (uses ILIKE matching).
+        map_name: Optional map name filter.
+
+    Returns:
+        List of dicts with per-round economy data including:
+            - round_number, buy_type, loadout_value, round_won
+            - prev_round context (LAG data)
+            - streak and momentum indicators
+            - opponent economy comparison
+    """
+    series_clause = in_clause(series_ids)
+    # SQL uses series_clause twice: once in team_loadouts CTE, once in main query
+    params: List[Any] = list(series_ids) + list(series_ids) + [f"%{team_name}%"]
+    map_filter = ""
+    if map_name:
+        map_filter = " AND g.map_name = ?"
+        params.append(map_name)
+
+    sql = load_sql("economy_round_context.sql").format(
+        series_clause=series_clause,
+        map_filter=map_filter,
+    )
+    rows = db.query(sql, params)
+
+    results = []
+    for row in rows:
+        results.append({
+            "round_id": row[0],
+            "team_name": row[1],
+            "game_id": row[2],
+            "game_number": row[3],
+            "map_name": row[4],
+            "round_number": row[5],
+            "side": row[6],
+            "round_won": bool(row[7]) if row[7] is not None else None,
+            "buy_type": row[8],
+            "loadout_value": row[9],
+            "net_worth": row[10],
+            "prev_round": {
+                "round_number": row[11],
+                "round_won": bool(row[12]) if row[12] is not None else None,
+                "loadout_value": row[13],
+                "buy_type": row[14],
+            } if row[11] is not None else None,
+            "streak": row[15],
+            "recent_momentum": row[16],
+            "opponent": {
+                "loadout_value": row[17],
+                "buy_type": row[18],
+            },
+            "loadout_diff": row[19],
+            "end_reason": row[20],
+        })
+    return results
+
+
+def _round_situations(
+    db: EventDatabase,
+    series_ids: List[str],
+    team_name: str,
+    map_name: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Fetch rich per-round situation data for LLM reasoning.
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        team_name: Team name to filter (uses ILIKE matching).
+        map_name: Optional map name filter.
+
+    Returns:
+        List of dicts with per-round situation data including:
+            - Score context, match point, overtime flags
+            - Player counts, loadout values, weapon distribution
+            - Utility usage comparison
+            - Opening duel results
+            - Post-plant context (retakes, kills/deaths)
+            - Next round economy projection
+    """
+    series_clause = in_clause(series_ids)
+    map_filter = ""
+    map_params: List[Any] = []
+    if map_name:
+        map_filter = " AND g.map_name = ?"
+        map_params = [map_name]
+
+    # Need to pass series_ids and team filter multiple times for CTEs
+    # CTEs: team_loadouts, round_state (+ team), player_weapons (+ team), next_round_economy (+ team)
+    full_params: List[Any] = (
+        list(series_ids)  # team_loadouts CTE
+        + list(series_ids) + [f"%{team_name}%"] + map_params  # round_state CTE
+        + list(series_ids) + [f"%{team_name}%"] + map_params  # player_weapons CTE
+        + list(series_ids) + [f"%{team_name}%"] + map_params  # next_round_economy CTE
+    )
+
+    sql = load_sql("round_situation_context.sql").format(
+        series_clause=series_clause,
+        map_filter=map_filter,
+    )
+    rows = db.query(sql, full_params)
+
+    results = []
+    for row in rows:
+        results.append({
+            "round_id": row[0],
+            "game_id": row[1],
+            "game_number": row[2],
+            "map_name": row[3],
+            "team_name": row[4],
+            "round_number": row[5],
+            "side": row[6],
+            "round_won": bool(row[7]) if row[7] is not None else None,
+            "score": {
+                "at_start": row[8],
+                "team": row[9],
+                "opponent": row[10],
+            },
+            "is_match_point": bool(row[11]) if row[11] is not None else False,
+            "is_overtime": bool(row[12]) if row[12] is not None else False,
+            "situation": {
+                "team_alive_at_end": row[13],
+                "opp_alive_at_end": row[14],
+                "team_loadout": row[15],
+                "opp_loadout": row[16],
+                "team_buy_type": row[17],
+                "opp_buy_type": row[18],
+            },
+            "weapons": {
+                "rifles": row[19] or 0,
+                "snipers": row[20] or 0,
+                "smgs": row[21] or 0,
+            },
+            "utility": {
+                "team_used": row[22],
+                "opp_used": row[23],
+                "flashes": row[24],
+                "smokes": row[25],
+            },
+            "opening_duel": {
+                "got_entry_kill": bool(row[26]) if row[26] is not None else False,
+                "got_entry_death": bool(row[27]) if row[27] is not None else False,
+                "first_bloods": row[28] or 0,
+                "first_deaths": row[29] or 0,
+            },
+            "post_plant": {
+                "had_plant": (row[30] or 0) > 0,
+                "retake_attempted": row[31] or 0,
+                "retake_kills": row[32] or 0,
+                "post_plant_kills": row[33] or 0,
+                "post_plant_deaths": row[34] or 0,
+            },
+            "timing": {
+                "time_to_first_kill_s": float(row[35]) if row[35] else None,
+                "time_to_plant_s": float(row[36]) if row[36] else None,
+                "post_plant_duration_s": float(row[37]) if row[37] else None,
+            },
+            "outcome": {
+                "end_reason": row[38],
+                "winner": row[39],
+            },
+            "trades": {
+                "deaths_traded": row[40] or 0,
+                "deaths_untraded": row[41] or 0,
+            },
+            "streak": row[42],
+            "combat": {
+                "team_kills": row[43] or 0,
+                "team_deaths": row[44] or 0,
+                "opp_kills": row[45] or 0,
+                "opp_deaths": row[46] or 0,
+            },
+            "next_round": {
+                "projected_loadout": row[47],
+                "projected_buy_type": row[48],
+            } if row[47] is not None else None,
+        })
+    return results
+
+
+def _attack_patterns(
+    db: EventDatabase,
+    series_ids: List[str],
+    team_name: str,
+    map_name: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Fetch attack pattern context for execute timing and site selection analysis.
+
+    Args:
+        db: Database connection.
+        series_ids: List of series IDs to include.
+        team_name: Team name to filter (uses ILIKE matching).
+        map_name: Optional map name filter.
+
+    Returns:
+        List of dicts with per-round attack pattern data including:
+            - Execute timing (early/mid/late)
+            - First contact time and first blood info
+            - Site hit determination
+            - Plant timing classification
+    """
+    series_clause = in_clause(series_ids)
+    params: List[Any] = list(series_ids) + list(series_ids) + list(series_ids) + [f"%{team_name}%"]
+    map_filter = ""
+    if map_name:
+        map_filter = " AND g.map_name = ?"
+        params.append(map_name)
+
+    sql = load_sql("attack_pattern_context.sql").format(
+        series_clause=series_clause,
+        map_filter=map_filter,
+    )
+    rows = db.query(sql, params)
+
+    results = []
+    for row in rows:
+        results.append({
+            "round_id": row[0],
+            "game_id": row[1],
+            "game_number": row[2],
+            "map_name": row[3],
+            "team_name": row[4],
+            "round_number": row[5],
+            "round_won": bool(row[6]) if row[6] is not None else None,
+            "loadout_value": row[7],
+            "side": row[8],
+            "first_contact": {
+                "timing": row[9],
+                "time_s": float(row[10]) if row[10] else None,
+                "first_blood_for": row[11],
+                "killer": row[12],
+                "victim": row[13],
+            },
+            "site_hit": row[14],
+            "had_plant": (row[15] or 0) > 0,
+            "plant_time_s": float(row[16]) if row[16] else None,
+            "plant_speed": row[17],
+            "outcome": {
+                "end_reason": row[18],
+                "winner": row[19],
+            },
+            "late_execute": bool(row[20]) if row[20] is not None else False,
+        })
+    return results
+
+
 async def match_analysis_report(
     series_id: str,
     team_name: Optional[str] = None,
@@ -635,6 +892,10 @@ async def match_analysis_report(
             - round_timeline: Round-by-round breakdown
             - highlight_rounds: Notable rounds (aces, clutches)
             - half_breakdown: First/second half splits
+            - economy_context: Round-by-round economy progression for cascade analysis
+            - round_situations: Rich per-round situation data for LLM reasoning
+            - attack_patterns: Execute timing and site selection patterns
+            - benchmarks: Historical baseline rates for LLM reference
 
     Example:
         >>> report = await match_analysis_report("abc123")
@@ -659,7 +920,7 @@ async def match_analysis_report(
 
         return {
             "report_type": "match_analysis",
-            "version": "2.0",
+            "version": "3.0",
             "series_id": series_id,
             "team_name": focus_team,
             "metadata": metadata,
@@ -683,4 +944,263 @@ async def match_analysis_report(
             "round_timeline": _round_timeline_enhanced(db, series_id, map_name),
             "highlight_rounds": _highlight_rounds(db, series_id, map_name),
             "half_breakdown": _half_breakdown(db, series_id, map_name),
+            # Enhanced coaching context (v3.0)
+            "economy_context": _economy_context(db, [series_id], focus_team, map_name),
+            "round_situations": _round_situations(db, [series_id], focus_team, map_name),
+            "attack_patterns": _attack_patterns(db, [series_id], focus_team, map_name),
+            "benchmarks": situation_benchmarks(db, [series_id]),
+        }
+
+
+async def match_summary_report(
+    series_id: str,
+    team_name: Optional[str] = None,
+    map_name: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Generate a lightweight match summary report for quick overview.
+
+    This is the recommended first call for match analysis. Returns metadata
+    and high-level metrics without the heavy round-by-round data. Use this
+    to get an overview and decide what to drill into with the other reports.
+
+    Args:
+        series_id: The unique identifier for the series to analyze.
+        team_name: Optional focus team (defaults to first team found).
+        map_name: Optional map filter to analyze a specific game.
+
+    Returns:
+        Dict containing:
+            - report_type: "match_summary"
+            - version: Report format version
+            - series_id: The analyzed series ID
+            - team_name: Focus team name
+            - metadata: Tournament, date, teams involved
+            - games: List of maps with scores
+            - scope: Round count and confidence level
+            - team_comparison: Side-by-side team metrics (condensed)
+            - key_metrics: Focus team's detailed metrics (condensed)
+            - benchmarks: Historical baseline rates for LLM reference
+
+    Example:
+        >>> report = await match_summary_report("abc123")
+        >>> print(report["team_comparison"]["Team A"]["rounds_won"])
+    """
+    with EventDatabase(read_only=True) as db:
+        metadata = series_metadata(db, series_id)
+        teams_sql = load_sql("match_analysis_teams.sql")
+        team_rows = db.query(teams_sql, [series_id])
+        teams = [row[0] for row in team_rows]
+        if not teams:
+            return {"error": f"No data found for series {series_id}"}
+
+        focus_team = team_name or teams[0]
+        opponent_team = next((t for t in teams if t.lower() != focus_team.lower()), None)
+
+        series_scope_sql = load_sql("match_analysis_scope_rounds.sql")
+        scope_rounds = db.query(series_scope_sql, [series_id, f"%{focus_team}%"])[0][0]
+
+        focus_metrics = assemble_team_metrics(db, [series_id], focus_team, map_name)
+        opponent_metrics = assemble_team_metrics(db, [series_id], opponent_team, map_name) if opponent_team else {}
+
+        return {
+            "report_type": "match_summary",
+            "version": "1.0",
+            "series_id": series_id,
+            "team_name": focus_team,
+            "metadata": metadata,
+            "games": series_games(db, series_id),
+            "scope": {
+                "maps": [map_name] if map_name else list({row[0] for row in db.query(
+                    load_sql("match_analysis_scope_maps.sql"),
+                    [series_id],
+                )}),
+                "rounds": scope_rounds or 0,
+                "confidence": confidence_label(scope_rounds or 0),
+            },
+            "team_comparison": _team_comparison(db, series_id, map_name),
+            "key_metrics": {
+                "team": focus_metrics,
+                "opponent": opponent_metrics,
+            },
+            "benchmarks": situation_benchmarks(db, [series_id]),
+        }
+
+
+async def match_players_report(
+    series_id: str,
+    team_name: Optional[str] = None,
+    map_name: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Generate a player-focused match report.
+
+    Returns player performance data, KAST impact analysis, opening death
+    impact, and highlight rounds. Use this for player performance analysis
+    and VOD priority identification.
+
+    Args:
+        series_id: The unique identifier for the series to analyze.
+        team_name: Optional focus team (defaults to first team found).
+        map_name: Optional map filter to analyze a specific game.
+
+    Returns:
+        Dict containing:
+            - report_type: "match_players"
+            - version: Report format version
+            - series_id: The analyzed series ID
+            - team_name: Focus team name
+            - player_performance: Per-player stats (K/D, ADR, clutches, multikills)
+            - kast_impact_analysis: KAST correlation with round outcomes
+            - opening_death_impact: First death correlation with losses
+            - highlight_rounds: Aces, clutches, and multikill rounds
+
+    Example:
+        >>> report = await match_players_report("abc123")
+        >>> for player in report["player_performance"]:
+        ...     print(f"{player['player_name']}: {player['kd_ratio']} K/D")
+    """
+    with EventDatabase(read_only=True) as db:
+        teams_sql = load_sql("match_analysis_teams.sql")
+        team_rows = db.query(teams_sql, [series_id])
+        teams = [row[0] for row in team_rows]
+        if not teams:
+            return {"error": f"No data found for series {series_id}"}
+
+        focus_team = team_name or teams[0]
+
+        return {
+            "report_type": "match_players",
+            "version": "1.0",
+            "series_id": series_id,
+            "team_name": focus_team,
+            "player_performance": _player_performance(db, series_id, map_name),
+            "kast_impact_analysis": kast_impact(db, series_id),
+            "opening_death_impact": opening_death_impact(db, series_id),
+            "highlight_rounds": _highlight_rounds(db, series_id, map_name),
+        }
+
+
+async def match_rounds_report(
+    series_id: str,
+    team_name: Optional[str] = None,
+    map_name: Optional[str] = None,
+    round_start: Optional[int] = None,
+    round_end: Optional[int] = None,
+) -> Dict[str, Any]:
+    """Generate a round-by-round match report.
+
+    Returns detailed round timeline, rich situation context, and half breakdown.
+    This is a heavy report - call only when needed for deep-dive analysis.
+    Use round_start/round_end to paginate large datasets.
+
+    Args:
+        series_id: The unique identifier for the series to analyze.
+        team_name: Optional focus team (defaults to first team found).
+        map_name: Optional map filter to analyze a specific game.
+        round_start: Optional starting round number (inclusive) for pagination.
+        round_end: Optional ending round number (inclusive) for pagination.
+
+    Returns:
+        Dict containing:
+            - report_type: "match_rounds"
+            - version: Report format version
+            - series_id: The analyzed series ID
+            - team_name: Focus team name
+            - pagination: Round range if filtered
+            - round_timeline: Chronological round-by-round breakdown
+            - round_situations: Rich per-round situation data for LLM reasoning
+            - half_breakdown: First vs second half performance
+
+    Example:
+        >>> # Get all rounds
+        >>> report = await match_rounds_report("abc123")
+        >>> # Get rounds 10-15 only
+        >>> report = await match_rounds_report("abc123", round_start=10, round_end=15)
+    """
+    with EventDatabase(read_only=True) as db:
+        teams_sql = load_sql("match_analysis_teams.sql")
+        team_rows = db.query(teams_sql, [series_id])
+        teams = [row[0] for row in team_rows]
+        if not teams:
+            return {"error": f"No data found for series {series_id}"}
+
+        focus_team = team_name or teams[0]
+
+        # Get round data
+        round_timeline = _round_timeline_enhanced(db, series_id, map_name)
+        round_situations = _round_situations(db, [series_id], focus_team, map_name)
+
+        # Apply pagination if specified
+        pagination = None
+        if round_start is not None or round_end is not None:
+            start = round_start or 1
+            end = round_end or 999
+
+            round_timeline = [
+                r for r in round_timeline
+                if start <= r["round_number"] <= end
+            ]
+            round_situations = [
+                r for r in round_situations
+                if start <= r["round_number"] <= end
+            ]
+            pagination = {"round_start": start, "round_end": end}
+
+        return {
+            "report_type": "match_rounds",
+            "version": "1.0",
+            "series_id": series_id,
+            "team_name": focus_team,
+            "pagination": pagination,
+            "round_timeline": round_timeline,
+            "round_situations": round_situations,
+            "half_breakdown": _half_breakdown(db, series_id, map_name),
+        }
+
+
+async def match_economy_report(
+    series_id: str,
+    team_name: Optional[str] = None,
+    map_name: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Generate an economy and tactical patterns report.
+
+    Returns economy context and attack pattern data. This is a heavy report -
+    call only when needed for economy cascade analysis or attack predictability
+    detection.
+
+    Args:
+        series_id: The unique identifier for the series to analyze.
+        team_name: Optional focus team (defaults to first team found).
+        map_name: Optional map filter to analyze a specific game.
+
+    Returns:
+        Dict containing:
+            - report_type: "match_economy"
+            - version: Report format version
+            - series_id: The analyzed series ID
+            - team_name: Focus team name
+            - economy_context: Round-by-round economy progression for cascade analysis
+            - attack_patterns: Execute timing and site selection patterns
+
+    Example:
+        >>> report = await match_economy_report("abc123", team_name="Cloud9")
+        >>> for round in report["economy_context"]:
+        ...     print(f"R{round['round_number']}: {round['buy_type']} ({round['loadout_value']})")
+    """
+    with EventDatabase(read_only=True) as db:
+        teams_sql = load_sql("match_analysis_teams.sql")
+        team_rows = db.query(teams_sql, [series_id])
+        teams = [row[0] for row in team_rows]
+        if not teams:
+            return {"error": f"No data found for series {series_id}"}
+
+        focus_team = team_name or teams[0]
+
+        return {
+            "report_type": "match_economy",
+            "version": "1.0",
+            "series_id": series_id,
+            "team_name": focus_team,
+            "economy_context": _economy_context(db, [series_id], focus_team, map_name),
+            "attack_patterns": _attack_patterns(db, [series_id], focus_team, map_name),
         }

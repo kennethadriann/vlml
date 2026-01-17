@@ -12,6 +12,10 @@ The actual implementations are now in:
 """
 from .reports import (
     match_analysis_report,
+    match_economy_report,
+    match_players_report,
+    match_rounds_report,
+    match_summary_report,
     pattern_detection_report,
     player_profile_report,
     scouting_report,
@@ -19,6 +23,10 @@ from .reports import (
 
 __all__ = [
     "match_analysis_report",
+    "match_economy_report",
+    "match_players_report",
+    "match_rounds_report",
+    "match_summary_report",
     "pattern_detection_report",
     "player_profile_report",
     "scouting_report",
