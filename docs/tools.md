@@ -24,6 +24,63 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 - `highlight_rounds` (multi-kills + clutches)
 - `half_breakdown` (first/second half splits)
 
+### `match_summary_report`
+**Input**
+```
+{ "series_id": "string", "team_name"?: "string", "map_name"?: "string" }
+```
+
+**Output**
+- `metadata` (tournament, date, teams, winner)
+- `games` (map list with scores)
+- `scope` (maps, rounds, confidence)
+- `team_comparison` (per-team summary)
+- `key_metrics` (team + opponent)
+- `benchmarks` (comparison to league averages)
+
+**Use case:** Quick overview, deciding what to drill into next.
+
+### `match_players_report`
+**Input**
+```
+{ "series_id": "string", "team_name"?: "string", "map_name"?: "string" }
+```
+
+**Output**
+- `player_performance` (filtered by team)
+- `kast_impact_analysis` (deaths without KAST + loss rate)
+- `opening_death_impact` (opening deaths + loss rate)
+- `highlight_rounds` (multi-kills + clutches)
+
+**Use case:** Player analysis, VOD priority.
+
+### `match_rounds_report`
+**Input**
+```
+{ "series_id": "string", "team_name"?: "string", "map_name"?: "string", "round_start"?: int, "round_end"?: int }
+```
+
+**Output**
+- `round_timeline` (per round FK/FD, winner, timings)
+- `round_situations` (situational context)
+- `half_breakdown` (first/second half splits)
+
+Supports pagination via `round_start`/`round_end`.
+
+**Use case:** Deep-dive into specific rounds.
+
+### `match_economy_report`
+**Input**
+```
+{ "series_id": "string", "team_name"?: "string", "map_name"?: "string" }
+```
+
+**Output**
+- `economy_context` (loadout values, buy types)
+- `attack_patterns` (predictability, tendencies)
+
+**Use case:** Economy cascade analysis, attack predictability detection.
+
 ### `player_profile_report`
 **Input**
 ```
