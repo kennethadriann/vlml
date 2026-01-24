@@ -1,6 +1,6 @@
 # SQL Helper Files
 
-This directory contains 42 SQL query files that support the VLML insights reports. Each file is loaded by `load_sql()` from `common/metrics.py` and parameterized at runtime.
+This directory contains 46 SQL query files that support the VLML insights reports. Each file is loaded by `load_sql()` from `common/metrics.py` and parameterized at runtime.
 
 ## Directory Organization
 
@@ -13,6 +13,7 @@ SQL files are organized by the report they support:
 | `scouting_*` | Scouting Report | `reports/scouting.py` |
 | `team_*` | Team metrics (match analysis) | `reports/match_analysis.py` |
 | `round_timeline_*` | Round timeline | `reports/match_analysis.py` |
+| `economy_*`, `round_situation_*`, `attack_*`, `situation_*` | Coaching context (v3.0) | `reports/match_analysis.py`, `common/data_fetch.py` |
 | `series_*`, `fetch_*`, `kast_*`, `opening_*` | Shared utilities | `common/data_fetch.py` |
 
 ---
@@ -40,6 +41,15 @@ SQL files are organized by the report they support:
 | `round_timeline_enhanced.sql` | `_round_timeline_enhanced()` | Full round timeline with timing |
 | `highlight_rounds.sql` | `_highlight_rounds()` | Aces, clutches, multikills |
 | `half_breakdown.sql` | `_half_breakdown()` | First/second half performance |
+
+### Coaching Context (v3.0)
+
+| SQL File | Used By | Purpose |
+|----------|---------|---------|
+| `economy_round_context.sql` | `_economy_context()` | Round-by-round economy with LAG for cascade analysis |
+| `round_situation_context.sql` | `_round_situations()` | Rich per-round state (weapons, util, trades, projections) |
+| `attack_pattern_context.sql` | `_attack_patterns()` | Execute timing and site selection patterns |
+| `situation_benchmarks.sql` | `situation_benchmarks()` | Historical baseline rates (clutch, retake, economy) |
 
 ### Player Profile Report (`player_profile_report`)
 

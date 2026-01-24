@@ -876,6 +876,28 @@ Examples:
 | 1.0 | 2026-01-03 | Initial standard created |
 | 1.1 | 2026-01-03 | Added SQL specifications (Appendix A) |
 | 1.2 | 2026-01-03 | Added thresholds & format specs (Appendix B, C) |
+| 1.3 | 2025-01 | Added v3.0 coaching context sections (economy, situations, patterns, benchmarks) |
+
+---
+
+## Report v3.0: Enhanced Coaching Context
+
+The `match_analysis_report` now includes additional sections designed for LLM reasoning:
+
+| Section | Purpose | See Also |
+|---------|---------|----------|
+| `economy_context` | Round-by-round economy progression | [Prompting Guide](docs/prompting_guide.md) |
+| `round_situations` | Rich per-round situation data | [Architecture](docs/architecture.md) |
+| `attack_patterns` | Execute timing and site selection | |
+| `benchmarks` | Historical baseline rates | |
+
+These sections enable the LLM to:
+- Detect economy cascade patterns
+- Perform "what if" scenario analysis
+- Identify attack predictability
+- Contextualize performance against baselines
+
+For detailed prompting techniques, see `docs/prompting_guide.md`.
 
 ---
 

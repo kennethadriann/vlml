@@ -6,6 +6,7 @@ from .data_fetch import (
     opening_death_impact,
     series_games,
     series_metadata,
+    situation_benchmarks,
 )
 from .metrics import confidence_label, in_clause, load_sql
 
@@ -19,4 +20,5 @@ __all__ = [
     "opening_death_impact",
     "series_games",
     "series_metadata",
+    "situation_benchmarks",
 ]
