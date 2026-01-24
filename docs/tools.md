@@ -10,7 +10,7 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 { "series_id": "string", "team_name"?: "string", "map_name"?: "string" }
 ```
 
-**Output**
+**Output (v3.0)**
 - `report_type`, `version`, `series_id`, `team_name`
 - `metadata` (tournament, date, teams, winner)
 - `games` (map list with scores)
@@ -23,6 +23,14 @@ These tools return **data-only metrics**. LLMs should generate narratives and re
 - `round_timeline` (per round FK/FD, winner, timings)
 - `highlight_rounds` (multi-kills + clutches)
 - `half_breakdown` (first/second half splits)
+
+**Coaching Context (v3.0)**
+- `economy_context` (round-by-round economy with LAG for cascade analysis)
+- `round_situations` (rich per-round state: weapons, util, trades, next round projection)
+- `attack_patterns` (execute timing, site selection, first contact info)
+- `benchmarks` (historical baseline rates: clutch, retake, economy matchups)
+
+See [Prompting Guide](prompting_guide.md) for how to use these sections with LLMs.
 
 ### `player_profile_report`
 **Input**
@@ -98,5 +106,6 @@ Returns row counts, recent series, and table list.
 ## Related Documentation
 
 - [Data Flow Walkthrough](data_flow.md) - How data flows from raw events to reports
+- [Prompting Guide](prompting_guide.md) - How to prompt LLMs for coaching insights
 - [SQL Helper Index](../src/vlml/tools/sql/README.md) - Query file mapping for each report
 - [Database Schema](../database/README.md) - Table definitions and example queries

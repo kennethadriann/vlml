@@ -20,6 +20,7 @@ It standardizes metrics and relationships between datasets, then exposes them th
 ## What You Get
 
 - **Match analysis**: Team comparison, round timelines, impact metrics, VOD review targets.
+- **Coaching context (v3.0)**: Economy cascades, round situations, attack patterns, historical benchmarks.
 - **Player profiling**: Career stats, agent/map splits, clutch performance, trend signals.
 - **Scouting reports**: Map pool, roster tendencies, opening duels, trade quality.
 - **Deep-dive queries**: Use `query_sql` for ad-hoc analysis directly against the analytics tables.
@@ -76,6 +77,7 @@ See [docs/tools.md](docs/tools.md) for input/output details.
 **Reference:**
 - Tools: [docs/tools.md](docs/tools.md)
 - Architecture: [docs/architecture.md](docs/architecture.md)
+- Prompting Guide: [docs/prompting_guide.md](docs/prompting_guide.md)
 - Win Shares: [docs/win_shares.md](docs/win_shares.md)
 - Report standard: [insights_reference.md](insights_reference.md)
 
